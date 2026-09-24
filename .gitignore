@@ -1,0 +1,27 @@
+# --- Python 缓存与构建 ---
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+
+# --- 虚拟环境 ---
+.venv/
+venv/
+env/
+
+# --- Django 特有 ---
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# --- IDE (PyCharm / VS Code) ---
+.idea/
+.vscode/
+*.iml
+
+# --- 操作系统 ---
+.DS_Store
+Thumbs.db
