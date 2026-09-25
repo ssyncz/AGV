@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders'
-    'ScheduingDecision'
+    'corsheaders',
+    'SchedulingDecision'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
