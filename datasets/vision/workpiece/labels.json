@@ -1,0 +1,5132 @@
+{
+  "source": "synthetic geometric workpiece dataset (OpenCV generated)",
+  "seed": 42,
+  "size": 400,
+  "count": 120,
+  "images": [
+    {
+      "file": "wp_0001.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            48,
+            37,
+            86,
+            86
+          ],
+          "center": [
+            91,
+            80
+          ],
+          "area": 3625.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0002.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            204,
+            34,
+            108,
+            97
+          ],
+          "center": [
+            258,
+            82
+          ],
+          "area": 4737.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            254,
+            170,
+            97,
+            87
+          ],
+          "center": [
+            303,
+            214
+          ],
+          "area": 6075.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0003.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            110,
+            80,
+            78,
+            85
+          ],
+          "center": [
+            139,
+            120
+          ],
+          "area": 3094.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0004.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            113,
+            29,
+            72,
+            72
+          ],
+          "center": [
+            149,
+            65
+          ],
+          "area": 2530.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            99,
+            132,
+            101,
+            101
+          ],
+          "center": [
+            149,
+            182
+          ],
+          "area": 7704.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            211,
+            162,
+            149,
+            149
+          ],
+          "center": [
+            285,
+            236
+          ],
+          "area": 16984.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            84,
+            246,
+            78,
+            78
+          ],
+          "center": [
+            123,
+            285
+          ],
+          "area": 3137.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0005.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            240,
+            68,
+            117,
+            117
+          ],
+          "center": [
+            298,
+            126
+          ],
+          "area": 10392.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            121,
+            110,
+            105,
+            114
+          ],
+          "center": [
+            173,
+            167
+          ],
+          "area": 5238.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            258,
+            209,
+            67,
+            67
+          ],
+          "center": [
+            291,
+            242
+          ],
+          "area": 3316.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            33,
+            242,
+            137,
+            146
+          ],
+          "center": [
+            102,
+            315
+          ],
+          "area": 13949.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0006.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            254,
+            18,
+            136,
+            99
+          ],
+          "center": [
+            322,
+            67
+          ],
+          "area": 7178.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            225,
+            144,
+            145,
+            145
+          ],
+          "center": [
+            297,
+            216
+          ],
+          "area": 16038.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            104,
+            155,
+            103,
+            97
+          ],
+          "center": [
+            156,
+            204
+          ],
+          "area": 6952.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            114,
+            265,
+            114,
+            114
+          ],
+          "center": [
+            171,
+            322
+          ],
+          "area": 6474.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0007.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            260,
+            228,
+            68,
+            60
+          ],
+          "center": [
+            295,
+            249
+          ],
+          "area": 1945.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            89,
+            252,
+            119,
+            126
+          ],
+          "center": [
+            148,
+            315
+          ],
+          "area": 10377.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0008.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            314,
+            13,
+            52,
+            58
+          ],
+          "center": [
+            333,
+            43
+          ],
+          "area": 1401.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            129,
+            87,
+            88,
+            88
+          ],
+          "center": [
+            173,
+            131
+          ],
+          "area": 6521.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            242,
+            171,
+            134,
+            92
+          ],
+          "center": [
+            309,
+            217
+          ],
+          "area": 7617.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            170,
+            245,
+            93,
+            93
+          ],
+          "center": [
+            216,
+            291
+          ],
+          "area": 6494.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0009.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            72,
+            133,
+            119,
+            119
+          ],
+          "center": [
+            131,
+            193
+          ],
+          "area": 7215.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            182,
+            296,
+            70,
+            70
+          ],
+          "center": [
+            217,
+            331
+          ],
+          "area": 3533.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            67,
+            299,
+            82,
+            82
+          ],
+          "center": [
+            108,
+            340
+          ],
+          "area": 4226.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0010.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            94,
+            152,
+            107,
+            118
+          ],
+          "center": [
+            132,
+            213
+          ],
+          "area": 6019.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            285,
+            264,
+            109,
+            75
+          ],
+          "center": [
+            340,
+            302
+          ],
+          "area": 5668.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0011.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            271,
+            127,
+            107,
+            94
+          ],
+          "center": [
+            324,
+            174
+          ],
+          "area": 7338.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0012.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            244,
+            90,
+            145,
+            145
+          ],
+          "center": [
+            316,
+            162
+          ],
+          "area": 16038.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            138,
+            200,
+            114,
+            122
+          ],
+          "center": [
+            195,
+            261
+          ],
+          "area": 6259.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0013.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            260,
+            49,
+            116,
+            158
+          ],
+          "center": [
+            318,
+            128
+          ],
+          "area": 10526.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            133,
+            265,
+            125,
+            122
+          ],
+          "center": [
+            195,
+            326
+          ],
+          "area": 6824.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0014.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            92,
+            55,
+            131,
+            122
+          ],
+          "center": [
+            153,
+            101
+          ],
+          "area": 7469.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            218,
+            171,
+            89,
+            100
+          ],
+          "center": [
+            262,
+            221
+          ],
+          "area": 4357.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0015.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            79,
+            158,
+            136,
+            107
+          ],
+          "center": [
+            147,
+            211
+          ],
+          "area": 7325.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0016.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            290,
+            87,
+            94,
+            90
+          ],
+          "center": [
+            333,
+            142
+          ],
+          "area": 3866.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0017.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            160,
+            120,
+            57,
+            58
+          ],
+          "center": [
+            184,
+            153
+          ],
+          "area": 1484.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            104,
+            224,
+            151,
+            140
+          ],
+          "center": [
+            179,
+            294
+          ],
+          "area": 9592.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0018.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            100,
+            13,
+            77,
+            77
+          ],
+          "center": [
+            138,
+            51
+          ],
+          "area": 4406.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            34,
+            96,
+            123,
+            123
+          ],
+          "center": [
+            95,
+            157
+          ],
+          "area": 11508.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            261,
+            160,
+            56,
+            101
+          ],
+          "center": [
+            289,
+            210
+          ],
+          "area": 4677.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            216,
+            273,
+            63,
+            60
+          ],
+          "center": [
+            244,
+            309
+          ],
+          "area": 1713.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0019.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            56,
+            110,
+            123,
+            123
+          ],
+          "center": [
+            117,
+            171
+          ],
+          "area": 11508.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            153,
+            275,
+            84,
+            84
+          ],
+          "center": [
+            195,
+            317
+          ],
+          "area": 3529.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0020.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            255,
+            24,
+            71,
+            71
+          ],
+          "center": [
+            291,
+            59
+          ],
+          "area": 4018.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            51,
+            191,
+            102,
+            95
+          ],
+          "center": [
+            102,
+            239
+          ],
+          "area": 4274.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0021.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            241,
+            15,
+            114,
+            119
+          ],
+          "center": [
+            298,
+            74
+          ],
+          "area": 9339.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            63,
+            117,
+            151,
+            151
+          ],
+          "center": [
+            138,
+            192
+          ],
+          "area": 17452.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0022.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            183,
+            66,
+            140,
+            134
+          ],
+          "center": [
+            253,
+            133
+          ],
+          "area": 12948.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            36,
+            222,
+            96,
+            96
+          ],
+          "center": [
+            84,
+            270
+          ],
+          "area": 5688.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            217,
+            306,
+            71,
+            71
+          ],
+          "center": [
+            252,
+            341
+          ],
+          "area": 3754.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0023.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            27,
+            41,
+            55,
+            55
+          ],
+          "center": [
+            59,
+            72
+          ],
+          "area": 1353.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            261,
+            108,
+            90,
+            86
+          ],
+          "center": [
+            311,
+            142
+          ],
+          "area": 3542.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            13,
+            248,
+            140,
+            141
+          ],
+          "center": [
+            83,
+            319
+          ],
+          "area": 13655.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            210,
+            269,
+            96,
+            110
+          ],
+          "center": [
+            273,
+            325
+          ],
+          "area": 5125.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0024.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            321,
+            137,
+            66,
+            61
+          ],
+          "center": [
+            352,
+            175
+          ],
+          "area": 1840.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            118,
+            141,
+            136,
+            132
+          ],
+          "center": [
+            186,
+            207
+          ],
+          "area": 12320.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            69,
+            269,
+            104,
+            108
+          ],
+          "center": [
+            121,
+            323
+          ],
+          "area": 5059.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0025.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            25,
+            27,
+            148,
+            148
+          ],
+          "center": [
+            99,
+            101
+          ],
+          "area": 11015.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            274,
+            60,
+            109,
+            99
+          ],
+          "center": [
+            325,
+            123
+          ],
+          "area": 5068.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            204,
+            200,
+            110,
+            80
+          ],
+          "center": [
+            259,
+            240
+          ],
+          "area": 6002.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            82,
+            272,
+            111,
+            114
+          ],
+          "center": [
+            148,
+            322
+          ],
+          "area": 5782.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0026.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            83,
+            48,
+            123,
+            123
+          ],
+          "center": [
+            144,
+            109
+          ],
+          "area": 11508.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            275,
+            128,
+            106,
+            104
+          ],
+          "center": [
+            328,
+            180
+          ],
+          "area": 4669.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            212,
+            227,
+            73,
+            68
+          ],
+          "center": [
+            251,
+            253
+          ],
+          "area": 2281.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            123,
+            286,
+            95,
+            54
+          ],
+          "center": [
+            171,
+            313
+          ],
+          "area": 4163.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0027.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            127,
+            79,
+            109,
+            114
+          ],
+          "center": [
+            181,
+            136
+          ],
+          "area": 8536.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0028.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            125,
+            309,
+            60,
+            59
+          ],
+          "center": [
+            151,
+            334
+          ],
+          "area": 1591.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0029.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            104,
+            30,
+            91,
+            117
+          ],
+          "center": [
+            149,
+            88
+          ],
+          "area": 5292.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            223,
+            127,
+            126,
+            145
+          ],
+          "center": [
+            286,
+            200
+          ],
+          "area": 8342.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            64,
+            203,
+            138,
+            70
+          ],
+          "center": [
+            133,
+            238
+          ],
+          "area": 8783.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0030.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            201,
+            243,
+            151,
+            151
+          ],
+          "center": [
+            277,
+            319
+          ],
+          "area": 11322.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0031.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            169,
+            87,
+            124,
+            124
+          ],
+          "center": [
+            231,
+            149
+          ],
+          "area": 7890.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            82,
+            256,
+            81,
+            79
+          ],
+          "center": [
+            118,
+            303
+          ],
+          "area": 2912.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0032.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            97,
+            32,
+            81,
+            73
+          ],
+          "center": [
+            138,
+            69
+          ],
+          "area": 4156.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            241,
+            63,
+            140,
+            140
+          ],
+          "center": [
+            311,
+            133
+          ],
+          "area": 10081.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            186,
+            244,
+            85,
+            85
+          ],
+          "center": [
+            229,
+            286
+          ],
+          "area": 4932.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            83,
+            261,
+            80,
+            53
+          ],
+          "center": [
+            123,
+            288
+          ],
+          "area": 3024.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0033.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            106,
+            283,
+            69,
+            69
+          ],
+          "center": [
+            140,
+            318
+          ],
+          "area": 2762.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0034.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            153,
+            132,
+            86,
+            86
+          ],
+          "center": [
+            196,
+            175
+          ],
+          "area": 6893.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            253,
+            217,
+            65,
+            77
+          ],
+          "center": [
+            286,
+            256
+          ],
+          "area": 2410.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            22,
+            247,
+            114,
+            153
+          ],
+          "center": [
+            79,
+            324
+          ],
+          "area": 11419.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            224,
+            298,
+            73,
+            73
+          ],
+          "center": [
+            261,
+            335
+          ],
+          "area": 2600.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0035.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            247,
+            19,
+            82,
+            95
+          ],
+          "center": [
+            288,
+            66
+          ],
+          "area": 3591.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            202,
+            134,
+            78,
+            70
+          ],
+          "center": [
+            241,
+            169
+          ],
+          "area": 2429.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            43,
+            215,
+            119,
+            123
+          ],
+          "center": [
+            91,
+            283
+          ],
+          "area": 6718.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            194,
+            295,
+            81,
+            81
+          ],
+          "center": [
+            234,
+            335
+          ],
+          "area": 4912.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0036.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            258,
+            56,
+            73,
+            70
+          ],
+          "center": [
+            298,
+            83
+          ],
+          "area": 2340.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            256,
+            156,
+            81,
+            93
+          ],
+          "center": [
+            297,
+            202
+          ],
+          "area": 3658.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            179,
+            206,
+            76,
+            86
+          ],
+          "center": [
+            217,
+            249
+          ],
+          "area": 4700.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0037.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            190,
+            75,
+            132,
+            132
+          ],
+          "center": [
+            256,
+            141
+          ],
+          "area": 10629.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0038.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            31,
+            35,
+            118,
+            118
+          ],
+          "center": [
+            90,
+            94
+          ],
+          "area": 7086.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            86,
+            220,
+            71,
+            79
+          ],
+          "center": [
+            121,
+            260
+          ],
+          "area": 3969.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            239,
+            248,
+            65,
+            58
+          ],
+          "center": [
+            271,
+            268
+          ],
+          "area": 1779.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0039.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            123,
+            13,
+            97,
+            97
+          ],
+          "center": [
+            171,
+            61
+          ],
+          "area": 4633.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            268,
+            17,
+            76,
+            150
+          ],
+          "center": [
+            306,
+            92
+          ],
+          "area": 9747.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            190,
+            190,
+            83,
+            81
+          ],
+          "center": [
+            227,
+            238
+          ],
+          "area": 3064.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            96,
+            295,
+            79,
+            79
+          ],
+          "center": [
+            135,
+            334
+          ],
+          "area": 4666.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0040.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            231,
+            87,
+            82,
+            91
+          ],
+          "center": [
+            272,
+            133
+          ],
+          "area": 5238.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            156,
+            106,
+            56,
+            61
+          ],
+          "center": [
+            177,
+            139
+          ],
+          "area": 1581.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            215,
+            191,
+            82,
+            81
+          ],
+          "center": [
+            256,
+            231
+          ],
+          "area": 4523.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            120,
+            244,
+            96,
+            96
+          ],
+          "center": [
+            168,
+            292
+          ],
+          "area": 6373.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0041.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            257,
+            59,
+            79,
+            91
+          ],
+          "center": [
+            297,
+            104
+          ],
+          "area": 5212.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            109,
+            116,
+            73,
+            73
+          ],
+          "center": [
+            145,
+            152
+          ],
+          "area": 3952.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            249,
+            183,
+            120,
+            120
+          ],
+          "center": [
+            309,
+            243
+          ],
+          "area": 7284.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            127,
+            275,
+            58,
+            54
+          ],
+          "center": [
+            158,
+            295
+          ],
+          "area": 1430.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0042.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            20,
+            45,
+            137,
+            137
+          ],
+          "center": [
+            88,
+            113
+          ],
+          "area": 14312.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            250,
+            118,
+            67,
+            67
+          ],
+          "center": [
+            283,
+            151
+          ],
+          "area": 3316.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            196,
+            235,
+            114,
+            148
+          ],
+          "center": [
+            253,
+            309
+          ],
+          "area": 8166.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            16,
+            303,
+            77,
+            77
+          ],
+          "center": [
+            54,
+            341
+          ],
+          "area": 4406.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0043.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            333,
+            105,
+            54,
+            73
+          ],
+          "center": [
+            360,
+            141
+          ],
+          "area": 2183.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0044.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            53,
+            119,
+            143,
+            143
+          ],
+          "center": [
+            125,
+            191
+          ],
+          "area": 10272.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0045.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            85,
+            15,
+            138,
+            126
+          ],
+          "center": [
+            154,
+            78
+          ],
+          "area": 12322.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0046.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            10,
+            101,
+            143,
+            143
+          ],
+          "center": [
+            81,
+            172
+          ],
+          "area": 15612.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            244,
+            210,
+            72,
+            72
+          ],
+          "center": [
+            280,
+            246
+          ],
+          "area": 3481.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0047.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            312,
+            38,
+            83,
+            88
+          ],
+          "center": [
+            353,
+            82
+          ],
+          "area": 3350.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            162,
+            138,
+            137,
+            137
+          ],
+          "center": [
+            231,
+            207
+          ],
+          "area": 10376.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0048.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            37,
+            81,
+            104,
+            150
+          ],
+          "center": [
+            89,
+            156
+          ],
+          "area": 11768.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            278,
+            154,
+            72,
+            72
+          ],
+          "center": [
+            314,
+            190
+          ],
+          "area": 2522.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            31,
+            254,
+            82,
+            72
+          ],
+          "center": [
+            72,
+            302
+          ],
+          "area": 2875.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0049.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            159,
+            167,
+            128,
+            137
+          ],
+          "center": [
+            223,
+            236
+          ],
+          "area": 7972.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0050.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            188,
+            118,
+            86,
+            86
+          ],
+          "center": [
+            231,
+            161
+          ],
+          "area": 3625.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            139,
+            242,
+            81,
+            86
+          ],
+          "center": [
+            188,
+            281
+          ],
+          "area": 3192.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0051.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            197,
+            55,
+            105,
+            102
+          ],
+          "center": [
+            249,
+            106
+          ],
+          "area": 7326.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            289,
+            219,
+            53,
+            53
+          ],
+          "center": [
+            315,
+            245
+          ],
+          "area": 2432.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            135,
+            236,
+            115,
+            115
+          ],
+          "center": [
+            192,
+            293
+          ],
+          "area": 10028.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0052.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            241,
+            30,
+            118,
+            128
+          ],
+          "center": [
+            300,
+            94
+          ],
+          "area": 10549.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            57,
+            66,
+            126,
+            171
+          ],
+          "center": [
+            120,
+            152
+          ],
+          "area": 13392.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            180,
+            251,
+            101,
+            91
+          ],
+          "center": [
+            233,
+            309
+          ],
+          "area": 4348.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            59,
+            298,
+            71,
+            71
+          ],
+          "center": [
+            94,
+            333
+          ],
+          "area": 3754.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0053.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            270,
+            222,
+            67,
+            67
+          ],
+          "center": [
+            304,
+            256
+          ],
+          "area": 4100.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0054.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            177,
+            38,
+            116,
+            112
+          ],
+          "center": [
+            235,
+            94
+          ],
+          "area": 8962.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            264,
+            197,
+            69,
+            71
+          ],
+          "center": [
+            298,
+            233
+          ],
+          "area": 2084.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0055.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            126,
+            29,
+            60,
+            62
+          ],
+          "center": [
+            150,
+            57
+          ],
+          "area": 1690.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            329,
+            128,
+            54,
+            54
+          ],
+          "center": [
+            356,
+            155
+          ],
+          "area": 2580.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            159,
+            137,
+            107,
+            95
+          ],
+          "center": [
+            213,
+            185
+          ],
+          "area": 7323.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            23,
+            228,
+            123,
+            132
+          ],
+          "center": [
+            84,
+            294
+          ],
+          "area": 11290.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0056.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            159,
+            18,
+            115,
+            115
+          ],
+          "center": [
+            216,
+            75
+          ],
+          "area": 10028.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            218,
+            165,
+            52,
+            51
+          ],
+          "center": [
+            244,
+            191
+          ],
+          "area": 2199.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            50,
+            192,
+            58,
+            58
+          ],
+          "center": [
+            79,
+            221
+          ],
+          "area": 3137.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0057.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            289,
+            91,
+            93,
+            93
+          ],
+          "center": [
+            336,
+            137
+          ],
+          "area": 5114.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0058.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            203,
+            71,
+            72,
+            68
+          ],
+          "center": [
+            239,
+            105
+          ],
+          "area": 3351.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            82,
+            245,
+            81,
+            70
+          ],
+          "center": [
+            122,
+            280
+          ],
+          "area": 4140.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0059.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            61,
+            68,
+            121,
+            121
+          ],
+          "center": [
+            121,
+            128
+          ],
+          "area": 11120.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            200,
+            140,
+            108,
+            105
+          ],
+          "center": [
+            261,
+            183
+          ],
+          "area": 5172.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            85,
+            232,
+            89,
+            88
+          ],
+          "center": [
+            136,
+            283
+          ],
+          "area": 3563.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            220,
+            318,
+            67,
+            67
+          ],
+          "center": [
+            253,
+            351
+          ],
+          "area": 3316.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0060.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            81,
+            54,
+            98,
+            98
+          ],
+          "center": [
+            130,
+            103
+          ],
+          "area": 5317.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            121,
+            170,
+            142,
+            140
+          ],
+          "center": [
+            192,
+            240
+          ],
+          "area": 13707.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0061.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            204,
+            58,
+            95,
+            95
+          ],
+          "center": [
+            244,
+            113
+          ],
+          "area": 4093.5
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            61,
+            190,
+            76,
+            68
+          ],
+          "center": [
+            99,
+            224
+          ],
+          "area": 2250.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            178,
+            204,
+            63,
+            68
+          ],
+          "center": [
+            210,
+            238
+          ],
+          "area": 2959.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0062.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            36,
+            27,
+            140,
+            140
+          ],
+          "center": [
+            106,
+            97
+          ],
+          "area": 9949.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            271,
+            63,
+            71,
+            38
+          ],
+          "center": [
+            307,
+            82
+          ],
+          "area": 2138.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            257,
+            200,
+            108,
+            99
+          ],
+          "center": [
+            309,
+            263
+          ],
+          "area": 5036.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            85,
+            208,
+            119,
+            119
+          ],
+          "center": [
+            144,
+            267
+          ],
+          "area": 10746.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0063.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            12,
+            62,
+            86,
+            79
+          ],
+          "center": [
+            57,
+            91
+          ],
+          "area": 3153.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            35,
+            167,
+            143,
+            143
+          ],
+          "center": [
+            106,
+            238
+          ],
+          "area": 15612.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0064.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            248,
+            90,
+            134,
+            124
+          ],
+          "center": [
+            315,
+            152
+          ],
+          "area": 11592.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            84,
+            96,
+            97,
+            110
+          ],
+          "center": [
+            117,
+            150
+          ],
+          "area": 5179.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            47,
+            240,
+            111,
+            121
+          ],
+          "center": [
+            117,
+            297
+          ],
+          "area": 6280.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0065.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            305,
+            118,
+            81,
+            81
+          ],
+          "center": [
+            345,
+            158
+          ],
+          "area": 4912.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            151,
+            137,
+            113,
+            113
+          ],
+          "center": [
+            207,
+            193
+          ],
+          "area": 9686.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            65,
+            181,
+            79,
+            79
+          ],
+          "center": [
+            104,
+            220
+          ],
+          "area": 4666.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            122,
+            280,
+            62,
+            56
+          ],
+          "center": [
+            152,
+            300
+          ],
+          "area": 1623.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0066.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            243,
+            125,
+            149,
+            112
+          ],
+          "center": [
+            317,
+            181
+          ],
+          "area": 10313.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            61,
+            181,
+            93,
+            93
+          ],
+          "center": [
+            107,
+            227
+          ],
+          "area": 6494.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            250,
+            282,
+            130,
+            79
+          ],
+          "center": [
+            315,
+            322
+          ],
+          "area": 8394.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            40,
+            298,
+            69,
+            74
+          ],
+          "center": [
+            83,
+            338
+          ],
+          "area": 2356.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0067.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            113,
+            249,
+            111,
+            146
+          ],
+          "center": [
+            168,
+            322
+          ],
+          "area": 9559.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0068.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            181,
+            8,
+            111,
+            111
+          ],
+          "center": [
+            236,
+            63
+          ],
+          "area": 9322.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            28,
+            157,
+            124,
+            87
+          ],
+          "center": [
+            90,
+            201
+          ],
+          "area": 6498.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            293,
+            289,
+            66,
+            68
+          ],
+          "center": [
+            320,
+            319
+          ],
+          "area": 2028.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            18,
+            309,
+            78,
+            72
+          ],
+          "center": [
+            57,
+            345
+          ],
+          "area": 3879.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0069.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            93,
+            61,
+            56,
+            55
+          ],
+          "center": [
+            125,
+            84
+          ],
+          "area": 1381.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            153,
+            90,
+            84,
+            84
+          ],
+          "center": [
+            195,
+            132
+          ],
+          "area": 4751.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            26,
+            153,
+            114,
+            61
+          ],
+          "center": [
+            83,
+            184
+          ],
+          "area": 5595.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            228,
+            211,
+            128,
+            128
+          ],
+          "center": [
+            302,
+            266
+          ],
+          "area": 7469.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0070.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            232,
+            132,
+            141,
+            111
+          ],
+          "center": [
+            303,
+            187
+          ],
+          "area": 8271.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            124,
+            185,
+            95,
+            95
+          ],
+          "center": [
+            171,
+            233
+          ],
+          "area": 5770.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0071.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            210,
+            40,
+            103,
+            155
+          ],
+          "center": [
+            262,
+            117
+          ],
+          "area": 11054.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            77,
+            133,
+            70,
+            69
+          ],
+          "center": [
+            112,
+            168
+          ],
+          "area": 2451.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            194,
+            307,
+            74,
+            64
+          ],
+          "center": [
+            231,
+            329
+          ],
+          "area": 2281.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0072.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            187,
+            15,
+            128,
+            119
+          ],
+          "center": [
+            255,
+            89
+          ],
+          "area": 7118.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            104,
+            129,
+            107,
+            107
+          ],
+          "center": [
+            157,
+            182
+          ],
+          "area": 8660.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            234,
+            282,
+            69,
+            66
+          ],
+          "center": [
+            265,
+            321
+          ],
+          "area": 2060.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0073.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            81,
+            182,
+            102,
+            102
+          ],
+          "center": [
+            132,
+            233
+          ],
+          "area": 7515.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0074.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            260,
+            203,
+            116,
+            116
+          ],
+          "center": [
+            318,
+            261
+          ],
+          "area": 9050.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            98,
+            247,
+            113,
+            113
+          ],
+          "center": [
+            154,
+            303
+          ],
+          "area": 9686.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0075.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            37,
+            40,
+            131,
+            131
+          ],
+          "center": [
+            102,
+            105
+          ],
+          "area": 13090.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            212,
+            44,
+            124,
+            123
+          ],
+          "center": [
+            274,
+            106
+          ],
+          "area": 11073.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            179,
+            260,
+            90,
+            91
+          ],
+          "center": [
+            224,
+            305
+          ],
+          "area": 4995.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0076.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            52,
+            136,
+            83,
+            85
+          ],
+          "center": [
+            101,
+            173
+          ],
+          "area": 3206.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            142,
+            200,
+            91,
+            92
+          ],
+          "center": [
+            187,
+            246
+          ],
+          "area": 5673.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0077.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            280,
+            103,
+            103,
+            106
+          ],
+          "center": [
+            331,
+            156
+          ],
+          "area": 7488.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            122,
+            250,
+            69,
+            69
+          ],
+          "center": [
+            157,
+            285
+          ],
+          "area": 2600.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0078.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            101,
+            40,
+            108,
+            98
+          ],
+          "center": [
+            158,
+            102
+          ],
+          "area": 4983.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            206,
+            210,
+            123,
+            116
+          ],
+          "center": [
+            268,
+            268
+          ],
+          "area": 9854.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0079.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            130,
+            92,
+            120,
+            118
+          ],
+          "center": [
+            190,
+            151
+          ],
+          "area": 9748.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            63,
+            277,
+            90,
+            90
+          ],
+          "center": [
+            108,
+            322
+          ],
+          "area": 3979.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0080.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            282,
+            16,
+            67,
+            81
+          ],
+          "center": [
+            315,
+            57
+          ],
+          "area": 2640.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            108,
+            63,
+            150,
+            90
+          ],
+          "center": [
+            183,
+            108
+          ],
+          "area": 8943.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            6,
+            128,
+            109,
+            109
+          ],
+          "center": [
+            60,
+            182
+          ],
+          "area": 5834.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            165,
+            261,
+            99,
+            101
+          ],
+          "center": [
+            206,
+            318
+          ],
+          "area": 4555.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0081.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            270,
+            44,
+            61,
+            58
+          ],
+          "center": [
+            298,
+            79
+          ],
+          "area": 1610.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            204,
+            125,
+            129,
+            129
+          ],
+          "center": [
+            268,
+            189
+          ],
+          "area": 12672.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            100,
+            232,
+            79,
+            70
+          ],
+          "center": [
+            139,
+            267
+          ],
+          "area": 3932.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0082.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            254,
+            266,
+            95,
+            94
+          ],
+          "center": [
+            302,
+            313
+          ],
+          "area": 3922.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0083.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            24,
+            74,
+            126,
+            122
+          ],
+          "center": [
+            94,
+            147
+          ],
+          "area": 7056.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0084.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            225,
+            113,
+            91,
+            85
+          ],
+          "center": [
+            271,
+            156
+          ],
+          "area": 5285.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            54,
+            277,
+            87,
+            87
+          ],
+          "center": [
+            97,
+            320
+          ],
+          "area": 5668.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0085.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            288,
+            19,
+            69,
+            105
+          ],
+          "center": [
+            322,
+            72
+          ],
+          "area": 5516.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            138,
+            159,
+            105,
+            95
+          ],
+          "center": [
+            192,
+            193
+          ],
+          "area": 4750.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            13,
+            173,
+            97,
+            126
+          ],
+          "center": [
+            61,
+            236
+          ],
+          "area": 7079.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            106,
+            264,
+            115,
+            103
+          ],
+          "center": [
+            164,
+            316
+          ],
+          "area": 8487.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0086.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            308,
+            137,
+            67,
+            67
+          ],
+          "center": [
+            341,
+            170
+          ],
+          "area": 3316.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0087.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            44,
+            8,
+            108,
+            122
+          ],
+          "center": [
+            98,
+            69
+          ],
+          "area": 5980.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            190,
+            113,
+            126,
+            145
+          ],
+          "center": [
+            253,
+            186
+          ],
+          "area": 13500.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0088.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            179,
+            59,
+            62,
+            63
+          ],
+          "center": [
+            215,
+            86
+          ],
+          "area": 1755.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            189,
+            136,
+            90,
+            90
+          ],
+          "center": [
+            227,
+            188
+          ],
+          "area": 3672.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            225,
+            241,
+            143,
+            143
+          ],
+          "center": [
+            296,
+            312
+          ],
+          "area": 15612.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0089.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            16,
+            64,
+            112,
+            133
+          ],
+          "center": [
+            72,
+            131
+          ],
+          "area": 6697.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            184,
+            146,
+            140,
+            136
+          ],
+          "center": [
+            254,
+            214
+          ],
+          "area": 13064.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            21,
+            255,
+            53,
+            53
+          ],
+          "center": [
+            48,
+            281
+          ],
+          "area": 2152.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0090.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            122,
+            268,
+            90,
+            100
+          ],
+          "center": [
+            167,
+            318
+          ],
+          "area": 4076.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0091.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            226,
+            81,
+            145,
+            145
+          ],
+          "center": [
+            298,
+            153
+          ],
+          "area": 16038.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            49,
+            158,
+            135,
+            123
+          ],
+          "center": [
+            117,
+            219
+          ],
+          "area": 11768.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            178,
+            229,
+            134,
+            145
+          ],
+          "center": [
+            245,
+            301
+          ],
+          "area": 9291.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0092.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            92,
+            8,
+            89,
+            89
+          ],
+          "center": [
+            136,
+            52
+          ],
+          "area": 5952.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            215,
+            95,
+            128,
+            127
+          ],
+          "center": [
+            279,
+            159
+          ],
+          "area": 8684.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            42,
+            230,
+            76,
+            66
+          ],
+          "center": [
+            80,
+            263
+          ],
+          "area": 3656.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            264,
+            243,
+            117,
+            117
+          ],
+          "center": [
+            322,
+            301
+          ],
+          "area": 9691.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0093.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            70,
+            95,
+            141,
+            141
+          ],
+          "center": [
+            140,
+            165
+          ],
+          "area": 15176.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            192,
+            210,
+            136,
+            143
+          ],
+          "center": [
+            260,
+            282
+          ],
+          "area": 13488.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0094.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            15,
+            91,
+            88,
+            87
+          ],
+          "center": [
+            59,
+            135
+          ],
+          "area": 3742.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            214,
+            161,
+            94,
+            50
+          ],
+          "center": [
+            261,
+            186
+          ],
+          "area": 3826.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            74,
+            254,
+            95,
+            95
+          ],
+          "center": [
+            121,
+            301
+          ],
+          "area": 6788.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0095.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            64,
+            194,
+            104,
+            122
+          ],
+          "center": [
+            116,
+            255
+          ],
+          "area": 6069.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0096.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            68,
+            95,
+            137,
+            138
+          ],
+          "center": [
+            136,
+            164
+          ],
+          "area": 11428.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            244,
+            145,
+            101,
+            101
+          ],
+          "center": [
+            295,
+            195
+          ],
+          "area": 5200.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            126,
+            252,
+            88,
+            92
+          ],
+          "center": [
+            170,
+            298
+          ],
+          "area": 5549.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            252,
+            272,
+            77,
+            78
+          ],
+          "center": [
+            290,
+            311
+          ],
+          "area": 4109.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0097.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            278,
+            90,
+            66,
+            66
+          ],
+          "center": [
+            311,
+            123
+          ],
+          "area": 3363.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            86,
+            137,
+            79,
+            79
+          ],
+          "center": [
+            125,
+            176
+          ],
+          "area": 4666.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            123,
+            242,
+            62,
+            67
+          ],
+          "center": [
+            146,
+            277
+          ],
+          "area": 1926.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            275,
+            281,
+            58,
+            59
+          ],
+          "center": [
+            304,
+            310
+          ],
+          "area": 2534.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0098.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            292,
+            118,
+            65,
+            62
+          ],
+          "center": [
+            325,
+            149
+          ],
+          "area": 2725.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            160,
+            178,
+            86,
+            62
+          ],
+          "center": [
+            203,
+            209
+          ],
+          "area": 3243.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            225,
+            282,
+            102,
+            89
+          ],
+          "center": [
+            276,
+            312
+          ],
+          "area": 4443.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0099.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            166,
+            22,
+            89,
+            89
+          ],
+          "center": [
+            210,
+            66
+          ],
+          "area": 5952.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0100.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "hexagon",
+          "bbox": [
+            59,
+            183,
+            117,
+            134
+          ],
+          "center": [
+            118,
+            250
+          ],
+          "area": 11500.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0101.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            143,
+            34,
+            100,
+            108
+          ],
+          "center": [
+            205,
+            91
+          ],
+          "area": 5032.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            314,
+            80,
+            68,
+            69
+          ],
+          "center": [
+            353,
+            110
+          ],
+          "area": 2099.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            126,
+            245,
+            84,
+            93
+          ],
+          "center": [
+            157,
+            294
+          ],
+          "area": 3678.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            219,
+            290,
+            89,
+            89
+          ],
+          "center": [
+            263,
+            334
+          ],
+          "area": 5952.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0102.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            80,
+            229,
+            85,
+            85
+          ],
+          "center": [
+            122,
+            271
+          ],
+          "area": 5406.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0103.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            130,
+            31,
+            76,
+            69
+          ],
+          "center": [
+            170,
+            75
+          ],
+          "area": 2454.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            215,
+            74,
+            82,
+            83
+          ],
+          "center": [
+            256,
+            116
+          ],
+          "area": 4630.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            30,
+            134,
+            101,
+            92
+          ],
+          "center": [
+            81,
+            180
+          ],
+          "area": 6544.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            179,
+            201,
+            149,
+            149
+          ],
+          "center": [
+            253,
+            275
+          ],
+          "area": 16984.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0104.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            193,
+            53,
+            121,
+            124
+          ],
+          "center": [
+            265,
+            122
+          ],
+          "area": 6859.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            15,
+            110,
+            62,
+            64
+          ],
+          "center": [
+            46,
+            142
+          ],
+          "area": 2692.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            188,
+            229,
+            91,
+            68
+          ],
+          "center": [
+            233,
+            263
+          ],
+          "area": 3687.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            75,
+            300,
+            85,
+            85
+          ],
+          "center": [
+            117,
+            342
+          ],
+          "area": 5406.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0105.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            93,
+            32,
+            79,
+            79
+          ],
+          "center": [
+            132,
+            71
+          ],
+          "area": 4666.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            163,
+            255,
+            95,
+            105
+          ],
+          "center": [
+            211,
+            307
+          ],
+          "area": 4681.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            313,
+            325,
+            65,
+            65
+          ],
+          "center": [
+            345,
+            357
+          ],
+          "area": 3118.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0106.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            148,
+            45,
+            81,
+            82
+          ],
+          "center": [
+            189,
+            86
+          ],
+          "area": 5070.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            156,
+            182,
+            59,
+            108
+          ],
+          "center": [
+            185,
+            236
+          ],
+          "area": 5132.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0107.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            73,
+            59,
+            152,
+            94
+          ],
+          "center": [
+            149,
+            106
+          ],
+          "area": 13652.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0108.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            160,
+            6,
+            97,
+            121
+          ],
+          "center": [
+            208,
+            67
+          ],
+          "area": 5976.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            48,
+            125,
+            81,
+            81
+          ],
+          "center": [
+            88,
+            165
+          ],
+          "area": 4912.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            17,
+            258,
+            88,
+            73
+          ],
+          "center": [
+            61,
+            295
+          ],
+          "area": 3131.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0109.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            123,
+            34,
+            77,
+            77
+          ],
+          "center": [
+            161,
+            72
+          ],
+          "area": 4406.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            252,
+            56,
+            65,
+            74
+          ],
+          "center": [
+            295,
+            92
+          ],
+          "area": 2318.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            262,
+            188,
+            69,
+            69
+          ],
+          "center": [
+            296,
+            222
+          ],
+          "area": 3528.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            227,
+            283,
+            88,
+            88
+          ],
+          "center": [
+            271,
+            327
+          ],
+          "area": 4329.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0110.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            135,
+            91,
+            68,
+            85
+          ],
+          "center": [
+            169,
+            133
+          ],
+          "area": 2993.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            226,
+            145,
+            147,
+            146
+          ],
+          "center": [
+            300,
+            218
+          ],
+          "area": 11235.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0111.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "square",
+          "bbox": [
+            262,
+            25,
+            89,
+            90
+          ],
+          "center": [
+            306,
+            70
+          ],
+          "area": 5932.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            68,
+            31,
+            85,
+            78
+          ],
+          "center": [
+            113,
+            80
+          ],
+          "area": 3080.5
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            85,
+            149,
+            110,
+            106
+          ],
+          "center": [
+            147,
+            212
+          ],
+          "area": 5337.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            251,
+            200,
+            67,
+            67
+          ],
+          "center": [
+            284,
+            233
+          ],
+          "area": 3316.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0112.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            263,
+            276,
+            87,
+            87
+          ],
+          "center": [
+            306,
+            319
+          ],
+          "area": 5668.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0113.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            110,
+            23,
+            152,
+            105
+          ],
+          "center": [
+            186,
+            76
+          ],
+          "area": 9073.0
+        },
+        {
+          "label": "square",
+          "bbox": [
+            305,
+            74,
+            65,
+            65
+          ],
+          "center": [
+            337,
+            107
+          ],
+          "area": 2626.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            21,
+            201,
+            150,
+            170
+          ],
+          "center": [
+            96,
+            286
+          ],
+          "area": 12747.5
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            196,
+            207,
+            117,
+            124
+          ],
+          "center": [
+            255,
+            269
+          ],
+          "area": 10102.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0114.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            245,
+            31,
+            115,
+            115
+          ],
+          "center": [
+            302,
+            88
+          ],
+          "area": 10028.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            106,
+            154,
+            85,
+            85
+          ],
+          "center": [
+            148,
+            196
+          ],
+          "area": 5406.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            118,
+            283,
+            117,
+            66
+          ],
+          "center": [
+            176,
+            316
+          ],
+          "area": 5922.5
+        }
+      ]
+    },
+    {
+      "file": "wp_0115.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            272,
+            25,
+            105,
+            108
+          ],
+          "center": [
+            325,
+            79
+          ],
+          "area": 5070.5
+        },
+        {
+          "label": "square",
+          "bbox": [
+            313,
+            286,
+            59,
+            59
+          ],
+          "center": [
+            342,
+            315
+          ],
+          "area": 2984.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0116.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            121,
+            94,
+            57,
+            52
+          ],
+          "center": [
+            151,
+            113
+          ],
+          "area": 1358.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            11,
+            245,
+            106,
+            111
+          ],
+          "center": [
+            75,
+            306
+          ],
+          "area": 5395.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0117.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "circle",
+          "bbox": [
+            42,
+            183,
+            71,
+            71
+          ],
+          "center": [
+            77,
+            218
+          ],
+          "area": 3754.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            185,
+            308,
+            71,
+            71
+          ],
+          "center": [
+            220,
+            343
+          ],
+          "area": 3754.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0118.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            60,
+            67,
+            84,
+            96
+          ],
+          "center": [
+            116,
+            115
+          ],
+          "area": 3919.0
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            221,
+            114,
+            73,
+            73
+          ],
+          "center": [
+            257,
+            150
+          ],
+          "area": 3952.0
+        },
+        {
+          "label": "triangle",
+          "bbox": [
+            127,
+            169,
+            75,
+            70
+          ],
+          "center": [
+            162,
+            212
+          ],
+          "area": 2418.5
+        },
+        {
+          "label": "circle",
+          "bbox": [
+            200,
+            267,
+            87,
+            87
+          ],
+          "center": [
+            243,
+            310
+          ],
+          "area": 5668.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0119.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "rectangle",
+          "bbox": [
+            78,
+            45,
+            120,
+            94
+          ],
+          "center": [
+            138,
+            92
+          ],
+          "area": 6789.0
+        },
+        {
+          "label": "hexagon",
+          "bbox": [
+            280,
+            165,
+            70,
+            74
+          ],
+          "center": [
+            315,
+            202
+          ],
+          "area": 3550.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            184,
+            238,
+            86,
+            54
+          ],
+          "center": [
+            227,
+            265
+          ],
+          "area": 3311.0
+        }
+      ]
+    },
+    {
+      "file": "wp_0120.png",
+      "width": 400,
+      "height": 400,
+      "objects": [
+        {
+          "label": "triangle",
+          "bbox": [
+            239,
+            150,
+            124,
+            121
+          ],
+          "center": [
+            309,
+            222
+          ],
+          "area": 6866.0
+        },
+        {
+          "label": "rectangle",
+          "bbox": [
+            16,
+            225,
+            114,
+            69
+          ],
+          "center": [
+            73,
+            259
+          ],
+          "area": 5773.5
+        }
+      ]
+    }
+  ]
+}

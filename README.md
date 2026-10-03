@@ -75,6 +75,11 @@ AGV/
 │  ├─ src/views/
 │  ├─ package.json
 │  └─ vite.config.js
+├─ ManufacturingVision/              # 视觉检测业务应用（任务 4 裂纹检测 / 任务 5 工件识别）
+│  ├─ services.py                    # OpenCV 裂纹检测与工件识别算法
+│  ├─ views.py                       # 视觉 REST 接口
+│  └─ management/commands/           # 合成工件数据集生成、批量评估
+├─ datasets/vision/                  # 视觉数据集（MT 裂纹/无缺陷 + 合成工件）
 ├─ requirements.txt
 ├─ manage.py
 └─ .env.example
@@ -173,6 +178,11 @@ npm run build
 | POST | `/api/tasks/{id}/cancel/` | 取消任务 |
 | GET | `/api/dispatches/` | 调度记录 |
 | GET | `/api/schedule-runs/` | 调度优化记录与指标 |
+| POST | `/api/vision/crack/` | 表面裂纹检测（上传图片或内置数据集样例） |
+| POST | `/api/vision/detect/` | 几何工件识别（形状分类与定位） |
+| GET | `/api/vision/samples/` | 视觉内置数据集样例列表 |
+| GET | `/api/vision/records/` | 视觉检测记录（支持 `?task_type=` 筛选） |
+| GET | `/api/vision/overview/` | 视觉检测统计概览 |
 
 单台 AGV 多任务顺序优化示例：
 
@@ -307,3 +317,29 @@ npm run build
 - 当前 API 默认开放匿名访问，便于课程设计和演示；生产环境建议接入 JWT 或 Session 权限。
 - 开发时使用 Vite，生产时可将 `frontend/dist` 部署到 Nginx，并将 `/api` 反向代理到 Django。
 - 可进一步接入 WebSocket，用于真实 AGV 遥测数据和实时任务进度推送。
+- 视觉模块的输入图与结果图写入 `media/`，已在 `.gitignore` 中忽略；仅在 DEBUG 下由 Django 托管静态访问。
+
+## 12. 视觉模块（任务 4 裂纹检测 / 任务 5 工件识别）
+
+由 `ManufacturingVision` 应用实现，全部为 OpenCV 传统算法（无深度学习），算法原理、接口契约、
+指标结果、调参记录与 AI 使用记录详见 [`ManufacturingVision/README.md`](ManufacturingVision/README.md)；
+数据集来源与抽样规则详见 [`datasets/vision/README.md`](datasets/vision/README.md)。
+
+```powershell
+# 安装依赖（新增 opencv-python / numpy）
+C:\Users\ssync\miniconda3\envs\pmp\python.exe -m pip install -r requirements.txt
+
+# 建表（新增 ManufacturingVision_visionrecord）
+C:\Users\ssync\miniconda3\envs\pmp\python.exe manage.py migrate
+
+# 生成合成工件数据集（任务 5，固定 seed 可复现）
+C:\Users\ssync\miniconda3\envs\pmp\python.exe manage.py generate_workpiece_dataset --count 120 --size 400 --seed 42
+
+# 批量评估，输出 reports/crack_metrics.json 与 reports/workpiece_metrics.json
+C:\Users\ssync\miniconda3\envs\pmp\python.exe manage.py evaluate_vision --task all --out ManufacturingVision/reports
+
+# 本模块测试（需要 MySQL）
+C:\Users\ssync\miniconda3\envs\pmp\python.exe manage.py test ManufacturingVision -v 2
+```
+
+实测指标：裂纹检测准确率 **0.8662**、F1 **0.8235**；工件检测 F1 **0.9901**、形状分类准确率 **0.9767**。

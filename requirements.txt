@@ -2,3 +2,6 @@ Django==5.2.17
 djangorestframework==3.18.1
 django-cors-headers==4.9.0
 PyMySQL==1.1.1
+cryptography==50.0.2
+opencv-python==4.11.0.86
+numpy==1.26.4

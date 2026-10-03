@@ -1,0 +1,75 @@
+{
+  "task": "workpiece",
+  "dataset": {
+    "images": 120
+  },
+  "detection": {
+    "true_positive": 300,
+    "false_positive": 0,
+    "false_negative": 6,
+    "iou_threshold": 0.5,
+    "precision": 1.0,
+    "recall": 0.9804,
+    "f1": 0.9901
+  },
+  "classification": {
+    "matched": 300,
+    "correct": 293,
+    "accuracy": 0.9767,
+    "per_class": {
+      "circle": {
+        "tp": 59,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1.0,
+        "recall": 0.9516,
+        "f1": 0.9752
+      },
+      "triangle": {
+        "tp": 57,
+        "fp": 0,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.8769,
+        "f1": 0.9344
+      },
+      "square": {
+        "tp": 56,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.9655,
+        "f1": 0.9825
+      },
+      "rectangle": {
+        "tp": 69,
+        "fp": 3,
+        "fn": 0,
+        "precision": 0.9583,
+        "recall": 1.0,
+        "f1": 0.9787
+      },
+      "hexagon": {
+        "tp": 52,
+        "fp": 3,
+        "fn": 0,
+        "precision": 0.9455,
+        "recall": 1.0,
+        "f1": 0.972
+      },
+      "unknown": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "targets": {
+    "f1": 0.85,
+    "classification_accuracy": 0.9
+  },
+  "pass": true
+}

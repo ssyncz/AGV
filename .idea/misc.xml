@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="pmp" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="pmp" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (AGV)" project-jdk-type="Python SDK" />
 </project>

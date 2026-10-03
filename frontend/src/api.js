@@ -1,13 +1,13 @@
 const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
-    ...options,
-  })
+  const { headers: extraHeaders, ...rest } = options
+  const isFormData = typeof FormData !== 'undefined' && rest.body instanceof FormData
+  const headers = { ...(extraHeaders || {}) }
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json'
+  }
+  const response = await fetch(`${API_BASE}${path}`, { headers, ...rest })
   const text = await response.text()
   let data = null
   if (text) {
@@ -27,6 +27,13 @@ function unwrap(data) {
   return Array.isArray(data) ? data : (data?.results || [])
 }
 
+function postVision(path, payload) {
+  if (typeof FormData !== 'undefined' && payload instanceof FormData) {
+    return request(path, { method: 'POST', body: payload })
+  }
+  return request(path, { method: 'POST', body: JSON.stringify(payload) })
+}
+
 export const api = {
   overview: () => request('/overview/'),
   map: () => request('/map/'),
@@ -43,4 +50,14 @@ export const api = {
   batchDispatch: (payload) => request('/schedules/batch/', { method: 'POST', body: JSON.stringify(payload) }),
   planPath: (payload) => request('/path-planning/', { method: 'POST', body: JSON.stringify(payload) }),
   taskAction: (id, action) => request(`/tasks/${id}/${action}/`, { method: 'POST', body: '{}' }),
+
+  // --- 视觉检测（ManufacturingVision，任务 4/5）---
+  visionOverview: () => request('/vision/overview/'),
+  visionSamples: () => request('/vision/samples/'),
+  visionCrack: (payload) => postVision('/vision/crack/', payload),
+  visionDetect: (payload) => postVision('/vision/detect/', payload),
+  visionRecords: (query = '') => request(`/vision/records/${query}`).then(unwrap),
+  deleteVisionRecord: (id) => request(`/vision/records/${id}/`, { method: 'DELETE' }),
+  visionSampleImageUrl: (group, name) =>
+    `${API_BASE}/vision/samples/${encodeURIComponent(group)}/${encodeURIComponent(name)}/`,
 }

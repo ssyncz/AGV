@@ -7,6 +7,28 @@ pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def _load_dotenv(path: Path) -> None:
+    """读取项目根目录的 .env（该文件已在 .gitignore 中，适合放本地数据库口令）。
+
+    已存在的环境变量优先，不会被 .env 覆盖；格式为 KEY=VALUE，支持 # 注释。
+    """
+    if not path.is_file():
+        return
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+_load_dotenv(BASE_DIR / ".env")
+
+
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-agv-scheduling-system-change-in-production",
@@ -26,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "SchedulingDecision",
+    "ManufacturingVision",
 ]
 
 MIDDLEWARE = [
@@ -87,6 +110,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
