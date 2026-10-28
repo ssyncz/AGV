@@ -78,7 +78,7 @@
 | 数据库 | MySQL 8.0 |
 | 前端 | Vue 3、Vite、原生 SVG 地图可视化 |
 | 调度算法 | Dijkstra（含路径缓存）、综合成本选车、状态压缩动态规划（<=10 任务精确解）、最近邻 + 2-opt（大规模）、最优插入构造 + 变邻域下降（relocate/swap/or-opt/2-opt）、节点时间窗避碰 |
-| 视觉检测 | OpenCV 4.11（传统算法，无深度学习） |
+| 视觉检测 | OpenCV 4.11（Frangi 传统方法，默认）+ PyTorch 2.2（DeepCrack 监督分割，可选） |
 | 设备监测 | scikit-learn（StandardScaler + RandomForestClassifier） |
 | 需求预测 | statsmodels（Holt-Winters、SARIMA/ARIMA）、pandas、numpy |
 | 接口 | RESTful JSON API |
@@ -430,7 +430,7 @@ objective = makespan
 
 实测指标：裂纹检测准确率 **0.8662**、F1 **0.8235**；工件检测 F1 **0.9901**、形状分类准确率 **0.9767**。
 
-已知限制：裂纹的定位指标偏低（平均 IoU 约 0.14），且参数是在 157 张图上标定的，留出集 F1 为 0.7692；工件识别基于合成数据，真实产线图像需要重新标注验证。
+已知限制：裂纹平均像素 IoU 为 0.2723，定位后处理显著改善了宽度召回，但仍存在漏定位；参数是在 157 张图上标定的，留出集 F1 为 0.7692。工件识别基于合成数据，真实产线图像需要重新标注验证。
 
 ## 12. 设备状态监测（任务 6）
 

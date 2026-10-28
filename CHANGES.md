@@ -1,7 +1,8 @@
 # 视觉部分切换到监督算法（DeepCrack）改动说明
 
-把 `ManufacturingVision` 的主裂纹检测链路从 Frangi 传统方法切换到 DeepCrack
-监督分割，并保留 Frangi 作为自动回退。工件识别（任务 5）未改动。
+为 `ManufacturingVision` 增加 DeepCrack 监督分割链路，并保留 Frangi 作为回退。
+后续实测发现官方 DeepCrack 权重在 MT 磁瓦域迁移效果较差，因此**又把默认算法改回
+Frangi**，DeepCrack 作为可选的实验算法保留。工件识别（任务 5）未改动。
 
 ## 改动文件
 
@@ -18,11 +19,12 @@
 
 直接把这 6 个文件按相对路径覆盖到 `AGV` 项目根目录即可，无需改数据库表。
 
-- 默认算法：`DeepCrack`（需要 PyTorch 和权重 `runs/deepcrack/deepcrack.pth`，
-  项目里已有）。
-- 未安装 PyTorch 或找不到权重时，接口自动回退 Frangi，并在响应里返回
-  `"fallback": true`。
+- 默认算法：`Frangi`。本机在 157 张 MT 图片上实测：Frangi 准确率 0.8662 / F1 0.8235；
+  官方 DeepCrack 权重最佳仅 F1 0.56 / 准确率 0.45，因此不作为默认。
+- 可选算法：`DeepCrack`。需要 PyTorch（见 `requirements-ml.txt`）与域内微调权重
+  `models/deepcrack.pth`；找不到时接口自动回退 Frangi，并在响应里返回 `"fallback": true`。
 - 显式指定算法：`params` 里传 `"algorithm": "deepcrack"` 或 `"algorithm": "frangi"`。
+- 权重与训练产物放在 `models/`、`runs/`，已在 `.gitignore` 中忽略，不入库。
 
 ## 验证
 

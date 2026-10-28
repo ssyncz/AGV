@@ -14,7 +14,13 @@ from rest_framework.test import APIClient
 
 from . import datasets
 from .models import VisionRecord
-from .services import analyze_crack, analyze_workpiece
+from .services import (
+    _skeletonize_binary,
+    analyze_crack,
+    analyze_workpiece,
+    refine_crack_mask,
+)
+from .services_defect import available as defect_available
 from .services_supervised import supervised_available
 
 
@@ -75,6 +81,57 @@ class CrackAlgorithmTests(TestCase):
         self.assertNotIn("unknown_key", analysis["params"])
         self.assertEqual(analysis["result"], "normal")
 
+    def test_mask_postprocess_returns_one_pixel_skeleton_then_calibrated_width(self):
+        binary = np.zeros((80, 120), np.uint8)
+        cv2.line(binary, (15, 20), (100, 60), 1, 7)
+        skeleton = _skeletonize_binary(binary)
+        self.assertTrue(skeleton.any())
+        self.assertLessEqual(cv2.connectedComponents(skeleton)[0], 2)
+        self.assertLess(
+            np.count_nonzero(skeleton),
+            np.count_nonzero(binary),
+        )
+
+        response = cv2.GaussianBlur(binary.astype(np.float32) * 0.8, (5, 5), 0)
+        refined, boxes = refine_crack_mask(
+            response,
+            {
+                "mask_threshold_ratio": 0.5,
+                "mask_close_kernel": 3,
+                "mask_skeleton": True,
+                "mask_min_aspect": 1.5,
+                "mask_border_margin": 0,
+                "mask_dilation": 2,
+            },
+        )
+        self.assertTrue(refined.any())
+        self.assertTrue(boxes)
+        self.assertGreater(np.count_nonzero(refined), np.count_nonzero(skeleton))
+
+    def test_mask_postprocess_legacy_fallback_and_sanitization(self):
+        response = np.zeros((30, 30), np.float32)
+        response[10:20, 15] = 0.6
+        mask, boxes = refine_crack_mask(
+            response,
+            {
+                "mask_threshold_ratio": 0,
+                "vessel_threshold": 0.55,
+                "mask_close_kernel": 2,
+                "mask_skeleton": False,
+                "mask_min_aspect": 1.0,
+                "mask_border_margin": -2,
+                "mask_dilation": 20,
+            },
+        )
+        self.assertTrue(mask.any())
+        self.assertTrue(boxes)
+        analysis = analyze_crack(
+            _cracked_canvas(),
+            {"mask_close_kernel": 2, "mask_dilation": 20},
+        )
+        self.assertEqual(analysis["params"]["mask_close_kernel"], 3)
+        self.assertEqual(analysis["params"]["mask_dilation"], 8)
+
 
 class WorkpieceAlgorithmTests(TestCase):
     def test_shape_labels(self):
@@ -99,6 +156,16 @@ class DatasetAccessTests(TestCase):
         group, name = datasets.split_sample("crack/exp1_num_3191.jpg")
         self.assertEqual(group, "crack")
         self.assertEqual(name, "exp1_num_3191.jpg")
+
+    def test_neu_group_has_samples_and_labels(self):
+        samples = datasets.list_samples(datasets.NEU)
+        self.assertEqual(len(samples), 120)
+        labels = datasets.load_neu_labels()
+        self.assertEqual(set(labels), set(samples))
+        self.assertEqual(
+            {item["class"] for item in labels.values()},
+            {"crazing", "inclusion", "patches", "pitted", "rolled-in", "scratches"},
+        )
 
 
 class VisionApiTests(TestCase):
@@ -212,6 +279,25 @@ class VisionApiTests(TestCase):
         payload = self.client.get("/api/vision/samples/").json()
         for group in datasets.SAMPLE_GROUPS:
             self.assertIn(group, payload["samples"])
+
+    def test_defect_sample_endpoint(self):
+        if not defect_available():
+            self.skipTest("NEU 权重未就绪")
+        samples = datasets.list_samples(datasets.NEU)
+        if not samples:
+            self.skipTest("NEU 样例缺失")
+        name = samples[0]
+        response = self.client.post(
+            "/api/vision/algo/defect/",
+            {"sample": f"neu/{name}"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("predicted_class", payload)
+        truth = datasets.load_neu_labels()[name]
+        self.assertEqual(payload.get("ground_truth_class"), truth["class"])
+        self.assertIn("match", payload)
 
     def test_sample_image_endpoint(self):
         samples = datasets.list_samples(datasets.CRACK)

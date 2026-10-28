@@ -6,7 +6,7 @@ const emit = defineEmits(['notify'])
 
 const MODES = [
   { key: 'crack', label: '表面裂纹检测', groups: ['crack', 'free'] },
-  { key: 'defect', label: '缺陷类型识别（NEU 6类）', groups: ['crack'] },
+  { key: 'defect', label: '缺陷类型识别（NEU 6类）', groups: ['neu'], requires: 'defect' },
   { key: 'workpiece', label: '工件识别', groups: ['workpiece'] },
 ]
 const SHAPE_LABELS = {
@@ -25,6 +25,7 @@ const objectUrl = ref('')
 const samples = ref({ crack: [], free: [], workpiece: [] })
 const datasetSummary = ref({})
 const overview = ref({})
+const algoStatus = ref(null)
 const records = ref([])
 const recordFilter = ref('')
 
@@ -33,12 +34,32 @@ const loadingRecords = ref(false)
 const error = ref('')
 const result = ref(null)
 
-const crackAlgorithm = ref('deepcrack')
-const deepcrackParams = ref({ algorithm: 'deepcrack', threshold: 0.5, min_area: 8, min_coverage: 0.0002, max_side: 512 })
-const frangiParams = ref({ algorithm: 'frangi', score_threshold: 0.54, vessel_threshold: 0.55, min_aspect: 2.5, mask_dilation: 2 })
+const crackAlgorithm = ref('frangi')
+const deepcrackParams = ref({ algorithm: 'deepcrack', threshold: 0.72, min_area: 8, min_coverage: 0.0002, max_side: 512 })
+const frangiParams = ref({
+  algorithm: 'frangi',
+  score_threshold: 0.54,
+  vessel_threshold: 0.55,
+  min_aspect: 2.5,
+  mask_threshold_ratio: 0.575,
+  mask_close_kernel: 3,
+  mask_skeleton: false,
+  mask_dilation: 3,
+})
 const workpieceParams = ref({ min_area: 300, approx_epsilon: 0.02, morph_kernel: 5 })
 
 const currentMode = computed(() => MODES.find((item) => item.key === mode.value) || MODES[0])
+const defectAvailable = computed(() => Boolean(algoStatus.value?.defect?.available))
+const defectAccuracy = computed(() => algoStatus.value?.defect?.test_accuracy)
+const defectAccuracyText = computed(() =>
+  defectAccuracy.value ? `${(defectAccuracy.value * 100).toFixed(1)}%` : '未训练')
+const deepcrackAvailable = computed(() => Boolean(algoStatus.value?.deepcrack?.weights_found))
+const modeAvailable = (item) => !item.requires || Boolean(algoStatus.value?.[item.requires]?.available)
+const currentModeReady = computed(() => {
+  if (!modeAvailable(currentMode.value)) return false
+  if (mode.value === 'crack' && crackAlgorithm.value === 'deepcrack') return deepcrackAvailable.value
+  return true
+})
 const groups = computed(() => currentMode.value.groups)
 const activeSamples = computed(() => samples.value[sampleGroup.value] || [])
 const activeParams = computed(() => {
@@ -48,14 +69,15 @@ const activeParams = computed(() => {
   }
   return workpieceParams.value
 })
-const canRun = computed(() => (sourceKind.value === 'upload' ? !!file.value : !!sampleName.value))
+const canRun = computed(() => currentModeReady.value
+  && (sourceKind.value === 'upload' ? !!file.value : !!sampleName.value))
 const datasetCounts = computed(() => {
   const summary = datasetSummary.value || {}
-  return `${summary.crack || 0} / ${summary.free || 0} / ${summary.workpiece || 0}`
+  return `${summary.crack || 0} / ${summary.free || 0} / ${summary.workpiece || 0} / ${summary.neu || 0}`
 })
 const datasetNote = computed(() => {
   const summary = datasetSummary.value || {}
-  return `数据集：MT_Crack ${summary.crack || 0} 张（含标注掩码）· MT_Free 无缺陷 ${summary.free || 0} 张 · 合成几何工件 ${summary.workpiece || 0} 张`
+  return `数据集：MT_Crack ${summary.crack || 0} 张（含标注掩码）· MT_Free 无缺陷 ${summary.free || 0} 张 · 合成几何工件 ${summary.workpiece || 0} 张 · NEU 六类样例 ${summary.neu || 0} 张`
 })
 const previewUrl = computed(() => {
   if (sourceKind.value === 'upload') return objectUrl.value
@@ -123,6 +145,15 @@ async function loadOverview() {
   }
 }
 
+async function loadAlgoStatus() {
+  try {
+    algoStatus.value = await api.visionAlgoStatus()
+  } catch {
+    // 状态接口不可用时按“都未就绪”处理，避免误启用需要权重的任务。
+    algoStatus.value = null
+  }
+}
+
 async function loadRecords() {
   loadingRecords.value = true
   try {
@@ -186,6 +217,7 @@ function openRecords() {
 onMounted(() => {
   loadSamples()
   loadOverview()
+  loadAlgoStatus()
 })
 
 onUnmounted(() => {
@@ -198,7 +230,7 @@ onUnmounted(() => {
     <div class="panel-head">
       <div>
         <div class="panel-title">视觉检测</div>
-        <div class="panel-desc">DeepCrack 监督分割（默认）+ Frangi 传统方法回退：任务 4 表面裂纹检测（MT 数据集）与任务 5 几何工件识别（合成数据集）</div>
+        <div class="panel-desc">Frangi 传统方法（默认）+ DeepCrack 监督分割（实验）：任务 4 表面裂纹检测（MT 数据集）、NEU 缺陷分类与任务 5 几何工件识别</div>
       </div>
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'detect' }" @click="subTab = 'detect'">在线检测</button>
@@ -223,7 +255,10 @@ onUnmounted(() => {
               <div class="field">
                 <label>检测任务</label>
                 <select v-model="mode" class="select">
-                  <option v-for="item in MODES" :key="item.key" :value="item.key">{{ item.label }}</option>
+                  <option v-for="item in MODES" :key="item.key" :value="item.key"
+                          :disabled="!modeAvailable(item)">
+                    {{ item.label }}{{ modeAvailable(item) ? '' : '（权重未就绪）' }}
+                  </option>
                 </select>
               </div>
               <div class="field">
@@ -238,7 +273,7 @@ onUnmounted(() => {
                   <label>样例分组</label>
                   <select v-model="sampleGroup" class="select">
                     <option v-for="group in groups" :key="group" :value="group">
-                      {{ group === 'crack' ? 'MT_Crack 有裂纹' : group === 'free' ? 'MT_Free 无缺陷' : '合成工件' }}（{{ (samples[group] || []).length }}）
+                      {{ group === 'crack' ? 'MT_Crack 有裂纹' : group === 'free' ? 'MT_Free 无缺陷' : group === 'neu' ? 'NEU 六类缺陷' : '合成工件' }}（{{ (samples[group] || []).length }}）
                     </option>
                   </select>
                 </div>
@@ -258,8 +293,8 @@ onUnmounted(() => {
                 <div class="field">
                   <label>裂纹算法</label>
                   <select v-model="crackAlgorithm" class="select">
-                    <option value="deepcrack">DeepCrack 监督分割（推荐）</option>
-                    <option value="frangi">Frangi 传统方法</option>
+                    <option value="frangi">Frangi 传统方法（推荐）</option>
+                    <option value="deepcrack">DeepCrack 监督分割（实验：需域内微调权重）</option>
                   </select>
                 </div>
               </template>
@@ -295,15 +330,32 @@ onUnmounted(() => {
                   <input v-model.number="frangiParams.min_aspect" class="input" type="number" step="0.1" min="1.2" max="8" />
                 </div>
                 <div class="field">
+                  <label>掩码相对阈值 mask_threshold_ratio</label>
+                  <input v-model.number="frangiParams.mask_threshold_ratio" class="input" type="number" step="0.025" min="0" max="1" />
+                </div>
+                <div class="field">
+                  <label>掩码闭运算核 mask_close_kernel</label>
+                  <input v-model.number="frangiParams.mask_close_kernel" class="input" type="number" step="2" min="1" max="15" />
+                </div>
+                <div class="field">
+                  <label>中心线骨架化 mask_skeleton</label>
+                  <select v-model="frangiParams.mask_skeleton" class="input">
+                    <option :value="false">关闭（标定最优）</option>
+                    <option :value="true">开启 Zhang-Suen</option>
+                  </select>
+                </div>
+                <div class="field">
                   <label>掩码膨胀像素 mask_dilation</label>
-                  <input v-model.number="frangiParams.mask_dilation" class="input" type="number" step="1" min="0" max="5" />
+                  <input v-model.number="frangiParams.mask_dilation" class="input" type="number" step="1" min="0" max="8" />
                 </div>
               </template>
               <template v-if="mode === 'defect'">
                 <div class="field full">
                   <div class="notice">
-                    使用 NEU 热轧带钢 <b>6 类缺陷</b> CNN（crazing / inclusion / patches / pitted / rolled-in / scratches），
-                    测试准确率 <b>98.9%</b>；该任务<b>无需调参</b>，直接点「开始检测」。
+                    <span>
+                      使用 NEU 热轧带钢 <b>6 类缺陷</b> CNN（crazing / inclusion / patches / pitted / rolled-in / scratches），
+                      验证准确率 <b>{{ defectAccuracyText }}</b>；该任务<b>无需调参</b>，直接点「开始检测」。
+                    </span>
                   </div>
                 </div>
               </template>
@@ -321,6 +373,15 @@ onUnmounted(() => {
                   <input v-model.number="workpieceParams.morph_kernel" class="input" type="number" step="2" min="1" max="15" />
                 </div>
               </template>
+            </div>
+
+            <div v-if="mode === 'defect' && !defectAvailable" class="notice mt-12">
+              NEU 六类缺陷分类权重未就绪（runs/vision/neu_cnn.pt）。
+              请先运行 scripts/train_neu.py 训练，或改选其他检测任务。
+            </div>
+            <div v-if="mode === 'crack' && crackAlgorithm === 'deepcrack' && !deepcrackAvailable"
+                 class="notice mt-12">
+              未找到 DeepCrack 权重（models/deepcrack.pth），本次请求将自动回退到 Frangi。
             </div>
 
             <div class="toolbar-row mt-16">
@@ -380,6 +441,11 @@ onUnmounted(() => {
                 <strong>判定：{{ result.predicted_label }}</strong>
                 <span>（置信度 {{ (result.confidence * 100).toFixed(1) }}%）</span>
                 <span v-if="result.is_line_like"> · 线状缺陷，建议再做裂纹分割定位</span>
+              </div>
+              <div v-if="result.ground_truth_class" class="notice mt-12"
+                   :class="result.match ? 'success' : 'warning'">
+                真值：{{ result.ground_truth_label }}　预测：{{ result.predicted_label }}　
+                <strong>{{ result.match ? '一致' : '不一致，建议复核' }}</strong>
               </div>
               <div class="grid metric-grid mt-16">
                 <div class="optimization-metric"><span>缺陷类型</span><strong>{{ result.predicted_class }}</strong></div>

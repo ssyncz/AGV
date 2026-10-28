@@ -2,9 +2,10 @@
 
 本应用负责课程选题 A 中的**任务 4 表面裂纹检测**与**任务 5 工件识别**，通过
 Django REST Framework 接入 `AGV` 项目，前端在 Vue3 界面中提供「视觉检测」菜单。
-任务 4 默认使用 **DeepCrack 监督式裂纹分割**（PyTorch），在缺少 PyTorch 或权重时
-自动回退到 OpenCV 传统方法（多尺度 Frangi 黑脊 + 连通域筛选）；任务 5 沿用 OpenCV
-几何工件识别。
+任务 4 默认使用 **Frangi 多尺度黑脊**（OpenCV，免训练、可解释），也可在界面上切换到
+**DeepCrack 监督式裂纹分割**（PyTorch）。官方 DeepCrack 权重在 MT 磁瓦域迁移效果较差
+（实测 F1 0.56，低于 Frangi 的 0.82），因此默认不使用它；若换成域内微调权重，可在
+`params` 中显式选择 `algorithm=deepcrack`。任务 5 沿用 OpenCV 几何工件识别。
 
 ## 1. 目录结构
 
@@ -20,7 +21,7 @@ ManufacturingVision/
 │  ├─ generate_workpiece_dataset.py   # 生成合成几何工件数据集
 │  └─ evaluate_vision.py              # 批量评估并输出 CSV / JSON 指标
 ├─ reports/                        # 评估产物（crack_metrics / workpiece_metrics）
-├─ tests.py                        # 18 项算法 / 接口 / 命令测试
+├─ tests.py                        # 24 项算法 / 接口 / 命令测试
 └─ README.md
 ```
 
@@ -55,7 +56,14 @@ ManufacturingVision/
    要求长宽比 ≥ `min_aspect`；
 5. 判定得分 `score = 0.7 × 最大脊响应 + 0.4 × 最强细长连通域得分`，
    `score ≥ score_threshold` 判为 `crack`；
-6. 定位掩码按 `mask_dilation` 向外膨胀，使预测宽度贴近人工标注宽度。
+6. 输出掩码使用“相对阈值 + 闭运算 + 宽度校准”：阈值取单图最大脊响应的
+   `mask_threshold_ratio`（默认 0.575），用 3×3 椭圆核填补小断裂，再按
+   `mask_dilation` 膨胀至人工标注的典型宽度；细长连通域筛选和 1 像素宽
+   Zhang-Suen 骨架化均可通过参数启用。
+
+图像级得分仍使用固定 `vessel_threshold` 与边界约束，因此本次掩码后处理只改变
+定位结果，不改变“有/无裂纹”的候选分数。后处理参数在 5 组固定种子的标定折上
+按键体 IoU 选择，再在同一组留出测试上评估。
 
 ### 3.2 任务 5 工件识别（`services.analyze_workpiece`）
 
@@ -67,9 +75,9 @@ ManufacturingVision/
    hexagon`，无法判定归 `unknown`；
 6. 置信分为几何规则与 `cv2.matchShapes` 相似度的启发式组合（**不是校准概率**）。
 
-### 3.3 任务 4 裂纹检测（DeepCrack 监督分割，默认）
+### 3.3 任务 4 裂纹检测（DeepCrack 监督分割，可选）
 
-默认路径调用 `services_supervised.analyze_crack_supervised`，内部流程：
+选择 DeepCrack 时调用 `services_supervised.analyze_crack_supervised`，内部流程：
 
 1. 懒加载 `deepcrack_model.CrackSegmenter`（权重查找顺序见
    `services_supervised.WEIGHT_CANDIDATES`）；
@@ -83,6 +91,33 @@ ManufacturingVision/
 若 PyTorch 未安装或找不到权重，接口抛出 `RuntimeError`，视图层捕获后自动回退到
 3.1 的 Frangi 方案，并在响应中标记 `fallback=true`。前端「视觉检测」页提供算法
 下拉框，可显式选择 `DeepCrack` 或 `Frangi`。
+
+### 3.4 NEU 六类缺陷分类（可选）
+
+`services_defect.py` 实现了一个 64×64 灰度输入的 SmallCNN（3 组 Conv-BN-ReLU-MaxPool +
+全局平均池化 + 全连接），输出 NEU 热轧带钢的六类缺陷：
+`crazing / inclusion / patches / pitted / rolled-in / scratches`。
+
+模型权重不在仓库里，需要自行训练：
+
+```powershell
+# 数据按类别分目录：<data_root>/images/<class>/*.jpg
+.\venv\Scripts\python.exe scripts\train_neu.py --data-root datasets/neu --epochs 25
+```
+
+训练产物写到 `runs/vision/neu_cnn.pt`（`runs/` 已在 `.gitignore` 中忽略）。
+未找到权重时 `/api/vision/algo/status/` 的 `defect.available` 为 `false`，
+前端会把「NEU 六类」选项置灰并提示先训练，不会弹出无意义的报错。
+
+课程组当前模型用本地 1800 张（6 类 × 300）训练，按类别分层 80/20 切分，
+验证集 360 张，最佳验证准确率 **0.9944**；逐类指标与混淆矩阵见
+`runs/vision/neu_cnn.metrics.json`。注意验证集与训练集同源，不能当成独立外部测试集。
+
+网站内置样例是 `datasets/vision/neu/` 下每类 20 张、共 120 张；
+缺陷接口支持 `{"sample": "neu/crazing_001.jpg"}`，并返回 `ground_truth_class` 与 `match`。
+
+线状缺陷（`crazing`、`scratches`）建议再调用裂纹分割接口做定位；
+其余四类只做类型识别。
 
 ## 4. 接口契约
 
@@ -98,6 +133,11 @@ ManufacturingVision/
 | GET | `/api/vision/records/` | 检测记录列表（`?task_type=` / `?source=` / `?verdict=`） |
 | DELETE | `/api/vision/records/{id}/` | 删除记录，同时清理其输入图与结果图 |
 | GET | `/api/vision/overview/` | 检测次数、裂纹检出率、平均耗时、最近记录 |
+| GET | `/api/vision/algo/status/` | 深度学习依赖、权重与数据集就绪状态 |
+| POST | `/api/vision/algo/deepcrack/` | 直接调用 DeepCrack 分割 |
+| GET/POST | `/api/vision/algo/defect/` | NEU 六类缺陷识别（需权重） |
+| POST | `/api/vision/algo/patchcore/` | PatchCore 无监督异常检测（需 anomalib） |
+| POST | `/api/vision/algo/dataset/` | 把现有数据转成 MVTec-AD 布局 |
 
 请求支持两种模式，二选一：
 
@@ -147,7 +187,12 @@ ManufacturingVision/
 | 裂纹 | `vessel_beta` | 0.6 | Frangi 形状敏感度 |
 | 裂纹 | `min_aspect` | 2.5 | 连通域长宽比下限 |
 | 裂纹 | `score_threshold` | 0.54 | 判定裂纹的得分阈值 |
-| 裂纹 | `mask_dilation` | 2 | 结果掩码膨胀像素数 |
+| 裂纹 | `mask_threshold_ratio` | 0.575 | 掩码相对阈值，相对单图最大脊响应；设为 0 时回退固定阈值 |
+| 裂纹 | `mask_close_kernel` | 3 | 掩码闭运算核尺寸，1 表示关闭 |
+| 裂纹 | `mask_skeleton` | `false` | 是否执行 Zhang-Suen 骨架化 |
+| 裂纹 | `mask_min_aspect` | 2.5 | 掩码细长连通域长宽比下限 |
+| 裂纹 | `mask_border_margin` | 0 | 掩码边界剔除像素数；0 允许裂纹接触图像边缘 |
+| 裂纹 | `mask_dilation` | 3 | 结果掩码膨胀像素数 |
 | 工件 | `min_area` | 300 | 面积过滤下限 |
 | 工件 | `approx_epsilon` | 0.02 | 多边形逼近精度系数 |
 | 工件 | `morph_kernel` | 5 | 形态学核尺寸 |
@@ -159,8 +204,8 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 
 | 参数 | 默认值 | 说明 |
 | --- | --- | --- |
-| `algorithm` | `deepcrack` | 裂纹算法选择：`deepcrack` / `frangi` |
-| `threshold` | 0.5 | 概率图二值化阈值 |
+| `algorithm` | `frangi` | 裂纹算法选择：`frangi`（默认）/ `deepcrack`（需域内权重） |
+| `threshold` | 0.72 | 概率图二值化阈值 |
 | `min_area` | 8 | 连通域最小面积（像素） |
 | `min_coverage` | 0.0002 | 判定为裂纹的最小前景覆盖率 |
 | `max_side` | 512 | 推理前长边缩放上限 |
@@ -199,11 +244,11 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 | 精确率 | 0.7903 | — |
 | 召回率 | 0.8596 | — |
 | F1 | **0.8235** | ≥ 0.80 ✅ |
-| 平均 IoU（像素级定位） | 0.1438 | 参考 |
-| 像素精确率 | 0.5920 | 参考 |
-| 像素召回率 | 0.1540 | 参考 |
-| 召回@3px 容差 | 0.2033 | 参考 |
-| 成功定位裂纹的图片 | 44 / 57 | 参考 |
+| 平均 IoU（像素级定位） | **0.2723** | 参考 |
+| 像素精确率 | 0.3577 | 参考 |
+| 像素召回率 | 0.4911 | 参考 |
+| 召回@3px 容差 | 0.5418 | 参考 |
+| 成功定位裂纹的图片 | 49 / 57 | 参考 |
 
 混淆矩阵：TP=49、FP=13、TN=87、FN=8。
 
@@ -233,7 +278,7 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 | 黑帽 + Otsu + 面积/伸长比 | 0.3631 | 0.5327 | 100 张负样本全部误报，纹理沟槽被当成裂纹 |
 | 局部对比度 + 边界剔除 + 细长筛选 | 0.5924 | 0.5789 | 抑制边界后仍有大量纵向纹理误报 |
 | 多尺度 Frangi 黑脊（仅最大响应） | 0.7962 | 0.7500 | 能区分“细暗线”与“宽弧纹” |
-| **黑脊 + 连通域一致性 + 参数标定** | **0.8662** | **0.8235** | 当前方案（`mask_dilation=2` 后平均 IoU 0.0385→0.1438） |
+| **黑脊 + 连通域一致性 + mask 后处理** | **0.8662** | **0.8235** | 当前方案；全量平均 IoU 0.1438→0.2723，5 组留出均值 0.1621→0.2803 |
 
 ## 8. 前端接入
 
@@ -253,8 +298,8 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 
 ## 9. 已知限制与后续可做
 
-1. 裂纹检测的**定位**指标偏低（平均 IoU 0.14）：黑脊只覆盖裂纹中心线，且部分细微
-   裂纹未定位；如需更高定位精度可换多尺度线检测或加入形态学细化。
+1. 裂纹定位的平均 IoU 已从 0.1438 提升至 0.2723，但仍受漏定位和标注宽度差异
+   限制；当前最优参数未启用骨架化，后续需要更多同域标注验证更复杂的宽度估计。
 2. 参数在 157 张图片上标定，留出集 F1 0.77，说明小样本下存在一定过拟合；
    扩样本或改用交叉验证会更稳。
 3. 工件识别基于合成数据，真实产线图像需要重新标注与验证；`unknown` 分支目前

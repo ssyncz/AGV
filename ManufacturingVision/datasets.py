@@ -7,6 +7,8 @@
     │  ├─ crack/images/*.jpg     # MT_Crack 有裂纹样本（57 张）
     │  ├─ crack/masks/*.png      # 二值真值掩码，非零像素即裂纹
     │  └─ free/images/*.jpg      # MT_Free 无缺陷负样本（抽样 100 张）
+    ├─ neu/*.jpg                 # NEU 六类缺陷网站样例（每类 20 张）
+    │  └─ labels.json            # 样例真值
     └─ workpiece/
        ├─ images/*.png           # 合成几何工件（120 张）
        └─ labels.json            # 合成数据真值标注
@@ -31,17 +33,22 @@ WORKPIECE_ROOT = VISION_DATASET_ROOT / "workpiece"
 WORKPIECE_IMAGE_DIR = WORKPIECE_ROOT / "images"
 WORKPIECE_LABEL_FILE = WORKPIECE_ROOT / "labels.json"
 
+NEU_IMAGE_DIR = VISION_DATASET_ROOT / "neu"
+NEU_LABEL_FILE = NEU_IMAGE_DIR / "labels.json"
+
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 CRACK = "crack"
 FREE = "free"
 WORKPIECE = "workpiece"
-SAMPLE_GROUPS = (CRACK, FREE, WORKPIECE)
+NEU = "neu"
+SAMPLE_GROUPS = (CRACK, FREE, WORKPIECE, NEU)
 
 GROUP_DIRS = {
     CRACK: CRACK_IMAGE_DIR,
     FREE: FREE_IMAGE_DIR,
     WORKPIECE: WORKPIECE_IMAGE_DIR,
+    NEU: NEU_IMAGE_DIR,
 }
 
 
@@ -109,10 +116,23 @@ def load_workpiece_labels() -> dict[str, list[dict]]:
     return {item["file"]: item.get("objects", []) for item in images}
 
 
+def load_neu_labels() -> dict[str, dict]:
+    """读取 NEU 网站样例的真值：{文件名: {"class": ..., "label": ...}}。"""
+    if not NEU_LABEL_FILE.is_file():
+        return {}
+    payload = json.loads(NEU_LABEL_FILE.read_text(encoding="utf-8"))
+    return {
+        item["file"]: {"class": item["class"], "label": item.get("label", "")}
+        for item in payload.get("samples", [])
+        if item.get("file")
+    }
+
+
 def dataset_summary() -> dict[str, int]:
     """数据集规模概览，用于 README、报告与接口。"""
     return {
         CRACK: len(list_samples(CRACK)),
         FREE: len(list_samples(FREE)),
         WORKPIECE: len(list_samples(WORKPIECE)),
+        NEU: len(list_samples(NEU)),
     }

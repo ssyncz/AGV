@@ -1,6 +1,6 @@
 # 视觉数据集说明（datasets/vision）
 
-本目录存放课程任务 4「表面裂纹检测」与任务 5「工件识别」所需的数据，全部由
+本目录存放课程任务 4「表面裂纹检测」、任务 5「工件识别」与 NEU 六类缺陷样例，全部由
 `ManufacturingVision` 应用读取，接口、管理命令与测试统一通过
 `ManufacturingVision/datasets.py` 定位文件。
 
@@ -15,8 +15,23 @@ datasets/vision/
 ├─ workpiece/
 │  ├─ images/wp_*.png         # 合成几何工件，120 张（400×400）
 │  └─ labels.json             # 合成数据的真值标注（类别 / 外接框 / 中心 / 面积）
+├─ neu/                       # NEU 六类缺陷网站样例，每类 20 张
+│  ├─ <class>_001.jpg ...
+│  └─ labels.json             # 样例真值（英文类别 + 中文标签）
 └─ README.md
 ```
+
+## 4. NEU 六类缺陷样例（任务 4 扩展）
+
+- 来源：NEU 热轧带钢表面缺陷数据（NEU-DET），课程组在本地整理为 6 类、每类 300 张的
+  扁平图片集，统一为 200×200。
+- 六类：`crazing`（龟裂）、`inclusion`（夹杂）、`patches`（斑块）、`pitted`（麻点）、
+  `rolled-in`（氧化皮压入）、`scratches`（划痕）。
+- 网站只保留每类 20 张、共 120 张样例，文件名为 `<class>_001.jpg` 形式，真值写在
+  `labels.json`；其余 1680 张原图留在课程组本地，用于训练。
+- 训练清单由 `tools/prepare_neu_samples.py` 生成到 `datasets/neu_split.json`：
+  按类别分层 80/20 切分，固定 `seed=42`，并按 MD5 去掉完全重复的图片。
+- 正式报告需注明数据来源与用途；不要把该子集声称为自己采集。
 
 ## 2. MT 数据集（任务 4）
 

@@ -22,7 +22,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-VISION_DEFAULTS: dict[str, dict[str, float]] = {
+VISION_DEFAULTS: dict[str, dict[str, object]] = {
     "crack": {
         "max_side": 1024,
         "pre_blur_kernel": 3,
@@ -37,7 +37,12 @@ VISION_DEFAULTS: dict[str, dict[str, float]] = {
         "score_threshold": 0.54,
         "border_margin_ratio": 0.015,
         "border_margin_min": 8,
-        "mask_dilation": 2,
+        "mask_threshold_ratio": 0.575,
+        "mask_close_kernel": 3,
+        "mask_skeleton": False,
+        "mask_min_aspect": 2.5,
+        "mask_border_margin": 0,
+        "mask_dilation": 3,
     },
     "workpiece": {
         "blur_diameter": 9,
@@ -113,7 +118,11 @@ def _merged(kind: str, overrides) -> dict:
         params["score_threshold"] = min(max(params["score_threshold"], 0.05), 3.0)
         params["border_margin_ratio"] = min(max(params["border_margin_ratio"], 0.0), 0.1)
         params["border_margin_min"] = max(0, params["border_margin_min"])
-        params["mask_dilation"] = min(max(params["mask_dilation"], 0), 5)
+        params["mask_threshold_ratio"] = min(max(params["mask_threshold_ratio"], 0.0), 1.0)
+        params["mask_close_kernel"] = min(max(params["mask_close_kernel"] | 1, 1), 15)
+        params["mask_min_aspect"] = min(max(params["mask_min_aspect"], 1.0), 10.0)
+        params["mask_border_margin"] = max(0, params["mask_border_margin"])
+        params["mask_dilation"] = min(max(params["mask_dilation"], 0), 8)
     else:
         params["blur_diameter"] = max(3, params["blur_diameter"] | 1)
         params["morph_kernel"] = max(1, params["morph_kernel"])
@@ -224,6 +233,131 @@ def _vesselness_map(gray: np.ndarray, sigmas, beta: float) -> np.ndarray:
     return response
 
 
+def _skeletonize_binary(binary: np.ndarray) -> np.ndarray:
+    """Zhang-Suen 细化为一像素宽中心线，避免额外依赖 scikit-image。"""
+    image = (binary > 0).astype(np.uint8)
+    while True:
+        changed = False
+        for first_pass in (True, False):
+            padded = np.pad(image, 1)
+            p2 = padded[:-2, 1:-1]
+            p3 = padded[:-2, 2:]
+            p4 = padded[1:-1, 2:]
+            p5 = padded[2:, 2:]
+            p6 = padded[2:, 1:-1]
+            p7 = padded[2:, :-2]
+            p8 = padded[1:-1, :-2]
+            p9 = padded[:-2, :-2]
+            neighbors = (p2, p3, p4, p5, p6, p7, p8, p9)
+            neighbor_count = sum(neighbors)
+            transitions = sum(
+                (neighbors[index] == 0) & (neighbors[(index + 1) % 8] == 1)
+                for index in range(8)
+            )
+            if first_pass:
+                condition_a = (p2 * p4 * p6) == 0
+                condition_b = (p4 * p6 * p8) == 0
+            else:
+                condition_a = (p2 * p4 * p8) == 0
+                condition_b = (p2 * p6 * p8) == 0
+            remove = (
+                (image == 1)
+                & (neighbor_count >= 2)
+                & (neighbor_count <= 6)
+                & (transitions == 1)
+                & condition_a
+                & condition_b
+            )
+            if remove.any():
+                image[remove] = 0
+                changed = True
+        if not changed:
+            return image
+
+
+def _long_component_mask(
+    binary: np.ndarray,
+    min_aspect: float,
+    border_margin: int,
+) -> np.ndarray:
+    """保留细长连通域；border_margin=0 时允许裂纹接触图像边缘。"""
+    total, labels, stats, _ = cv2.connectedComponentsWithStats(
+        (binary > 0).astype(np.uint8), 8
+    )
+    height, width = binary.shape[:2]
+    mask = np.zeros_like(binary, dtype=np.uint8)
+    for index in range(1, total):
+        x, y, box_w, box_h, _area = stats[index]
+        if border_margin > 0 and (
+            x <= border_margin
+            or y <= border_margin
+            or x + box_w >= width - border_margin
+            or y + box_h >= height - border_margin
+        ):
+            continue
+        component = labels == index
+        points = np.column_stack(np.nonzero(component))[:, ::-1].astype(np.int32)
+        (_center, (rect_w, rect_h), _angle) = cv2.minAreaRect(points)
+        if max(rect_w, rect_h) / max(min(rect_w, rect_h), 1.0) < min_aspect:
+            continue
+        mask[component] = 1
+    return mask
+
+
+def refine_crack_mask(
+    response: np.ndarray,
+    params=None,
+) -> tuple[np.ndarray, list[list[int]]]:
+    """闭运算 + 骨架化 + 宽度校准，返回细化后的二值掩码与框。
+
+    相对阈值以单图最大脊响应为基准，降低固定阈值在不同光照和对比度下的偏差。
+    设置 ``mask_threshold_ratio=0`` 可回退到固定 ``vessel_threshold``。
+    """
+    resolved = _merged("crack", params)
+    response = np.asarray(response, dtype=np.float32)
+    if response.size == 0:
+        return np.zeros(response.shape, dtype=np.uint8), []
+
+    ratio = float(resolved["mask_threshold_ratio"])
+    threshold = (
+        max(float(response.max()), 1e-9) * ratio
+        if ratio > 0
+        else float(resolved["vessel_threshold"])
+    )
+    binary = (response >= threshold).astype(np.uint8)
+
+    close_size = int(resolved["mask_close_kernel"])
+    if close_size > 1:
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (close_size, close_size))
+        binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+    if bool(resolved["mask_skeleton"]):
+        binary = _skeletonize_binary(binary)
+
+    binary = _long_component_mask(
+        binary,
+        float(resolved["mask_min_aspect"]),
+        int(resolved["mask_border_margin"]),
+    )
+    dilation = int(resolved["mask_dilation"])
+    if dilation > 0:
+        kernel = cv2.getStructuringElement(
+            cv2.MORPH_ELLIPSE, (2 * dilation + 1, 2 * dilation + 1)
+        )
+        binary = cv2.dilate(binary, kernel, iterations=1)
+
+    total, _labels, stats, _ = cv2.connectedComponentsWithStats(binary, 8)
+    boxes = [
+        [
+            int(stats[index, cv2.CC_STAT_LEFT]),
+            int(stats[index, cv2.CC_STAT_TOP]),
+            int(stats[index, cv2.CC_STAT_WIDTH]),
+            int(stats[index, cv2.CC_STAT_HEIGHT]),
+        ]
+        for index in range(1, total)
+    ]
+    return binary, boxes
+
+
 def analyze_crack(image: np.ndarray, params=None) -> dict:
     """多尺度黑脊响应 + 细长线筛选判定裂纹，返回框、掩码与判定结果。"""
     started = time.perf_counter()
@@ -289,22 +423,8 @@ def analyze_crack(image: np.ndarray, params=None) -> dict:
         boxes = []
         mask[:] = 0
     else:
-        dilation = int(resolved["mask_dilation"])
-        if dilation > 0:
-            # 黑脊响应宽度只有 1~2 像素，向外膨胀以贴近人工标注的裂纹宽度
-            kernel = cv2.getStructuringElement(
-                cv2.MORPH_ELLIPSE, (2 * dilation + 1, 2 * dilation + 1)
-            )
-            mask = cv2.dilate(mask, kernel, iterations=1)
-            boxes = [
-                [
-                    max(0, x - dilation),
-                    max(0, y - dilation),
-                    min(width - max(0, x - dilation), box_w + 2 * dilation),
-                    min(height - max(0, y - dilation), box_h + 2 * dilation),
-                ]
-                for x, y, box_w, box_h in boxes
-            ]
+        mask, boxes = refine_crack_mask(response, resolved)
+        mask = mask.astype(np.uint8) * 255
         if scale != 1.0:
             mask = cv2.resize(mask, (original_w, original_h), interpolation=cv2.INTER_NEAREST)
             boxes = [

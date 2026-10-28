@@ -102,7 +102,9 @@ class CrackDetectView(APIView):
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        algorithm = str(params.get("algorithm", "deepcrack")).strip().lower()
+        # 默认用 Frangi：官方 DeepCrack 权重在 MT 磁瓦域泛化较差（实测 F1 0.56 vs 0.82），
+        # 域内微调权重放好后，前端可显式切换到 deepcrack。
+        algorithm = str(params.get("algorithm", "frangi")).strip().lower()
         use_deepcrack = algorithm in {"deepcrack", "supervised", "dl"}
         fallback = False
         if use_deepcrack:

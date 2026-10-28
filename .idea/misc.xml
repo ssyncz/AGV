@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="pmp" />
+    <option name="sdkName" value="Python 3.11 (AGV)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="pmp" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (AGV)" project-jdk-type="Python SDK" />
 </project>

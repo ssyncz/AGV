@@ -4,6 +4,7 @@
 与「裂纹分割」互补：先判类型，再对线状类（crazing / scratches）做分割定位。
 模型：小型 CNN（64×64 灰度，25 轮，测试准确率 0.989）。
 """
+import json
 import os
 
 import cv2
@@ -80,13 +81,26 @@ def available():
 
 
 def status():
+    weights = find_weights()
+    metrics = None
+    if weights:
+        metrics_path = os.path.splitext(weights)[0] + ".metrics.json"
+        if os.path.isfile(metrics_path):
+            try:
+                with open(metrics_path, encoding="utf-8") as handle:
+                    metrics = json.load(handle)
+            except (OSError, ValueError):
+                metrics = None
     return {
         "available": available(),
-        "weights": find_weights(),
+        "weights": weights,
         "classes": CLASSES,
         "class_labels": CLASS_LABELS,
         "model": "SmallCNN(64x64, 3 conv blocks)",
-        "test_accuracy": 0.9889,
+        "test_accuracy": (metrics or {}).get("best_val_accuracy"),
+        "train_samples": (metrics or {}).get("train_samples"),
+        "val_samples": (metrics or {}).get("val_samples"),
+        "metrics": metrics,
     }
 
 

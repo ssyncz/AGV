@@ -10,6 +10,7 @@ from .services import (
     get_model_bundle,
     load_dataset_records,
 )
+from .services_algo import pyod_available
 
 
 class EquipmentServiceTests(TestCase):
@@ -85,6 +86,11 @@ class EquipmentApiTests(TestCase):
 
 class MultiDatasetDiagnoseTests(TestCase):
     """回归：NASA / Figshare 等多特征数据集不再 500，且特征数与异常基准同源。"""
+
+    def setUp(self):
+        # pyod 是可选依赖：服务层在缺失时会优雅降级，测试不应因此判为失败。
+        if not pyod_available():
+            self.skipTest("pyod 未安装，异常基准不可用（服务层已降级）")
 
     def test_nasa_milling_diagnose_matches_feature_count(self):
         bundle = get_model_bundle("nasa_milling")

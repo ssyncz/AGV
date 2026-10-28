@@ -7,24 +7,48 @@ async function request(path, options = {}) {
   if (!isFormData) {
     headers['Content-Type'] = 'application/json'
   }
-  const response = await fetch(`${API_BASE}${path}`, { headers, ...rest })
+  let response
+  try {
+    response = await fetch(`${API_BASE}${path}`, { headers, ...rest })
+  } catch (err) {
+    throw new Error(`无法连接后端服务：${err.message}`)
+  }
   const text = await response.text()
   let data = null
+  let nonJson = false
   if (text) {
     try {
       data = JSON.parse(text)
     } catch {
-      data = { detail: text.slice(0, 180) }
+      // 后端 500 在 DEBUG 下会返回整页 HTML；只在控制台保留原文，不要把源码塞进提示条。
+      nonJson = true
+      console.error(`[api] ${path} 返回了非 JSON 内容（HTTP ${response.status}）:`,
+        text.slice(0, 2000))
     }
   }
   if (!response.ok) {
-    throw new Error(data?.detail || data?.message || `请求失败 (${response.status})`)
+    const fallback = response.status >= 500
+      ? `服务器内部错误（HTTP ${response.status}），详情见浏览器控制台与后端日志`
+      : `请求失败（HTTP ${response.status}）`
+    throw new Error(detailOf(data) || fallback)
+  }
+  if (nonJson) {
+    throw new Error('后端返回的不是 JSON，请检查接口地址与后端日志')
   }
   return data
 }
 
 function unwrap(data) {
   return Array.isArray(data) ? data : (data?.results || [])
+}
+
+// DRF 的 detail 有时是字符串，有时是字段校验对象或数组，统一转成可读文本。
+function detailOf(data) {
+  const detail = data?.detail ?? data?.message
+  if (typeof detail === 'string') return detail
+  if (Array.isArray(detail)) return detail.map((item) => String(item)).join('；')
+  if (detail && typeof detail === 'object') return JSON.stringify(detail)
+  return ''
 }
 
 function postVision(path, payload) {
@@ -53,6 +77,7 @@ export const api = {
 
   // --- 视觉检测（ManufacturingVision，任务 4/5）---
   visionOverview: () => request('/vision/overview/'),
+  visionAlgoStatus: () => request('/vision/algo/status/'),
   visionSamples: () => request('/vision/samples/'),
   visionCrack: (payload) => postVision('/vision/crack/', payload),
   visionDefect: (payload) => postVision('/vision/algo/defect/', payload),

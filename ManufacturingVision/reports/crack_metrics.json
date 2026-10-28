@@ -17,11 +17,11 @@
   "f1": 0.8235,
   "localization": {
     "crack_images": 57,
-    "localized_images": 44,
-    "mean_iou": 0.1438,
-    "mean_pixel_precision": 0.592,
-    "mean_pixel_recall": 0.154,
-    "mean_recall_tol3": 0.2033,
+    "localized_images": 49,
+    "mean_iou": 0.2723,
+    "mean_pixel_precision": 0.3577,
+    "mean_pixel_recall": 0.4911,
+    "mean_recall_tol3": 0.5418,
     "note": "定位指标在全部 MT_Crack 图像上统计；未判定或未定位的图像按 0 计入。"
   },
   "targets": {

@@ -26,6 +26,7 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from . import datasets
 from .services_supervised import segment_crack, status as deepcrack_status
 from .services_defect import classify_defect, status as defect_status
 from .services_algo import (
@@ -89,6 +90,7 @@ class AlgoStatusView(APIView):
         return Response({
             "anomalib": anomalib_available(),
             "deepcrack": deepcrack_status(),
+            "defect": defect_status(),
             "dataset": {k: len(v) for k, v in paths.items()},
             "install": "pip install -e ./vendor/anomalib",
         })
@@ -187,7 +189,7 @@ class DefectClassifyView(APIView):
         from .views import _resolve_input
 
         try:
-            image, _source, _name = _resolve_input(request)
+            image, source, name = _resolve_input(request)
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -207,4 +209,12 @@ class DefectClassifyView(APIView):
             "width": int(image.shape[1]),
             "height": int(image.shape[0]),
         })
+        if str(source) == "dataset" and str(name).startswith("neu/"):
+            truth = datasets.load_neu_labels().get(os.path.basename(str(name)))
+            if truth:
+                result.update({
+                    "ground_truth_class": truth["class"],
+                    "ground_truth_label": truth["label"],
+                    "match": result.get("predicted_class") == truth["class"],
+                })
         return Response(result)

@@ -29,7 +29,7 @@ const tabs = [
   { key: 'map', label: '地图监控', icon: '◎', subtitle: '仓库拓扑、AGV 位置与实时规划路线' },
   { key: 'tasks', label: '运输任务', icon: '◇', subtitle: '任务全生命周期与执行状态管理' },
   { key: 'agvs', label: 'AGV 管理', icon: '▣', subtitle: '车辆状态、电量、载重和位置管理' },
-  { key: 'vision', label: '视觉检测', icon: '◍', subtitle: '表面裂纹检测与工件识别（OpenCV 传统算法）' },
+  { key: 'vision', label: '视觉检测', icon: '◍', subtitle: '裂纹检测、缺陷分类与工件识别（OpenCV + PyTorch）' },
   { key: 'equipment', label: '设备监测', icon: '◈', subtitle: '多变量传感器状态分类、磨损识别与规则告警' },
   { key: 'forecast', label: '订单预测', icon: '◒', subtitle: '订单需求时间序列回测与未来预测' },
 ]
