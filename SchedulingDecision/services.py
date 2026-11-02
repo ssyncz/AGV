@@ -11,7 +11,15 @@ from typing import Iterable
 from django.db import transaction
 from django.utils import timezone
 
-from .models import AGV, DispatchRecord, MapEdge, MapNode, ScheduleRun, TransportTask
+from .models import (
+    AGV,
+    DispatchRecord,
+    MapEdge,
+    MapNode,
+    ProductionPlan,
+    ScheduleRun,
+    TransportTask,
+)
 
 # 单机多任务顺序优化的精确 DP 只在小规模下启用（指数复杂度）。
 # 主链路（多 AGV 调度）用的是「最优插入 + VND」，不依赖这里；
@@ -28,6 +36,7 @@ DEFAULT_AGV_WEIGHT = 30.0
 DEFAULT_WAIT_WEIGHT = 0.20
 DEFAULT_DISTANCE_WEIGHT = 0.005
 DEFAULT_PRIORITY_WEIGHT = 0.02
+DEFAULT_TARDINESS_WEIGHT = 5.0
 
 
 class SchedulingError(Exception):
@@ -52,7 +61,12 @@ class TaskPlan:
     route: dict
     distance: float
     wait_seconds: float
+    release_wait_seconds: float
     duration_seconds: float
+    release_time: datetime | None
+    due_time: datetime | None
+    tardiness_seconds: float
+    is_late: bool
 
 
 @dataclass
@@ -63,6 +77,10 @@ class ScheduleEvaluation:
     total_completion_seconds: float = 0.0
     total_distance: float = 0.0
     total_wait_seconds: float = 0.0
+    total_release_wait_seconds: float = 0.0
+    total_tardiness_seconds: float = 0.0
+    late_task_count: int = 0
+    on_time_rate: float = 100.0
     used_agvs: int = 0
     assignments: dict[int, int] = field(default_factory=dict)
     orders: dict[int, list[int]] = field(default_factory=dict)
@@ -316,6 +334,8 @@ def evaluate_solution(
     wait_weight = weights.get("wait_weight", DEFAULT_WAIT_WEIGHT)
     distance_weight = weights.get("distance_weight", DEFAULT_DISTANCE_WEIGHT)
     priority_weight = weights.get("priority_weight", DEFAULT_PRIORITY_WEIGHT)
+    tardiness_weight = weights.get("tardiness_weight", DEFAULT_TARDINESS_WEIGHT)
+    enforce_deadlines = bool(weights.get("enforce_deadlines", False))
 
     agv_map = {agv.id: agv for agv in agvs}
     reservations: dict[int, list[dict]] = {}
@@ -336,6 +356,7 @@ def evaluate_solution(
         cursor = now
         agv_distance = 0.0
         agv_wait = 0.0
+        agv_release_wait = 0.0
         agv_plans: list[int] = []
         battery_remaining = agv.battery_percent
 
@@ -347,9 +368,12 @@ def evaluate_solution(
                 return ScheduleEvaluation(
                     False, message=f"{agv.code} 状态、电量或载重不满足 {task.task_no}。"
                 )
+            release_time = task.release_at
+            planned_start = max(cursor, release_time) if release_time else cursor
+            release_wait = max(0.0, (planned_start - cursor).total_seconds())
             try:
                 route, finish, reservations, distance, wait_seconds = _plan_task_route(
-                    agv, task, router, cursor, reservations, current_node
+                    agv, task, router, planned_start, reservations, current_node
                 )
             except SchedulingError as exc:
                 return ScheduleEvaluation(False, message=str(exc))
@@ -360,24 +384,35 @@ def evaluate_solution(
                     False, message=f"{agv.code} 执行该任务序列后电量不足。"
                 )
 
+            tardiness = (
+                max(0.0, (finish - task.due_at).total_seconds())
+                if task.due_at
+                else 0.0
+            )
             plans[task_id] = TaskPlan(
                 task_id=task.id,
                 task_no=task.task_no,
                 agv_id=agv.id,
                 agv_code=agv.code,
                 sequence_number=sequence_index,
-                start_time=cursor,
+                start_time=planned_start,
                 end_time=finish,
                 route=route,
                 distance=round(distance, 3),
                 wait_seconds=round(wait_seconds, 3),
-                duration_seconds=round((finish - cursor).total_seconds(), 3),
+                release_wait_seconds=round(release_wait, 3),
+                duration_seconds=round((finish - planned_start).total_seconds(), 3),
+                release_time=release_time,
+                due_time=task.due_at,
+                tardiness_seconds=round(tardiness, 3),
+                is_late=tardiness > 0,
             )
             assignments[task_id] = agv.id
             flattened.append(task_id)
             agv_plans.append(task_id)
             agv_distance += distance
             agv_wait += wait_seconds
+            agv_release_wait += release_wait
             current_node = task.dropoff_node_id
             cursor = finish
 
@@ -389,6 +424,7 @@ def evaluate_solution(
             "end_time": cursor,
             "distance": round(agv_distance, 3),
             "wait_seconds": round(agv_wait, 3),
+            "release_wait_seconds": round(agv_release_wait, 3),
             "battery_remaining": round(battery_remaining, 2),
         }
 
@@ -402,6 +438,12 @@ def evaluate_solution(
     total_completion = sum((plan.end_time - now).total_seconds() for plan in plans.values())
     total_distance = sum(plan.distance for plan in plans.values())
     total_wait = sum(plan.wait_seconds for plan in plans.values())
+    total_release_wait = sum(plan.release_wait_seconds for plan in plans.values())
+    total_tardiness = sum(plan.tardiness_seconds for plan in plans.values())
+    late_task_count = sum(1 for plan in plans.values() if plan.is_late)
+    on_time_rate = (
+        round((len(plans) - late_task_count) / len(plans) * 100, 2) if plans else 100.0
+    )
     used_agvs = len(agv_summary)
     weighted_completion = sum(
         (plan.end_time - now).total_seconds() * tasks[task_id].priority
@@ -413,7 +455,16 @@ def evaluate_solution(
         + wait_weight * total_wait
         + distance_weight * total_distance
         + priority_weight * weighted_completion
+        + tardiness_weight * total_tardiness
     )
+    if enforce_deadlines and late_task_count and not allow_partial:
+        late_tasks = [plan.task_no for plan in plans.values() if plan.is_late]
+        preview = ", ".join(late_tasks[:5])
+        suffix = "..." if len(late_tasks) > 5 else ""
+        return ScheduleEvaluation(
+            False,
+            message=f"硬交期约束不满足，{late_task_count} 个任务将拖期：{preview}{suffix}",
+        )
     return ScheduleEvaluation(
         feasible=True,
         objective=round(objective, 4),
@@ -421,6 +472,10 @@ def evaluate_solution(
         total_completion_seconds=round(total_completion, 3),
         total_distance=round(total_distance, 3),
         total_wait_seconds=round(total_wait, 3),
+        total_release_wait_seconds=round(total_release_wait, 3),
+        total_tardiness_seconds=round(total_tardiness, 3),
+        late_task_count=late_task_count,
+        on_time_rate=on_time_rate,
         used_agvs=used_agvs,
         assignments=assignments,
         orders={agv_id: list(order) for agv_id, order in orders.items() if order},
@@ -535,7 +590,17 @@ def optimize_single_order(
     return _two_opt_single_order(router, agv, tasks, order)
 
 def _ordered_tasks(tasks: Iterable[TransportTask]) -> list[TransportTask]:
-    return sorted(tasks, key=lambda item: (-item.priority, item.created_at, item.id))
+    """优先处理交期更早的任务，其次按业务优先级和创建时间排序。"""
+    return sorted(
+        tasks,
+        key=lambda item: (
+            item.due_at is None,
+            item.due_at or item.created_at,
+            -item.priority,
+            item.created_at,
+            item.id,
+        ),
+    )
 
 
 def build_baseline_solution(
@@ -778,6 +843,7 @@ def optimize_single_solution(
     weights["agv_weight"] = 0
     best = None
     best_baseline = ScheduleEvaluation(False)
+    last_message = ""
     iterations = 0
 
     for agv in agvs:
@@ -788,6 +854,7 @@ def optimize_single_solution(
             task_map, [agv], {agv.id: optimized_order}, router, now, weights
         )
         if not evaluation.feasible:
+            last_message = evaluation.message or last_message
             continue
         selection_score = evaluation.objective + (100 - agv.battery_percent) * 0.25
         iterations += max(1, len(tasks) * len(tasks))
@@ -800,7 +867,11 @@ def optimize_single_solution(
             best_baseline = baseline
 
     if best is None:
-        return ScheduleEvaluation(False), ScheduleEvaluation(False), iterations
+        return (
+            ScheduleEvaluation(False, message=last_message or "没有可行的单台 AGV 调度方案。"),
+            ScheduleEvaluation(False),
+            iterations,
+        )
     return best["evaluation"], best_baseline, iterations
 
 
@@ -847,6 +918,10 @@ def _evaluation_payload(evaluation: ScheduleEvaluation) -> dict:
         "total_completion_seconds": evaluation.total_completion_seconds,
         "total_distance": evaluation.total_distance,
         "total_wait_seconds": evaluation.total_wait_seconds,
+        "total_release_wait_seconds": evaluation.total_release_wait_seconds,
+        "total_tardiness_seconds": evaluation.total_tardiness_seconds,
+        "late_task_count": evaluation.late_task_count,
+        "on_time_rate": evaluation.on_time_rate,
         "used_agvs": evaluation.used_agvs,
         "agv_summary": [
             {
@@ -868,6 +943,11 @@ def _evaluation_payload(evaluation: ScheduleEvaluation) -> dict:
                 "duration_seconds": plan.duration_seconds,
                 "distance": plan.distance,
                 "wait_seconds": plan.wait_seconds,
+                "release_wait_seconds": plan.release_wait_seconds,
+                "release_time": plan.release_time.isoformat() if plan.release_time else None,
+                "due_time": plan.due_time.isoformat() if plan.due_time else None,
+                "tardiness_seconds": plan.tardiness_seconds,
+                "is_late": plan.is_late,
             }
             for plan in evaluation.plans.values()
         ],
@@ -881,6 +961,7 @@ def _persist_schedule(
     algorithm: str,
     objective_name: str,
     iteration_count: int,
+    production_plan: ProductionPlan | None = None,
 ) -> ScheduleRun:
     improvement = 0.0
     baseline_makespan = baseline.makespan_seconds if baseline.feasible else 0.0
@@ -897,11 +978,13 @@ def _persist_schedule(
             "end_time": summary["end_time"].isoformat(),
             "distance": summary["distance"],
             "wait_seconds": summary["wait_seconds"],
+            "release_wait_seconds": summary["release_wait_seconds"],
             "battery_remaining": summary["battery_remaining"],
         }
         for summary in evaluation.agv_summary.values()
     }
     run = ScheduleRun.objects.create(
+        production_plan=production_plan,
         algorithm=algorithm,
         objective_name=objective_name,
         task_count=len(tasks),
@@ -909,6 +992,9 @@ def _persist_schedule(
         makespan_seconds=evaluation.makespan_seconds,
         total_distance=evaluation.total_distance,
         total_wait_seconds=evaluation.total_wait_seconds,
+        total_tardiness_seconds=evaluation.total_tardiness_seconds,
+        late_task_count=evaluation.late_task_count,
+        on_time_rate=evaluation.on_time_rate,
         iteration_count=iteration_count,
         baseline_makespan_seconds=baseline_makespan,
         improvement_percent=improvement,
@@ -916,6 +1002,10 @@ def _persist_schedule(
         metrics={
             "objective": evaluation.objective,
             "total_completion_seconds": evaluation.total_completion_seconds,
+            "total_release_wait_seconds": evaluation.total_release_wait_seconds,
+            "total_tardiness_seconds": evaluation.total_tardiness_seconds,
+            "late_task_count": evaluation.late_task_count,
+            "on_time_rate": evaluation.on_time_rate,
             "baseline_objective": baseline.objective if baseline.feasible else None,
             "baseline_makespan_seconds": baseline_makespan if baseline.feasible else None,
             "algorithm": algorithm,
@@ -923,11 +1013,61 @@ def _persist_schedule(
     )
 
     active_agv_ids = set()
+    from django.db.models import Max
+
+    task_ids = [task.id for task in tasks]
+    work_order_ids = {
+        task.work_order_id for task in tasks if task.work_order_id is not None
+    }
+    plan_ids = {
+        task.production_plan_id
+        for task in tasks
+        if task.production_plan_id is not None and task.work_order_id is None
+    }
+    offsets = {}
+    for work_order_id in work_order_ids:
+        maximum = (
+            TransportTask.objects.filter(work_order_id=work_order_id)
+            .exclude(id__in=task_ids)
+            .aggregate(value=Max("dispatch_order"))["value"]
+            or 0
+        )
+        offsets[("work_order", work_order_id)] = maximum
+    for plan_id in plan_ids:
+        maximum = (
+            TransportTask.objects.filter(production_plan_id=plan_id)
+            .exclude(id__in=task_ids)
+            .aggregate(value=Max("dispatch_order"))["value"]
+            or 0
+        )
+        offsets[("plan", plan_id)] = maximum
+
+    counters = dict(offsets)
+    dispatch_orders = {}
+    task_map = {task.id: task for task in tasks}
+    for task_id in sorted(
+        evaluation.plans,
+        key=lambda item: (
+            evaluation.plans[item].start_time,
+            evaluation.plans[item].agv_code,
+            evaluation.plans[item].sequence_number,
+            item,
+        ),
+    ):
+        task = task_map[task_id]
+        scope = (
+            ("work_order", task.work_order_id)
+            if task.work_order_id is not None
+            else ("plan", task.production_plan_id)
+        )
+        counters[scope] = counters.get(scope, 0) + 1
+        dispatch_orders[task_id] = counters[scope]
     for task in tasks:
         plan = evaluation.plans[task.id]
         task.assigned_agv_id = plan.agv_id
         task.schedule_run = run
         task.sequence_number = plan.sequence_number
+        task.dispatch_order = dispatch_orders[task.id]
         task.planned_wait_seconds = plan.wait_seconds
         task.optimization_details = {
             "objective": evaluation.objective,
@@ -935,6 +1075,9 @@ def _persist_schedule(
             "baseline_makespan_seconds": baseline_makespan,
             "improvement_percent": improvement,
             "algorithm": algorithm,
+            "total_tardiness_seconds": evaluation.total_tardiness_seconds,
+            "late_task_count": evaluation.late_task_count,
+            "on_time_rate": evaluation.on_time_rate,
         }
         task.status = TransportTask.Status.ASSIGNED
         task.route = plan.route
@@ -947,10 +1090,11 @@ def _persist_schedule(
         task.notes = (
             f"{run.get_algorithm_display()}：{plan.agv_code} 第 {plan.sequence_number} 项"
             + (f"，避碰等待 {plan.wait_seconds:.1f}s" if plan.wait_seconds > 0 else "")
+            + (f"，拖期 {plan.tardiness_seconds:.1f}s" if plan.is_late else "")
         )
         task.save(
             update_fields=[
-                "assigned_agv", "schedule_run", "sequence_number", "planned_wait_seconds",
+                "assigned_agv", "schedule_run", "sequence_number", "dispatch_order", "planned_wait_seconds",
                 "optimization_details", "status", "route", "total_distance",
                 "estimated_duration", "scheduled_start", "scheduled_end", "started_at",
                 "completed_at", "notes", "updated_at",
@@ -973,12 +1117,18 @@ def _persist_schedule(
         active_agv_ids.add(plan.agv_id)
 
     AGV.objects.filter(id__in=active_agv_ids).update(status=AGV.Status.BUSY)
+    if production_plan is not None:
+        ProductionPlan.objects.filter(pk=production_plan.pk).update(
+            status=ProductionPlan.Status.SCHEDULED
+        )
     return run
 
 def dispatch_single_sequence(
     task_ids: list[int],
     agv_id: int | None = None,
     weights: dict[str, float] | None = None,
+    production_plan_id: int | None = None,
+    strict_deadlines: bool = False,
 ) -> dict:
     """单台 AGV 多任务调度：选择 AGV 并优化所有任务执行顺序。"""
     if not task_ids:
@@ -986,6 +1136,13 @@ def dispatch_single_sequence(
     if len(set(task_ids)) != len(task_ids):
         raise SchedulingError("任务列表中不能包含重复任务。")
     with transaction.atomic():
+        production_plan = None
+        if production_plan_id is not None:
+            production_plan = ProductionPlan.objects.select_for_update().filter(
+                pk=production_plan_id
+            ).first()
+            if production_plan is None:
+                raise SchedulingError("生产计划不存在。")
         tasks_by_id = {
             task.id: task
             for task in TransportTask.objects.select_for_update()
@@ -999,6 +1156,10 @@ def dispatch_single_sequence(
         invalid = [task.task_no for task in tasks if task.status != TransportTask.Status.PENDING]
         if invalid:
             raise SchedulingError(f"仅待调度任务可参与优化：{', '.join(invalid)}")
+        if production_plan is not None and any(
+            task.production_plan_id != production_plan.id for task in tasks
+        ):
+            raise SchedulingError("所选任务不属于指定生产计划。")
 
         agvs_query = AGV.objects.select_for_update().select_related("current_node").filter(
             status=AGV.Status.IDLE
@@ -1011,19 +1172,35 @@ def dispatch_single_sequence(
 
         now = timezone.now()
         router = GraphRouter(build_graph())
+        weights = dict(weights or {})
+        if strict_deadlines:
+            weights["enforce_deadlines"] = True
         evaluation, baseline, iterations = optimize_single_solution(
             tasks, agvs, router, now, weights
         )
         if not evaluation.feasible:
             raise SchedulingError(evaluation.message or "单台 AGV 顺序优化失败。")
+        if strict_deadlines and evaluation.late_task_count:
+            raise SchedulingError(
+                f"硬交期约束不满足，{evaluation.late_task_count} 个任务将拖期。"
+            )
         run = _persist_schedule(
             evaluation=evaluation,
             baseline=baseline,
             tasks=tasks,
             algorithm=ScheduleRun.Algorithm.SINGLE_SEQUENCE,
-            objective_name="最小化总搬运时间与路径长度",
+            objective_name="最小化完工时间、路径长度与交期拖期",
             iteration_count=iterations,
+            production_plan=production_plan,
         )
+        from Operations.services import record_task_event
+
+        for task in tasks:
+            record_task_event(
+                task,
+                "task.scheduled",
+                f"运输任务 {task.task_no} 已完成调度分配",
+            )
         agv_code = evaluation.plans[tasks[0].id].agv_code
         message = (
             f"单台 AGV 顺序优化完成：{agv_code} 执行 {len(tasks)} 个任务，"
@@ -1049,14 +1226,25 @@ def dispatch_batch(
     task_ids: list[int] | None = None,
     limit: int = 30,
     weights: dict[str, float] | None = None,
+    production_plan_id: int | None = None,
+    strict_deadlines: bool = False,
 ) -> dict:
     """多台 AGV 联合优化：任务分配、车辆内顺序和避碰时间窗统一求解。"""
     if task_ids and len(set(task_ids)) != len(task_ids):
         raise SchedulingError("任务列表中不能包含重复任务。")
     with transaction.atomic():
+        production_plan = None
+        if production_plan_id is not None:
+            production_plan = ProductionPlan.objects.select_for_update().filter(
+                pk=production_plan_id
+            ).first()
+            if production_plan is None:
+                raise SchedulingError("生产计划不存在。")
         query = TransportTask.objects.select_for_update().select_related(
             "pickup_node", "dropoff_node"
         ).filter(status=TransportTask.Status.PENDING)
+        if production_plan is not None:
+            query = query.filter(production_plan=production_plan)
         if task_ids:
             query = query.filter(id__in=task_ids)
         tasks = list(query.order_by("-priority", "created_at")[:limit])
@@ -1074,20 +1262,36 @@ def dispatch_batch(
 
         now = timezone.now()
         router = GraphRouter(build_graph())
+        weights = dict(weights or {})
+        if strict_deadlines:
+            weights["enforce_deadlines"] = True
         evaluation, baseline, iterations = optimize_multi_solution(
             tasks, agvs, router, now, weights
         )
         if not evaluation.feasible:
             raise SchedulingError(evaluation.message or "多台 AGV 联合优化失败。")
+        if strict_deadlines and evaluation.late_task_count:
+            raise SchedulingError(
+                f"硬交期约束不满足，{evaluation.late_task_count} 个任务将拖期。"
+            )
 
         run = _persist_schedule(
             evaluation=evaluation,
             baseline=baseline,
             tasks=tasks,
             algorithm=ScheduleRun.Algorithm.MULTI_VNS,
-            objective_name="最小化完工时间、AGV 数量、优先级加权完成时间与避碰等待",
+            objective_name="最小化完工时间、AGV 数量、优先级、避碰等待与交期拖期",
             iteration_count=iterations,
+            production_plan=production_plan,
         )
+        from Operations.services import record_task_event
+
+        for task in tasks:
+            record_task_event(
+                task,
+                "task.scheduled",
+                f"运输任务 {task.task_no} 已纳入批量联合调度",
+            )
         message = (
             f"多台 AGV 联合优化完成：{len(tasks)} 个任务，"
             f"使用 {evaluation.used_agvs} 台 AGV，"
@@ -1120,10 +1324,18 @@ def start_task(task_id: int) -> TransportTask:
             ).exclude(status__in=[TransportTask.Status.COMPLETED, TransportTask.Status.CANCELLED])
             if previous_pending.exists():
                 raise SchedulingError("存在未完成的前序任务，请按优化顺序执行。")
+        now = timezone.now()
+        if task.release_at and now < task.release_at:
+            raise SchedulingError(
+                f"任务尚未到释放时间 {timezone.localtime(task.release_at).isoformat()}。"
+            )
         task.status = TransportTask.Status.IN_PROGRESS
-        task.started_at = timezone.now()
+        task.started_at = now
         task.save(update_fields=["status", "started_at", "updated_at"])
         AGV.objects.filter(pk=task.assigned_agv_id).update(status=AGV.Status.BUSY)
+        from Operations.services import sync_work_order_after_task_start
+
+        sync_work_order_after_task_start(task)
     return task
 
 
@@ -1154,6 +1366,22 @@ def complete_task(task_id: int) -> TransportTask:
         task.status = TransportTask.Status.COMPLETED
         task.completed_at = timezone.now()
         task.save(update_fields=["status", "completed_at", "updated_at"])
+        if task.production_plan_id:
+            has_active = TransportTask.objects.filter(
+                production_plan_id=task.production_plan_id,
+                status__in=[
+                    TransportTask.Status.PENDING,
+                    TransportTask.Status.ASSIGNED,
+                    TransportTask.Status.IN_PROGRESS,
+                ],
+            ).exists()
+            if not has_active:
+                ProductionPlan.objects.filter(pk=task.production_plan_id).update(
+                    status=ProductionPlan.Status.COMPLETED
+                )
+        from Operations.services import sync_work_order_after_task_complete
+
+        sync_work_order_after_task_complete(task)
     return task
 
 
@@ -1179,6 +1407,13 @@ def cancel_task(task_id: int) -> TransportTask:
             ).exists()
             if not has_more:
                 AGV.objects.filter(pk=old_agv_id).update(status=AGV.Status.IDLE)
+        from Operations.services import record_task_event
+
+        record_task_event(
+            task,
+            "task.cancelled",
+            f"运输任务 {task.task_no} 已取消",
+        )
     return task
 
 def plan_shortest_path(

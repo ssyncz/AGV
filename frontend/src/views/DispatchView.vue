@@ -18,7 +18,11 @@ const singleSelection = ref([])
 const batchSelection = ref([])
 const singleAgvId = ref('')
 const agvWeight = ref(30)
-const newTask = reactive({ pickup_node: '', dropoff_node: '', cargo_name: '', cargo_weight: 30, priority: 2 })
+const strictDeadlines = ref(false)
+const newTask = reactive({
+  pickup_node: '', dropoff_node: '', cargo_name: '', cargo_weight: 30,
+  priority: 2, release_at: '', due_at: '',
+})
 const busy = reactive({ single: false, batch: false, create: false })
 const result = ref(null)
 const resultMode = ref('')
@@ -39,6 +43,7 @@ async function runSingle() {
     const data = await api.singleDispatch({
       task_ids: singleSelection.value,
       agv_id: singleAgvId.value ? Number(singleAgvId.value) : null,
+      strict_deadlines: strictDeadlines.value,
     })
     result.value = data
     resultMode.value = 'single'
@@ -58,6 +63,7 @@ async function runBatch() {
     const data = await api.batchDispatch({
       task_ids: batchSelection.value.length ? batchSelection.value : null,
       weights: { agv_weight: Number(agvWeight.value) },
+      strict_deadlines: strictDeadlines.value,
     })
     result.value = data
     resultMode.value = 'batch'
@@ -75,17 +81,25 @@ async function createTask() {
     return notify('请完整填写任务信息', 'error')
   }
   if (newTask.pickup_node === newTask.dropoff_node) return notify('取货点和放货点不能相同', 'error')
+  if (newTask.release_at && newTask.due_at && new Date(newTask.release_at) >= new Date(newTask.due_at)) {
+    return notify('要求完成时间必须晚于最早释放时间', 'error')
+  }
   busy.create = true
   try {
     await api.createTask({
       ...newTask,
+      release_at: newTask.release_at ? new Date(newTask.release_at).toISOString() : null,
+      due_at: newTask.due_at ? new Date(newTask.due_at).toISOString() : null,
       cargo_weight: Number(newTask.cargo_weight),
       priority: Number(newTask.priority),
       pickup_node: Number(newTask.pickup_node),
       dropoff_node: Number(newTask.dropoff_node),
     })
     notify('任务创建成功')
-    Object.assign(newTask, { pickup_node: '', dropoff_node: '', cargo_name: '', cargo_weight: 30, priority: 2 })
+    Object.assign(newTask, {
+      pickup_node: '', dropoff_node: '', cargo_name: '', cargo_weight: 30,
+      priority: 2, release_at: '', due_at: '',
+    })
     emit('refresh')
   } catch (error) {
     notify(error.message, 'error')
@@ -106,7 +120,7 @@ async function createTask() {
         <div class="task-select-list compact-list">
           <label v-for="task in pendingTasks" :key="task.id" class="task-select-row" :class="{ selected: singleSelection.includes(task.id) }">
             <input v-model="singleSelection" type="checkbox" :value="task.id" />
-            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span></span>
+            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span><span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span></span>
             <span class="tag">{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</span>
             <span :class="`priority-${task.priority}`">P{{ task.priority }}</span>
           </label>
@@ -134,7 +148,7 @@ async function createTask() {
         <div class="task-select-list compact-list">
           <label v-for="task in pendingTasks" :key="task.id" class="task-select-row" :class="{ selected: batchSelection.includes(task.id) }">
             <input v-model="batchSelection" type="checkbox" :value="task.id" />
-            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span></span>
+            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span><span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span></span>
             <span class="tag">{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</span>
             <span :class="`priority-${task.priority}`">P{{ task.priority }}</span>
           </label>
@@ -142,7 +156,7 @@ async function createTask() {
         </div>
         <div class="form-grid mt-16">
           <div class="field"><label>AGV 数量权重</label><input v-model.number="agvWeight" type="number" min="0" max="200" class="input" /></div>
-          <div class="field"><label>调度范围</label><div class="notice info">未勾选时调度全部待处理任务</div></div>
+          <div class="field"><label>交期约束</label><label class="check-inline"><input v-model="strictDeadlines" type="checkbox" /> 硬交期模式：不接受任何拖期</label></div>
         </div>
         <div class="toolbar-row mt-16">
           <span class="muted small">已选择 {{ batchSelection.length }} 个任务 · 权重越高越倾向减少使用车辆</span>
@@ -160,6 +174,8 @@ async function createTask() {
           <div class="field"><label>放货点</label><select v-model="newTask.dropoff_node" class="select"><option value="">请选择</option><option v-for="node in dropoffNodes" :key="node.id" :value="node.id">{{ node.code }} · {{ node.name }}</option></select></div>
           <div class="field"><label>重量 (kg)</label><input v-model.number="newTask.cargo_weight" type="number" min="0.1" step="0.1" class="input" /></div>
           <div class="field"><label>优先级</label><select v-model.number="newTask.priority" class="select"><option :value="1">低</option><option :value="2">普通</option><option :value="3">高</option><option :value="4">紧急</option></select></div>
+          <div class="field"><label>最早释放时间（可选）</label><input v-model="newTask.release_at" type="datetime-local" class="input" /></div>
+          <div class="field"><label>要求完成时间（可选）</label><input v-model="newTask.due_at" type="datetime-local" class="input" /></div>
         </div>
         <button class="btn btn-block mt-16" :disabled="busy.create" @click="createTask">{{ busy.create ? '创建中...' : '创建运输任务' }}</button>
       </div>

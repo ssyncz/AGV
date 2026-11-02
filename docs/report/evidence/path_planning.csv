@@ -1,0 +1,2 @@
+﻿case,source,target,nodes,distance_m,dijkstra_mean_ms,astar_mean_ms,mean_expanded_dijkstra,mean_expanded_astar
+current_map_example,CHARGE,HOME1,19,72.0,0.020434,0.012273,38.5,14.6356

@@ -25,6 +25,29 @@ CSV 或 JSON 序列必须包含：
 | POST | `/api/forecast/predict/` | 上传 CSV、提交序列或使用内置样例预测 |
 | GET | `/api/forecast/runs/` | 历史预测记录 |
 
+## 预测结果进入生产排程
+
+预测记录保存后，可调用调度模块接口把它转换成带释放时间和交期的运输任务：
+
+```json
+POST /api/production-plans/generate/
+{
+  "forecast_run_id": 12,
+  "planning_start_date": "2026-11-03",
+  "tasks_per_order": 0.01,
+  "demand_buffer_percent": 10,
+  "release_lead_hours": 24,
+  "due_hour": 18,
+  "max_tasks": 500,
+  "pickup_node_id": 1,
+  "dropoff_node_id": 20
+}
+```
+
+生成计划后调用 `POST /api/production-plans/{id}/schedule/` 执行多 AGV 联合排程。排程结果会返回准点率、拖期任务数和总拖期；传入 `"strict_deadlines": true` 时，只要存在预计拖期任务就拒绝该方案。
+
+预测序列会按原周期间隔映射到 `planning_start_date`，因此历史数据集也可作为未来场景回放，但报告中应明确标注这是场景生成结果，而非历史真实 AGV 任务。
+
 预测请求示例：
 
 ```json

@@ -177,6 +177,23 @@ class EquipmentDiagnoseView(APIView):
         try:
             records, source, data_source = _records_from_request(request)
             equipment_code = str(request.data.get("equipment_code") or "CNC-01")
+            from Operations.models import WorkOrder
+            from Operations.services import (
+                actor_from_request,
+                ensure_default_site,
+                ensure_equipment,
+                record_equipment_result,
+                trace_id_from_request,
+            )
+
+            work_order = None
+            raw_work_order = request.data.get("work_order_id")
+            if raw_work_order not in (None, "", "null"):
+                try:
+                    work_order = WorkOrder.objects.get(pk=int(raw_work_order))
+                except (TypeError, ValueError, WorkOrder.DoesNotExist) as exc:
+                    raise EquipmentMonitoringError("关联工单不存在。") from exc
+            equipment = ensure_equipment(equipment_code, ensure_default_site())
             # 显式传入优先；否则沿用 _records_from_request 推断出的同源数据集
             data_source = str(request.data.get("data_source") or data_source)
             model_type = str(request.data.get("model_type") or "auto")
@@ -198,6 +215,8 @@ class EquipmentDiagnoseView(APIView):
 
         record = EquipmentDiagnosisRecord.objects.create(
             equipment_code=equipment_code,
+            equipment=equipment,
+            work_order=work_order,
             source=source,
             sample_count=result["sample_count"],
             predicted_state=result["predicted_state"],
@@ -208,10 +227,17 @@ class EquipmentDiagnoseView(APIView):
             series=result["series"],
             model_metrics=result["model_metrics"],
         )
+        record_equipment_result(
+            record,
+            actor=actor_from_request(request),
+            trace_id=trace_id_from_request(request),
+        )
         return Response(
             {
                 "success": True,
                 "record_id": record.id,
+                "work_order_id": work_order.id if work_order else None,
+                "work_order_no": work_order.order_no if work_order else "",
                 **result,
             }
         )
@@ -234,9 +260,14 @@ class EquipmentRecordViewSet(
         return EquipmentDiagnosisRecordSerializer
 
     def get_queryset(self):
-        queryset = EquipmentDiagnosisRecord.objects.all()
+        queryset = EquipmentDiagnosisRecord.objects.select_related(
+            "equipment", "work_order"
+        ).all()
         for field in ("equipment_code", "predicted_state", "source"):
             value = self.request.query_params.get(field)
             if value:
                 queryset = queryset.filter(**{field: value})
+        work_order = self.request.query_params.get("work_order")
+        if work_order:
+            queryset = queryset.filter(work_order_id=work_order)
         return queryset

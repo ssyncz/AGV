@@ -40,6 +40,13 @@ function formatTime(value) {
       <StatCard label="已完成任务" :value="overview.completed_tasks || 0" foot="累计完成运输任务" icon="✓" accent="green" />
     </div>
 
+    <div v-if="overview.overdue_tasks" class="notice warning mb-16">
+      <strong>交期告警：</strong>{{ overview.overdue_tasks }} 个未完成任务已经超过要求完成时间，请优先处理或重新排程。
+    </div>
+    <div v-else-if="overview.due_soon_tasks" class="notice info mb-16">
+      <strong>未来 24 小时：</strong>{{ overview.due_soon_tasks }} 个任务即将到期；当前有 {{ overview.active_production_plans || 0 }} 个生产计划处于活动状态。
+    </div>
+
     <div class="grid dashboard-grid">
       <section class="panel">
         <div class="panel-head">

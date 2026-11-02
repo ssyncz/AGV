@@ -1,8 +1,10 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import { api } from '../api'
 
 const emit = defineEmits(['notify'])
+const route = useRoute()
 
 const MODES = [
   { key: 'crack', label: '表面裂纹检测', groups: ['crack', 'free'] },
@@ -28,6 +30,8 @@ const overview = ref({})
 const algoStatus = ref(null)
 const records = ref([])
 const recordFilter = ref('')
+const workOrders = ref([])
+const selectedWorkOrderId = ref('')
 
 const running = ref(false)
 const loadingRecords = ref(false)
@@ -85,6 +89,7 @@ const previewUrl = computed(() => {
   return api.visionSampleImageUrl(sampleGroup.value, sampleName.value)
 })
 const objects = computed(() => result.value?.objects || [])
+const linkableWorkOrders = computed(() => workOrders.value.filter((item) => !['completed', 'cancelled'].includes(item.status)))
 
 watch(mode, () => {
   sampleGroup.value = groups.value[0]
@@ -165,6 +170,18 @@ async function loadRecords() {
   }
 }
 
+async function loadWorkOrders() {
+  try {
+    workOrders.value = await api.workOrders()
+    const requestedWorkOrder = String(route.query.work_order || '')
+    if (requestedWorkOrder && workOrders.value.some((item) => String(item.id) === requestedWorkOrder)) {
+      selectedWorkOrderId.value = requestedWorkOrder
+    }
+  } catch {
+    workOrders.value = []
+  }
+}
+
 async function runDetect() {
   if (!canRun.value) return notify('请先选择或上传一张图片', 'error')
   running.value = true
@@ -176,8 +193,13 @@ async function runDetect() {
       payload = new FormData()
       payload.append('image', file.value)
       payload.append('params', JSON.stringify(params))
+      if (selectedWorkOrderId.value) payload.append('work_order_id', String(selectedWorkOrderId.value))
     } else {
-      payload = { sample: `${sampleGroup.value}/${sampleName.value}`, params }
+      payload = {
+        sample: `${sampleGroup.value}/${sampleName.value}`,
+        params,
+        work_order_id: selectedWorkOrderId.value || null,
+      }
     }
     if (mode.value === 'defect') {
       result.value = await api.visionDefect(payload)
@@ -186,8 +208,11 @@ async function runDetect() {
         ? await api.visionCrack(payload)
         : await api.visionDetect(payload)
     }
-    notify(`检测完成，用时 ${result.value.elapsed_ms} ms`)
+    notify(result.value.work_order_no
+      ? `检测完成并已关联工单 ${result.value.work_order_no}`
+      : `检测完成，用时 ${result.value.elapsed_ms} ms`)
     await loadOverview()
+    await loadWorkOrders()
     if (records.value.length) await loadRecords()
   } catch (err) {
     error.value = err.message
@@ -218,6 +243,7 @@ onMounted(() => {
   loadSamples()
   loadOverview()
   loadAlgoStatus()
+  loadWorkOrders()
 })
 
 onUnmounted(() => {
@@ -266,6 +292,13 @@ onUnmounted(() => {
                 <select v-model="sourceKind" class="select">
                   <option value="dataset">内置数据集样例</option>
                   <option value="upload">本地上传图片</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label>关联生产工单（可选）</label>
+                <select v-model="selectedWorkOrderId" class="select">
+                  <option value="">不关联工单，仅保存检测记录</option>
+                  <option v-for="order in linkableWorkOrders" :key="order.id" :value="order.id">{{ order.order_no }} · {{ order.title }} · {{ order.status_display }}</option>
                 </select>
               </div>
               <template v-if="sourceKind === 'dataset'">
@@ -507,6 +540,7 @@ onUnmounted(() => {
             <select v-model="recordFilter" class="select" @change="loadRecords">
               <option value="">全部类型</option>
               <option value="crack">裂纹检测</option>
+              <option value="defect">缺陷分类</option>
               <option value="workpiece">工件识别</option>
             </select>
             <button class="btn btn-sm" :disabled="loadingRecords" @click="loadRecords">
@@ -518,22 +552,24 @@ onUnmounted(() => {
         <div class="table-wrap mt-16">
           <table>
             <thead>
-              <tr><th>ID</th><th>类型</th><th>来源</th><th>输入</th><th>判定</th><th>数量</th><th>耗时</th><th>结果图</th><th>时间</th><th>操作</th></tr>
+              <tr><th>ID</th><th>工单</th><th>类型</th><th>来源</th><th>输入</th><th>判定</th><th>质检</th><th>数量</th><th>耗时</th><th>结果图</th><th>时间</th><th>操作</th></tr>
             </thead>
             <tbody>
               <tr v-for="record in records" :key="record.id">
                 <td class="mono">{{ record.id }}</td>
+                <td><RouterLink v-if="record.work_order" class="link-btn" :to="{ path: '/work-orders', query: { work_order: record.work_order } }">{{ record.work_order_no }}</RouterLink><span v-else class="muted">--</span></td>
                 <td>{{ record.task_type_display }}</td>
                 <td>{{ record.source_display }}</td>
                 <td><span class="cell-main mono small">{{ record.input_name || '--' }}</span></td>
                 <td>{{ record.verdict }}</td>
+                <td>{{ record.quality_result_display }}</td>
                 <td>{{ record.object_count }}</td>
                 <td>{{ record.elapsed_ms }} ms</td>
                 <td><img v-if="record.result_image_url" class="vision-thumb" :src="record.result_image_url" alt="结果缩略图" /></td>
                 <td class="small">{{ formatTime(record.created_at) }}</td>
                 <td><button class="btn btn-sm btn-danger" @click="removeRecord(record)">删除</button></td>
               </tr>
-              <tr v-if="!records.length"><td colspan="10"><div class="empty">暂无检测记录</div></td></tr>
+              <tr v-if="!records.length"><td colspan="12"><div class="empty">暂无检测记录</div></td></tr>
             </tbody>
           </table>
         </div>

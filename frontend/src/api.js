@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || '/api'
+const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
 
 async function request(path, options = {}) {
   const { headers: extraHeaders, ...rest } = options
@@ -67,6 +67,13 @@ export const api = {
   tasks: () => request('/tasks/').then(unwrap),
   dispatches: () => request('/dispatches/').then(unwrap),
   scheduleRuns: () => request('/schedule-runs/').then(unwrap),
+  productionPlans: (query = '') => request(`/production-plans/${query}`).then(unwrap),
+  generateProductionPlan: (payload) =>
+    request('/production-plans/generate/', { method: 'POST', body: JSON.stringify(payload) }),
+  scheduleProductionPlan: (id, payload = {}) =>
+    request(`/production-plans/${id}/schedule/`, { method: 'POST', body: JSON.stringify(payload) }),
+  cancelProductionPlan: (id) =>
+    request(`/production-plans/${id}/cancel/`, { method: 'POST', body: '{}' }),
   createTask: (payload) => request('/tasks/', { method: 'POST', body: JSON.stringify(payload) }),
   updateTask: (id, payload) => request(`/tasks/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
   updateAgv: (id, payload) => request(`/agvs/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
@@ -74,6 +81,48 @@ export const api = {
   batchDispatch: (payload) => request('/schedules/batch/', { method: 'POST', body: JSON.stringify(payload) }),
   planPath: (payload) => request('/path-planning/', { method: 'POST', body: JSON.stringify(payload) }),
   taskAction: (id, action) => request(`/tasks/${id}/${action}/`, { method: 'POST', body: '{}' }),
+
+  // --- 统一运营核心：工单、告警、主数据与驾驶舱 ---
+  commandCenter: () => request('/operations/command-center/'),
+  masterData: () => request('/operations/master-data/'),
+  workOrders: (query = '') => request(`/operations/work-orders/${query}`).then(unwrap),
+  workOrder: (id) => request(`/operations/work-orders/${id}/`),
+  workOrderTimeline: (id) => request(`/operations/work-orders/${id}/timeline/`),
+  createWorkOrder: (payload) =>
+    request('/operations/work-orders/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateWorkOrder: (id, payload) =>
+    request(`/operations/work-orders/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  workOrderAction: (id, action, payload = {}) =>
+    request(`/operations/work-orders/${id}/${action}/`, {
+      method: 'POST', body: JSON.stringify(payload),
+    }),
+  addWorkOrderTask: (id, payload) =>
+    request(`/operations/work-orders/${id}/transport-tasks/`, {
+      method: 'POST', body: JSON.stringify(payload),
+    }),
+  operationSteps: (query = '') =>
+    request(`/operations/operation-steps/${query}`).then(unwrap),
+  operationStepAction: (id, action, payload = {}) =>
+    request(`/operations/operation-steps/${id}/${action}/`, {
+      method: 'POST', body: JSON.stringify(payload),
+    }),
+  workCalendars: (query = '') =>
+    request(`/operations/work-calendars/${query}`).then(unwrap),
+  createWorkCalendar: (payload) =>
+    request('/operations/work-calendars/', { method: 'POST', body: JSON.stringify(payload) }),
+  ingestExecutionEvent: (payload) =>
+    request('/operations/execution-events/ingest/', {
+      method: 'POST', body: JSON.stringify(payload),
+    }),
+  alerts: (query = '') => request(`/operations/alerts/${query}`).then(unwrap),
+  alertAction: (id, action) =>
+    request(`/operations/alerts/${id}/${action}/`, { method: 'POST', body: '{}' }),
+  createSite: (payload) =>
+    request('/operations/sites/', { method: 'POST', body: JSON.stringify(payload) }),
+  createProduct: (payload) =>
+    request('/operations/products/', { method: 'POST', body: JSON.stringify(payload) }),
+  createEquipment: (payload) =>
+    request('/operations/equipment/', { method: 'POST', body: JSON.stringify(payload) }),
 
   // --- 视觉检测（ManufacturingVision，任务 4/5）---
   visionOverview: () => request('/vision/overview/'),

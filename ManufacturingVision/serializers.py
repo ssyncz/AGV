@@ -9,11 +9,16 @@ class VisionRecordSerializer(serializers.ModelSerializer):
     input_image_url = serializers.SerializerMethodField()
     result_image_url = serializers.SerializerMethodField()
     objects = serializers.JSONField(source="detected_objects", read_only=True)
+    work_order_no = serializers.CharField(source="work_order.order_no", read_only=True)
+    quality_result_display = serializers.CharField(
+        source="get_quality_result_display", read_only=True
+    )
 
     class Meta:
         model = VisionRecord
         fields = [
             "id", "task_type", "task_type_display", "source", "source_display",
+            "work_order", "work_order_no", "quality_result", "quality_result_display",
             "input_name", "input_image_url", "result_image_url", "verdict",
             "object_count", "elapsed_ms", "objects", "parameters", "metrics",
             "created_at",

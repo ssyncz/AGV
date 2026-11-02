@@ -1,0 +1,4 @@
+﻿algorithm,feasible,objective,makespan_s,total_distance_m,wait_s,used_agvs,runtime_s,objective_improvement_pct,makespan_improvement_pct,iterations
+baseline_priority_earliest,True,295.1443,149.636,276.0,12.08,4,0.011232,,,
+best_insertion,True,276.9434,131.714,268.0,12.08,4,0.017378,6.1668,11.9771,
+insertion_plus_vnd,True,276.1477,131.714,284.0,4.0,4,1.238939,6.4364,11.9771,4399

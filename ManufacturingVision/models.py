@@ -6,13 +6,31 @@ class VisionRecord(models.Model):
 
     class TaskType(models.TextChoices):
         CRACK = "crack", "裂纹检测"
+        DEFECT = "defect", "缺陷分类"
         WORKPIECE = "workpiece", "工件识别"
 
     class Source(models.TextChoices):
         UPLOAD = "upload", "本地上传"
         DATASET = "dataset", "内置数据集"
 
+    class QualityResult(models.TextChoices):
+        NOT_ASSESSED = "not_assessed", "未关联质检"
+        PASS = "pass", "合格"
+        FAIL = "fail", "不合格"
+
     task_type = models.CharField("检测任务", max_length=20, choices=TaskType.choices)
+    work_order = models.ForeignKey(
+        "Operations.WorkOrder",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="vision_records",
+        verbose_name="关联工单",
+    )
+    quality_result = models.CharField(
+        "质检结论", max_length=20, choices=QualityResult.choices,
+        default=QualityResult.NOT_ASSESSED,
+    )
     source = models.CharField(
         "图片来源", max_length=20, choices=Source.choices, default=Source.UPLOAD
     )
@@ -32,6 +50,7 @@ class VisionRecord(models.Model):
         indexes = [
             models.Index(fields=["task_type", "created_at"]),
             models.Index(fields=["verdict"]),
+            models.Index(fields=["work_order", "quality_result"]),
         ]
         verbose_name = "视觉检测记录"
         verbose_name_plural = "视觉检测记录"

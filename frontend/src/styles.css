@@ -106,9 +106,28 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border-radius: 50%;
   background: #54c7be;
 }
-.brand-title { color: #f4fbf9; font-size: 16px; font-weight: 800; letter-spacing: 0.025em; }
+.brand-title { color: #f4fbf9; font-size: 19px; line-height: 1.2; font-weight: 800; letter-spacing: 0.015em; }
 .brand-subtitle { color: #91abb0; font-size: 10px; line-height: 1.45; margin-top: 4px; letter-spacing: 0.03em; }
-.nav-label { padding: 10px 11px 9px; color: #738f95; font-size: 10px; letter-spacing: 0.15em; }
+.nav-label {
+  position: relative;
+  margin: 13px 3px 7px;
+  padding: 2px 8px 2px 13px;
+  color: #c5d7d8;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.nav-label::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  width: 3px;
+  height: 12px;
+  border-radius: 3px;
+  background: #54c7be;
+  transform: translateY(-50%);
+}
 .nav-item {
   position: relative;
   width: 100%;
@@ -356,6 +375,12 @@ tr:hover td { background: #f8fbfa; }
 .badge-offline, .badge-cancelled { color: #708087; background: #f4f6f5; border-color: #dbe2df; }
 .badge-error, .badge-failed { color: #b63e4b; background: #fff4f5; border-color: #f0c7cc; }
 .badge-in_progress { color: #6749b9; background: #f7f4ff; border-color: #ddd3f5; }
+.badge-draft, .badge-resolved { color: #708087; background: #f4f6f5; border-color: #dbe2df; }
+.badge-released, .badge-quality_check, .badge-acknowledged { color: #9f6d10; background: #fff8e8; border-color: #f0d9a7; }
+.badge-blocked, .badge-fault { color: #b63e4b; background: #fff4f5; border-color: #f0c7cc; }
+.badge-warning { color: #9f6d10; background: #fff8e8; border-color: #f0d9a7; }
+.badge-normal { color: #237c58; background: #f0faf5; border-color: #c6e6d7; }
+.badge-open { color: #2c61b8; background: #f1f6fe; border-color: #cbdaf7; }
 
 .priority-4 { color: #c53e4c !important; }
 .priority-3 { color: #ac7310 !important; }
@@ -524,6 +549,7 @@ tr:hover td { background: #f8fbfa; }
 .nowrap { white-space: nowrap; }
 .mt-12 { margin-top: 12px; }
 .mt-16 { margin-top: 16px; }
+.mb-16 { margin-bottom: 16px; }
 
 .dispatch-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .dispatch-grid > .panel:last-child { grid-column: span 2; }
@@ -547,6 +573,8 @@ tr:hover td { background: #f8fbfa; }
 .task-select-row input { accent-color: var(--cyan); }
 .select-main { display: flex; flex-direction: column; gap: 3px; }
 .toolbar-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.check-inline { display: flex; align-items: center; gap: 7px; min-height: 38px; color: var(--text-soft); font-size: 11px; }
+.check-inline input { accent-color: var(--cyan); }
 .fleet-stats { margin-bottom: 0; }
 .mini-stat.panel {
   display: flex;
@@ -611,6 +639,7 @@ tr:hover td { background: #f8fbfa; }
   font-weight: 760;
   white-space: nowrap;
 }
+.gantt-bar.late { background: linear-gradient(90deg, #c94d58, #d48230); box-shadow: 0 3px 8px rgba(201, 77, 88, 0.2); }
 .gantt-end { color: var(--muted); font-size: 11px; text-align: right; }
 
 .path-planner { display: grid; gap: 11px; }
@@ -693,4 +722,46 @@ tr:hover td { background: #f8fbfa; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* --- 企业级路由与分组导航覆盖 --- */
+.sidebar {
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 18px;
+}
+.sidebar-nav { display: grid; gap: 2px; }
+.nav-group { display: grid; gap: 2px; }
+.nav-group + .nav-group { margin-top: 10px; padding-top: 6px; border-top: 0; }
+.nav-item.router-link-active {
+  color: #102c34;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: #f3f8f6;
+  box-shadow: 0 10px 24px rgba(4, 20, 25, 0.2);
+}
+.nav-item.router-link-active::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 0 4px 4px 0;
+  background: var(--cyan);
+}
+.nav-item.router-link-active .nav-icon { color: var(--cyan); }
+.sidebar-foot {
+  position: static;
+  margin-top: 18px;
+}
+
+@media (max-width: 1180px) {
+  .nav-item.router-link-active::before { top: 8px; bottom: 8px; }
+  .nav-group + .nav-group { margin-top: 6px; }
+}
+
+@media (max-width: 720px) {
+  .sidebar-nav { display: flex; gap: 7px; overflow-x: auto; }
+  .nav-group { display: contents; }
+  .nav-group + .nav-group { margin: 0; padding: 0; border: 0; }
 }

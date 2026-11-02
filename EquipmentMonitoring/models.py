@@ -15,6 +15,22 @@ class EquipmentDiagnosisRecord(models.Model):
         FAULT = "fault", "故障"
 
     equipment_code = models.CharField("设备编号", max_length=64, default="CNC-01")
+    equipment = models.ForeignKey(
+        "Operations.Equipment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="diagnosis_records",
+        verbose_name="设备主数据",
+    )
+    work_order = models.ForeignKey(
+        "Operations.WorkOrder",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="equipment_diagnoses",
+        verbose_name="关联工单",
+    )
     source = models.CharField(
         "数据来源", max_length=16, choices=Source.choices, default=Source.DATASET
     )
@@ -35,6 +51,7 @@ class EquipmentDiagnosisRecord(models.Model):
         indexes = [
             models.Index(fields=["equipment_code", "created_at"]),
             models.Index(fields=["predicted_state"]),
+            models.Index(fields=["work_order", "predicted_state"]),
         ]
         verbose_name = "设备诊断记录"
         verbose_name_plural = "设备诊断记录"

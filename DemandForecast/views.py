@@ -182,3 +182,12 @@ class ForecastRunViewSet(
         if model:
             queryset = queryset.filter(selected_model=model)
         return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        run = self.get_object()
+        if run.production_plans.exists():
+            return Response(
+                {"detail": "该预测记录已生成生产计划，不能删除；请先取消并清理相关计划。"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().destroy(request, *args, **kwargs)

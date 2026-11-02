@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { api } from '../api'
 
 const emit = defineEmits(['notify'])
@@ -18,6 +19,8 @@ const subTab = ref('diagnose')
 const sourceKind = ref('dataset')
 const scenario = ref('worn')
 const equipmentCode = ref('CNC-01')
+const workOrders = ref([])
+const selectedWorkOrderId = ref('')
 const file = ref(null)
 const objectUrl = ref('')
 const selectedFeature = ref('vibration_mm_s')
@@ -157,6 +160,14 @@ async function loadRecords() {
   }
 }
 
+async function loadWorkOrders() {
+  try {
+    workOrders.value = await api.workOrders()
+  } catch {
+    workOrders.value = []
+  }
+}
+
 async function runDiagnosis() {
   running.value = true
   error.value = ''
@@ -168,16 +179,21 @@ async function runDiagnosis() {
       payload.append('file', file.value)
       payload.append('equipment_code', equipmentCode.value || 'CNC-01')
       payload.append('worn_threshold', String(wornThreshold.value))
+      if (selectedWorkOrderId.value) payload.append('work_order_id', String(selectedWorkOrderId.value))
     } else {
       payload = {
         sample: scenario.value,
         equipment_code: equipmentCode.value || 'CNC-01',
         worn_threshold: wornThreshold.value,
+        work_order_id: selectedWorkOrderId.value || null,
       }
     }
     result.value = await api.equipmentDiagnose(payload)
-    notify(`设备诊断完成：${result.value.predicted_state_label}`)
+    notify(result.value.work_order_no
+      ? `设备诊断完成并已关联工单 ${result.value.work_order_no}`
+      : `设备诊断完成：${result.value.predicted_state_label}`)
     await loadOverview()
+    await loadWorkOrders()
     if (subTab.value === 'records') await loadRecords()
   } catch (err) {
     error.value = err.message
@@ -195,6 +211,7 @@ function openRecords() {
 onMounted(() => {
   loadOverview()
   loadDatasetCompare()
+  loadWorkOrders()
 })
 
 onUnmounted(() => {
@@ -284,6 +301,13 @@ onUnmounted(() => {
               <div class="field">
                 <label>设备编号</label>
                 <input v-model="equipmentCode" class="input" type="text" />
+              </div>
+              <div class="field">
+                <label>关联生产工单（可选）</label>
+                <select v-model="selectedWorkOrderId" class="select">
+                  <option value="">不关联工单</option>
+                  <option v-for="order in workOrders.filter(item => !['completed', 'cancelled'].includes(item.status))" :key="order.id" :value="order.id">{{ order.order_no }} · {{ order.title }} · {{ order.status_display }}</option>
+                </select>
               </div>
               <div class="field">
                 <label>数据来源</label>
@@ -428,10 +452,11 @@ onUnmounted(() => {
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>ID</th><th>设备</th><th>来源</th><th>样本数</th><th>状态</th><th>置信度</th><th>告警</th><th>时间</th></tr></thead>
+            <thead><tr><th>ID</th><th>工单</th><th>设备</th><th>来源</th><th>样本数</th><th>状态</th><th>置信度</th><th>告警</th><th>时间</th></tr></thead>
             <tbody>
               <tr v-for="record in records" :key="record.id">
                 <td class="mono">{{ record.id }}</td>
+                <td><RouterLink v-if="record.work_order" class="link-btn" :to="{ path: '/work-orders', query: { work_order: record.work_order } }">{{ record.work_order_no }}</RouterLink><span v-else class="muted">--</span></td>
                 <td class="cell-main">{{ record.equipment_code }}</td>
                 <td>{{ record.source_display }}</td>
                 <td>{{ record.sample_count }}</td>
@@ -440,7 +465,7 @@ onUnmounted(() => {
                 <td>{{ record.rule_alerts.length }}</td>
                 <td class="small">{{ formatTime(record.created_at) }}</td>
               </tr>
-              <tr v-if="!records.length"><td colspan="8"><div class="empty">暂无诊断记录</div></td></tr>
+              <tr v-if="!records.length"><td colspan="9"><div class="empty">暂无诊断记录</div></td></tr>
             </tbody>
           </table>
         </div>

@@ -16,13 +16,33 @@ const edges = computed(() => props.mapData.edges || [])
 const agvs = computed(() => props.mapData.agvs || [])
 const routes = computed(() => props.mapData.active_routes || [])
 const executingRoutes = computed(() => routes.value.filter((item) => ['assigned', 'in_progress'].includes(item.status)))
-const routePage = ref(1)
-const routePageSize = 2
-const routeTotalPages = computed(() => Math.max(1, Math.ceil(executingRoutes.value.length / routePageSize)))
-const pagedExecutingRoutes = computed(() => {
-  const start = (routePage.value - 1) * routePageSize
-  return executingRoutes.value.slice(start, start + routePageSize)
+const selectedWorkOrderId = ref('')
+const routeGroups = computed(() => {
+  const grouped = new Map()
+  for (const route of executingRoutes.value) {
+    const key = String(route.work_order_id || `unlinked-${route.production_plan_id || 'none'}`)
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        id: key,
+        work_order_id: route.work_order_id,
+        work_order_no: route.work_order_no || '未关联工单',
+        production_plan_no: route.production_plan_no || '',
+        routes: [],
+      })
+    }
+    grouped.get(key).routes.push(route)
+  }
+  return [...grouped.values()]
+    .map((group) => ({ ...group, routes: group.routes.sort(compareRoutes) }))
+    .sort((left, right) => left.work_order_no.localeCompare(right.work_order_no, 'zh-CN'))
 })
+const selectedRouteGroup = computed(
+  () => routeGroups.value.find((group) => group.id === selectedWorkOrderId.value) || null,
+)
+const selectedRouteDetail = computed(
+  () => executingRoutes.value.find((route) => route.task_id === selectedRoute.value) || null,
+)
+const visibleRoutes = computed(() => selectedRouteDetail.value ? [selectedRouteDetail.value] : [])
 const obstacles = computed(() => props.mapData.obstacles || [])
 const nodeMap = computed(() => Object.fromEntries(nodes.value.map((node) => [node.id, node])))
 const extent = computed(() => {
@@ -78,9 +98,21 @@ const plannerAgvId = ref('')
 const pathResult = ref(null)
 const pathPlanning = ref(false)
 
-watch(executingRoutes, () => {
-  if (routePage.value > routeTotalPages.value) routePage.value = routeTotalPages.value
-})
+watch([routeGroups, selectedWorkOrderId], ([groups, workOrderId]) => {
+  if (!groups.length) {
+    selectedWorkOrderId.value = ''
+    selectedRoute.value = null
+    return
+  }
+  if (!groups.some((group) => group.id === workOrderId)) {
+    selectedWorkOrderId.value = groups[0].id
+    return
+  }
+  const group = groups.find((item) => item.id === workOrderId)
+  if (!group.routes.some((route) => route.task_id === selectedRoute.value)) {
+    selectedRoute.value = group.routes[0]?.task_id || null
+  }
+}, { immediate: true })
 
 watch(nodes, (items) => {
   if (!items.length) return
@@ -129,6 +161,22 @@ function routeText(route) {
   return (route.route?.nodes || []).map((id) => nodeMap.value[id]?.code || id).join(' -> ')
 }
 
+function compareRoutes(left, right) {
+  const leftStart = left.scheduled_start ? new Date(left.scheduled_start).getTime() : Number.MAX_SAFE_INTEGER
+  const rightStart = right.scheduled_start ? new Date(right.scheduled_start).getTime() : Number.MAX_SAFE_INTEGER
+  return (
+    leftStart - rightStart
+    || (left.dispatch_order || Number.MAX_SAFE_INTEGER) - (right.dispatch_order || Number.MAX_SAFE_INTEGER)
+    || (left.sequence_number || Number.MAX_SAFE_INTEGER) - (right.sequence_number || Number.MAX_SAFE_INTEGER)
+    || left.task_id - right.task_id
+  )
+}
+
+function selectRoute(route) {
+  selectedRoute.value = route.task_id
+  pathResult.value = null
+}
+
 async function planPath() {
   if (!startNodeId.value || !endNodeId.value) return
   pathPlanning.value = true
@@ -156,7 +204,11 @@ function clearPath() {
     <section class="panel">
       <div class="panel-head">
         <div><div class="panel-title">仓库障碍地图与路径规划</div><div class="panel-desc">灰色路网、黑色障碍块、S1-S10 工作站以及 AGV 彩色路线</div></div>
-        <div class="toolbar-right"><span class="tag">节点 {{ nodes.length }}</span><span class="tag">道路 {{ edges.length }}</span><span class="tag">障碍 {{ obstacles.length }}</span></div>
+        <div class="toolbar-right">
+          <span v-if="selectedRouteGroup" class="tag">{{ selectedRouteGroup.work_order_no }}</span>
+          <span v-if="selectedRouteDetail" class="tag">调度顺序 #{{ selectedRouteDetail.dispatch_order || selectedRouteGroup.routes.indexOf(selectedRouteDetail) + 1 }}</span>
+          <span class="tag">节点 {{ nodes.length }}</span><span class="tag">道路 {{ edges.length }}</span><span class="tag">障碍 {{ obstacles.length }}</span>
+        </div>
       </div>
       <div class="panel-body">
         <div class="map-canvas warehouse-map">
@@ -165,7 +217,7 @@ function clearPath() {
             <line v-for="y in gridYs" :key="`h-${y}`" class="map-grid-line" :x1="coordinatePoint(extent.minX, y).x" :y1="coordinatePoint(extent.minX, y).y" :x2="coordinatePoint(extent.maxX, y).x" :y2="coordinatePoint(extent.maxX, y).y" />
             <line v-for="edge in edges" :key="edge.id" class="map-edge" :x1="point(edge.start_node).x" :y1="point(edge.start_node).y" :x2="point(edge.end_node).x" :y2="point(edge.end_node).y" />
             <rect v-for="item in obstacles" :key="item.id" class="map-obstacle" v-bind="obstacleRect(item)" rx="3" />
-            <polyline v-for="(route, index) in routes" :key="route.task_id" class="map-route" :class="{ 'route-selected': selectedRoute === route.task_id }" :points="points(route.route?.nodes)" :style="{ stroke: routeColor(index), color: routeColor(index) }" />
+            <polyline v-for="(route, index) in visibleRoutes" :key="route.task_id" class="map-route route-selected" :points="points(route.route?.nodes)" :style="{ stroke: routeColor(index), color: routeColor(index) }" />
             <polyline v-if="pathResult" class="map-route manual-route" :points="points(pathResult.route.nodes)" />
             <g v-for="node in nodes" :key="node.id" class="map-node-group" @mouseenter="hoveredNode = node" @mouseleave="hoveredNode = null">
               <circle class="map-node-hit" :cx="point(node.id).x" :cy="point(node.id).y" r="11" />
@@ -211,26 +263,56 @@ function clearPath() {
           <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #cf5260"></span>规划路径</span></div>
         </div>
         <div class="executing-routes mt-16">
-          <div class="route-section-head"><strong>正在执行任务路线</strong><span>{{ executingRoutes.length }} 条</span></div>
-          <div v-if="executingRoutes.length" class="route-list">
-            <button v-for="(route, index) in pagedExecutingRoutes" :key="route.task_id" class="route-card route-button" :class="{ active: selectedRoute === route.task_id }" @click="selectedRoute = selectedRoute === route.task_id ? null : route.task_id">
+          <div class="route-section-head"><strong>工单调度路线</strong><span>{{ routeGroups.length }} 个工单 · {{ executingRoutes.length }} 条路线</span></div>
+          <div v-if="routeGroups.length" class="route-navigation">
+            <div class="field">
+              <label>选择工单</label>
+              <select v-model="selectedWorkOrderId" class="select">
+                <option v-for="group in routeGroups" :key="group.id" :value="group.id">{{ group.work_order_no }} · {{ group.routes.length }} 个路线</option>
+              </select>
+            </div>
+            <div class="route-order-buttons">
+              <button
+                v-for="(route, index) in selectedRouteGroup?.routes || []"
+                :key="route.task_id"
+                class="route-order-button"
+                :class="{ active: selectedRoute === route.task_id }"
+                @click="selectRoute(route)"
+              >
+                <span class="route-order-index">{{ route.dispatch_order || index + 1 }}</span>
+                <span class="route-order-main">
+                  <strong class="mono">{{ route.task_no }}</strong>
+                  <small>{{ route.agv_code || '未分配' }} · {{ nodeMap[route.pickup_node]?.code }}→{{ nodeMap[route.dropoff_node]?.code }} · 排期 #{{ route.schedule_run_id || '-' }}</small>
+                </span>
+              </button>
+            </div>
+            <div v-if="selectedRouteDetail" class="route-card route-current">
               <div class="route-card-top">
-                <div><span class="strong mono">{{ route.task_no }}</span><span class="tag" style="margin-left: 7px">{{ route.agv_code || '未分配' }}</span></div>
-                <span class="legend-dot" :style="{ '--dot': routeColor(routes.indexOf(route)) }"></span>
+                <div><span class="strong mono">{{ selectedRouteDetail.task_no }}</span><span class="tag" style="margin-left: 7px">{{ selectedRouteDetail.agv_code || '未分配' }}</span></div>
+                <span class="badge" :class="selectedRouteDetail.status === 'in_progress' ? 'badge-in_progress' : 'badge-assigned'">{{ selectedRouteDetail.status === 'in_progress' ? '执行中' : '已分配' }}</span>
               </div>
-              <div class="route-path">{{ nodeMap[route.pickup_node]?.code || '--' }} → {{ nodeMap[route.dropoff_node]?.code || '--' }} · 顺序 #{{ route.sequence_number || '-' }}</div>
-              <div class="route-path">{{ route.total_distance || 0 }} m · {{ route.estimated_duration || 0 }} s · {{ route.status === 'in_progress' ? '执行中' : '已分配' }}</div>
-              <div class="route-full-path"><span>完整路径</span><code>{{ routeText(route) || '暂无路径' }}</code></div>
-            </button>
+              <div class="route-path">{{ nodeMap[selectedRouteDetail.pickup_node]?.code || '--' }} → {{ nodeMap[selectedRouteDetail.dropoff_node]?.code || '--' }} · 全局第 {{ selectedRouteDetail.dispatch_order || '-' }} 项 · 车内第 {{ selectedRouteDetail.sequence_number || '-' }} 项</div>
+              <div class="route-path">{{ selectedRouteDetail.total_distance || 0 }} m · {{ selectedRouteDetail.estimated_duration || 0 }} s</div>
+              <div class="route-full-path"><span>完整路径</span><code>{{ routeText(selectedRouteDetail) || '暂无路径' }}</code></div>
+            </div>
           </div>
           <div v-else class="empty small-empty">暂无正在执行的任务路线</div>
-          <div v-if="executingRoutes.length" class="route-pagination">
-            <button class="btn btn-sm" :disabled="routePage <= 1" @click="routePage -= 1">上一页</button>
-            <span>第 {{ routePage }} / {{ routeTotalPages }} 页</span>
-            <button class="btn btn-sm" :disabled="routePage >= routeTotalPages" @click="routePage += 1">下一页</button>
-          </div>
         </div>
       </div>
     </aside>
   </div>
 </template>
+
+<style scoped>
+.route-navigation { display: grid; gap: 12px; }
+.route-order-buttons { display: grid; gap: 7px; max-height: 245px; overflow-y: auto; padding-right: 3px; }
+.route-order-button { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; align-items: center; width: 100%; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcfb; color: inherit; text-align: left; }
+.route-order-button:hover { background: #f3f8f6; }
+.route-order-button.active { border-color: var(--cyan); background: #eef7f5; box-shadow: 0 0 0 2px rgba(14,135,146,.08); }
+.route-order-index { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: #dce9e5; color: #24726e; font-size: 10px; font-weight: 800; }
+.route-order-button.active .route-order-index { background: var(--cyan); color: #fff; }
+.route-order-main { min-width: 0; display: grid; gap: 2px; }
+.route-order-main strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+.route-order-main small { color: var(--muted); font-size: 9px; }
+.route-current { border: 1px solid var(--line); border-radius: 10px; background: #fbfcfb; }
+</style>

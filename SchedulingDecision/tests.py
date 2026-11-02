@@ -1,11 +1,14 @@
 from types import SimpleNamespace
 from unittest import mock
+from datetime import timedelta
 
 from django.core.management import call_command
 from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 
-from .models import AGV, DispatchRecord, MapNode, ScheduleRun, TransportTask
+from Operations.models import WorkOrder
+from .models import AGV, DispatchRecord, MapNode, ProductionPlan, ScheduleRun, TransportTask
 from .services import (
     SchedulingError,
     _build_or_opt_moves,
@@ -132,6 +135,32 @@ class SchedulingFlowTests(TestCase):
         self.assertEqual(agv.current_node_id, task.dropoff_node_id)
         self.assertLess(agv.battery_percent, original_battery)
 
+    def test_dispatch_order_continues_existing_work_order_sequence(self):
+        work_order = WorkOrder.objects.create(title="连续顺序测试")
+        pickup = MapNode.objects.get(code="S1")
+        dropoff = MapNode.objects.get(code="S6")
+        TransportTask.objects.create(
+            task_no="SEQ-EXISTING-010",
+            work_order=work_order,
+            pickup_node=pickup,
+            dropoff_node=dropoff,
+            cargo_name="历史任务",
+            cargo_weight=10,
+            status=TransportTask.Status.COMPLETED,
+            dispatch_order=10,
+        )
+        new_task = TransportTask.objects.create(
+            task_no="SEQ-NEW-001",
+            work_order=work_order,
+            pickup_node=pickup,
+            dropoff_node=dropoff,
+            cargo_name="新任务",
+            cargo_weight=10,
+        )
+        dispatch_batch([new_task.id])
+        new_task.refresh_from_db()
+        self.assertEqual(new_task.dispatch_order, 11)
+
 
 class APITests(TestCase):
     @classmethod
@@ -190,6 +219,171 @@ class APITests(TestCase):
         self.assertEqual(response.data["run"]["task_count"], 6)
         self.assertGreaterEqual(response.data["run"]["agv_count"], 2)
         self.assertTrue(response.data["evaluation"]["feasible"])
+
+
+class ProductionPlanningApiTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", "--reset", verbosity=0)
+
+    def setUp(self):
+        self.client = APIClient()
+        self.host = {"HTTP_HOST": "localhost"}
+
+    def _create_forecast(self, horizon=2):
+        response = self.client.post(
+            "/api/forecast/predict/",
+            {"horizon": horizon, "model": "moving_average"},
+            format="json",
+            **self.host,
+        )
+        self.assertEqual(response.status_code, 200)
+        return response.data["record_id"]
+
+    def _create_plan(self, forecast_run_id, **overrides):
+        pickup = MapNode.objects.get(code="S1")
+        dropoff = MapNode.objects.get(code="S6")
+        payload = {
+            "forecast_run_id": forecast_run_id,
+            "name": "API 链路测试计划",
+            "planning_start_date": (timezone.localdate() + timedelta(days=1)).isoformat(),
+            "tasks_per_order": 0.02,
+            "demand_buffer_percent": 10,
+            "release_lead_hours": 24,
+            "due_hour": 18,
+            "max_tasks": 20,
+            "pickup_node_id": pickup.id,
+            "dropoff_node_id": dropoff.id,
+            "cargo_name": "预测任务货物",
+            "cargo_weight": 30,
+            "priority": 2,
+        }
+        payload.update(overrides)
+        return self.client.post(
+            "/api/production-plans/generate/", payload, format="json", **self.host
+        )
+
+    def test_forecast_can_generate_plan_tasks_and_schedule(self):
+        forecast_run_id = self._create_forecast(horizon=2)
+        response = self._create_plan(forecast_run_id)
+        self.assertEqual(response.status_code, 201)
+        plan_id = response.data["plan"]["id"]
+        plan = ProductionPlan.objects.get(pk=plan_id)
+        tasks = list(plan.tasks.all())
+        self.assertGreater(len(tasks), 0)
+        self.assertEqual(len(tasks), plan.task_count)
+        self.assertTrue(all(task.release_at and task.due_at for task in tasks))
+        self.assertTrue(all(task.due_at > task.release_at for task in tasks))
+        self.assertTrue(all(task.forecast_order_count > 0 for task in tasks))
+
+        schedule = self.client.post(
+            f"/api/production-plans/{plan_id}/schedule/",
+            {"strict_deadlines": False},
+            format="json",
+            **self.host,
+        )
+        self.assertEqual(schedule.status_code, 200)
+        self.assertEqual(schedule.data["run"]["production_plan"], plan_id)
+        self.assertEqual(schedule.data["run"]["task_count"], plan.task_count)
+        self.assertIn("late_task_count", schedule.data["run"])
+        self.assertEqual(schedule.data["plan"]["status"], ProductionPlan.Status.SCHEDULED)
+        plan.refresh_from_db()
+        self.assertEqual(plan.status, ProductionPlan.Status.SCHEDULED)
+        self.assertTrue(
+            all(
+                task.status == TransportTask.Status.ASSIGNED
+                for task in plan.tasks.all()
+            )
+        )
+
+    def test_task_cannot_start_before_release_time(self):
+        forecast_run_id = self._create_forecast(horizon=1)
+        start_day = timezone.localdate() + timedelta(days=3)
+        response = self._create_plan(
+            forecast_run_id,
+            planning_start_date=start_day.isoformat(),
+            release_lead_hours=1,
+        )
+        self.assertEqual(response.status_code, 201)
+        plan_id = response.data["plan"]["id"]
+        schedule = self.client.post(
+            f"/api/production-plans/{plan_id}/schedule/",
+            {"strict_deadlines": False},
+            format="json",
+            **self.host,
+        )
+        self.assertEqual(schedule.status_code, 200)
+        task_id = schedule.data["tasks"][0]["id"]
+        start = self.client.post(
+            f"/api/tasks/{task_id}/start/", {}, format="json", **self.host
+        )
+        self.assertEqual(start.status_code, 400)
+        self.assertIn("释放时间", start.data["detail"])
+
+    def test_forecast_with_plan_cannot_be_deleted(self):
+        forecast_run_id = self._create_forecast(horizon=1)
+        response = self._create_plan(forecast_run_id)
+        self.assertEqual(response.status_code, 201)
+        deletion = self.client.delete(
+            f"/api/forecast/runs/{forecast_run_id}/", **self.host
+        )
+        self.assertEqual(deletion.status_code, 400)
+        self.assertIn("生产计划", deletion.data["detail"])
+
+    def test_multi_route_plan_distributes_tasks(self):
+        forecast_run_id = self._create_forecast(horizon=2)
+        pickups = list(
+            MapNode.objects.filter(node_type=MapNode.NodeType.PICKUP).order_by("code")[:2]
+        )
+        dropoffs = list(
+            MapNode.objects.filter(node_type=MapNode.NodeType.DROPOFF).order_by("code")[:2]
+        )
+        self.assertEqual(len(pickups), 2)
+        self.assertEqual(len(dropoffs), 2)
+        response = self._create_plan(
+            forecast_run_id,
+            routes=[
+                {
+                    "pickup_node_id": pickups[0].id,
+                    "dropoff_node_id": dropoffs[0].id,
+                    "cargo_name": "路线 A 货物",
+                    "cargo_weight": 30,
+                    "priority": 2,
+                    "share": 1,
+                },
+                {
+                    "pickup_node_id": pickups[1].id,
+                    "dropoff_node_id": dropoffs[1].id,
+                    "cargo_name": "路线 B 货物",
+                    "cargo_weight": 20,
+                    "priority": 3,
+                    "share": 1,
+                },
+            ],
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["plan"]["route_count"], 2)
+        plan = ProductionPlan.objects.get(pk=response.data["plan"]["id"])
+        used_pickups = set(plan.tasks.values_list("pickup_node_id", flat=True))
+        used_pairs = set(plan.tasks.values_list("pickup_node_id", "dropoff_node_id"))
+        self.assertEqual(len(used_pickups), 2)
+        self.assertEqual(
+            used_pairs,
+            {(pickups[0].id, dropoffs[0].id), (pickups[1].id, dropoffs[1].id)},
+        )
+
+    def test_strict_deadline_rejects_late_task(self):
+        task = TransportTask.objects.filter(status=TransportTask.Status.PENDING).first()
+        task.due_at = timezone.now() - timedelta(minutes=1)
+        task.save(update_fields=["due_at", "updated_at"])
+        response = self.client.post(
+            "/api/schedules/batch/",
+            {"task_ids": [task.id], "strict_deadlines": True},
+            format="json",
+            **self.host,
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("硬交期", response.data["detail"])
 
 
 class NeighborhoodTests(SimpleTestCase):

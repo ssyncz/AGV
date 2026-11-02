@@ -11,6 +11,7 @@ from .views import (
     MapNodeViewSet,
     MapObstacleViewSet,
     PathPlanningView,
+    ProductionPlanViewSet,
     ScheduleRunViewSet,
     SingleScheduleView,
     TransportTaskViewSet,
@@ -24,6 +25,7 @@ router.register("agvs", AGVViewSet, basename="agv")
 router.register("tasks", TransportTaskViewSet, basename="task")
 router.register("dispatches", DispatchRecordViewSet, basename="dispatch")
 router.register("schedule-runs", ScheduleRunViewSet, basename="schedule-run")
+router.register("production-plans", ProductionPlanViewSet, basename="production-plan")
 
 urlpatterns = [
     path("", include(router.urls)),

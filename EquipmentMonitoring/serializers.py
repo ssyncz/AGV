@@ -6,12 +6,20 @@ from .models import EquipmentDiagnosisRecord
 class EquipmentDiagnosisRecordSerializer(serializers.ModelSerializer):
     source_display = serializers.CharField(source="get_source_display", read_only=True)
     state_display = serializers.CharField(source="get_predicted_state_display", read_only=True)
+    work_order_no = serializers.CharField(source="work_order.order_no", read_only=True)
+    equipment_status = serializers.CharField(
+        source="equipment.status", read_only=True, allow_null=True
+    )
 
     class Meta:
         model = EquipmentDiagnosisRecord
         fields = [
             "id",
             "equipment_code",
+            "equipment",
+            "equipment_status",
+            "work_order",
+            "work_order_no",
             "source",
             "source_display",
             "sample_count",

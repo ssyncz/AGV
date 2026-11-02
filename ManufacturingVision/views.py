@@ -65,9 +65,51 @@ def _resolve_params(request) -> dict:
     return parsed
 
 
-def _save_record(task_type, source, input_name, image, annotated, analysis, objects):
+def _resolve_work_order(request):
+    raw = request.data.get("work_order_id")
+    if raw in (None, "", "null"):
+        return None
+    from Operations.models import WorkOrder
+
+    try:
+        return WorkOrder.objects.get(pk=int(raw))
+    except (TypeError, ValueError, WorkOrder.DoesNotExist) as exc:
+        raise ValueError("关联工单不存在。") from exc
+
+
+def _resolve_quality_result(request, *, fallback: str) -> str:
+    value = str(request.data.get("quality_result") or fallback).strip().lower()
+    if value not in {"pass", "fail", "not_assessed"}:
+        raise ValueError("quality_result 必须是 pass、fail 或 not_assessed。")
+    return value
+
+
+def _apply_quality_link(request, record, quality_result):
+    if record.work_order_id and quality_result in {"pass", "fail"}:
+        from Operations.services import (
+            actor_from_request,
+            record_quality_result,
+            trace_id_from_request,
+        )
+
+        record_quality_result(
+            record.work_order_id,
+            record,
+            quality_result,
+            reason=str(request.data.get("quality_note") or ""),
+            actor=actor_from_request(request),
+            trace_id=trace_id_from_request(request),
+        )
+
+
+def _save_record(
+    task_type, source, input_name, image, annotated, analysis, objects,
+    *, work_order=None, quality_result="not_assessed",
+):
     record = VisionRecord(
         task_type=task_type,
+        work_order=work_order,
+        quality_result=quality_result,
         source=source,
         input_name=input_name,
         verdict=analysis.get("result", task_type),
@@ -99,6 +141,7 @@ class CrackDetectView(APIView):
         try:
             image, source, input_name = _resolve_input(request)
             params = _resolve_params(request)
+            work_order = _resolve_work_order(request)
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,10 +165,22 @@ class CrackDetectView(APIView):
 
         analysis["algorithm"] = "frangi" if fallback else ("deepcrack" if use_deepcrack else "frangi")
         analysis["fallback"] = fallback
+        try:
+            quality_result = _resolve_quality_result(
+                request,
+                fallback=(
+                    "fail" if analysis["result"] == "crack" else "pass"
+                ) if work_order else "not_assessed",
+            )
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         record = _save_record(
             VisionRecord.TaskType.CRACK, source, input_name, image, annotated, analysis,
             [{"box": box} for box in analysis["boxes"]],
+            work_order=work_order,
+            quality_result=quality_result,
         )
+        _apply_quality_link(request, record, quality_result)
         return Response({
             "success": True,
             "task_type": "crack",
@@ -144,6 +199,9 @@ class CrackDetectView(APIView):
             "image_url": record.result_image.url,
             "input_image_url": record.input_image.url,
             "record_id": record.id,
+            "work_order_id": work_order.id if work_order else None,
+            "work_order_no": work_order.order_no if work_order else "",
+            "quality_result": quality_result,
             "elapsed_ms": analysis["elapsed_ms"],
             "params": analysis["params"],
             "width": analysis["width"],
@@ -160,15 +218,25 @@ class WorkpieceDetectView(APIView):
         try:
             image, source, input_name = _resolve_input(request)
             params = _resolve_params(request)
+            work_order = _resolve_work_order(request)
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         analysis = analyze_workpiece(image, params)
         annotated = annotate_workpiece(image, analysis)
+        try:
+            quality_result = _resolve_quality_result(
+                request, fallback="pass" if work_order else "not_assessed"
+            )
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         record = _save_record(
             VisionRecord.TaskType.WORKPIECE, source, input_name, image, annotated, analysis,
             analysis["objects"],
+            work_order=work_order,
+            quality_result=quality_result,
         )
+        _apply_quality_link(request, record, quality_result)
         return Response({
             "success": True,
             "task_type": "workpiece",
@@ -179,6 +247,9 @@ class WorkpieceDetectView(APIView):
             "image_url": record.result_image.url,
             "input_image_url": record.input_image.url,
             "record_id": record.id,
+            "work_order_id": work_order.id if work_order else None,
+            "work_order_no": work_order.order_no if work_order else "",
+            "quality_result": quality_result,
             "elapsed_ms": analysis["elapsed_ms"],
             "params": analysis["params"],
             "width": analysis["width"],
@@ -246,7 +317,7 @@ class VisionRecordViewSet(
 
     def get_queryset(self):
         # 项目未安装 django-filter，这里直接按查询参数过滤，避免依赖共享配置。
-        queryset = VisionRecord.objects.all()
+        queryset = VisionRecord.objects.select_related("work_order").all()
         for field in ("task_type", "source", "verdict"):
             value = self.request.query_params.get(field)
             if value:

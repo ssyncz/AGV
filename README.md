@@ -2,6 +2,27 @@
 
 基于 Django REST Framework、MySQL 和 Vue 3 的 AGV 调度平台。核心能力包括仓库地图建模、Dijkstra 最短路径规划、单台智能选车和多台 AGV 联合调度，并在此基础上扩展了**视觉检测（任务 4/5）**、**设备状态监测（任务 6）**和**订单需求预测（任务 7）**三个模块。
 
+## 企业级业务闭环集成
+
+项目已从“并列功能页面”升级为统一制造运营链路：
+
+```text
+订单预测 → 生产计划 → 生产工单 → 运输任务 → AGV 调度
+                                      ├→ 视觉质检 → 放行 / 返工 / 阻塞
+                                      └→ 设备诊断 → 告警 / 阻塞 / 恢复
+```
+
+- 新增 `Operations` 业务核心：站点、产品、设备、工单、告警、领域事件和审计日志；
+- 新增工序级执行模型：物料配送、生产加工、质量检验和完工入库按工序顺序推进；
+- 新增站点班次日历和外部 RCS/MES 幂等执行事件接口；
+- 生产计划自动生成执行工单和可追溯运输任务；
+- 视觉检测与设备诊断可按工单关联，异常会自动阻塞工单并生成统一告警；
+- 前端接入 Vue Router，提供生产总览、工单中心、告警中心、生产计划和主数据管理；
+- `/api/v1/` 为版本化接口，原 `/api/` 路径保留兼容；
+- 请求注入 `X-Request-ID`，状态变化写入业务事件和审计日志。
+
+详细说明见 [`docs/企业级业务闭环集成说明.md`](docs/企业级业务闭环集成说明.md)。
+
 ## 1. 已实现功能
 
 ### 单台 AGV 调度决策
@@ -69,6 +90,14 @@
 - 自动模式在回测集上比较三个模型，按 RMSE / MAPE 选优后再用完整历史预测未来。
 - 支持上传包含 `date`、`order_count` 的 CSV，也支持提交序列或使用内置订单时间序列。
 - 前端显示历史曲线、未来预测曲线、模型指标对比和预测记录。
+
+### 预测驱动的生产排程链路
+
+- 预测记录可转换为可追溯的 `ProductionPlan`，并按计划期批量生成运输任务。
+- 转换时支持需求缓冲、每单任务数、提前释放时间、交期时刻、取放货点、重量和优先级配置。
+- 生成的任务保存预测订单数、需求日期、`release_at` 和 `due_at`，调度器按释放时间开始任务。
+- 多车联合调度目标新增总拖期惩罚，并输出准点率、拖期任务数和总拖期；可启用硬交期模式拒绝任何拖期方案。
+- 前端可在订单预测页面完成“预测 → 生成生产计划 → 多 AGV 排程”闭环，并查看甘特图和交期指标。
 
 ## 2. 技术栈
 
@@ -267,6 +296,10 @@ npm run build
 | POST | `/api/tasks/{id}/cancel/` | 取消任务 |
 | GET | `/api/dispatches/` | 调度记录（只读） |
 | GET | `/api/schedule-runs/` | 调度优化记录与指标（只读） |
+| GET | `/api/production-plans/` | 生产计划列表与完成进度（只读） |
+| POST | `/api/production-plans/generate/` | 将预测记录转换为生产计划与运输任务 |
+| POST | `/api/production-plans/{id}/schedule/` | 对生产计划执行多 AGV 联合排程 |
+| POST | `/api/production-plans/{id}/cancel/` | 取消未排程的生产计划 |
 | POST | `/api/schedules/single/` | 单台 AGV 多任务顺序优化 |
 | POST | `/api/schedules/batch/` | 多台 AGV 批量调度 |
 
@@ -315,6 +348,8 @@ POST /api/schedules/single/
 
 - `agv_id` 为空时自动选择综合成本最低的一台 AGV。
 - 接口返回优化后的执行顺序、makespan、总里程、基线结果和改进率。
+- 携带 `release_at`/`due_at` 的任务会按时间窗排程，并额外返回 `on_time_rate`、`late_task_count` 和 `total_tardiness_seconds`。
+- `strict_deadlines=true` 时，只要存在预计拖期任务，接口返回 400 而不是生成不可交付计划。
 
 多台 AGV 联合优化：
 
@@ -331,6 +366,29 @@ POST /api/schedules/batch/
 
 - `task_ids` 传 `null` 或省略时，调度全部待处理任务。
 - `agv_weight` 越大，优化结果越倾向于减少 AGV 使用数量。
+
+预测转生产计划：
+
+```json
+POST /api/production-plans/generate/
+{
+  "forecast_run_id": 12,
+  "name": "下周补货生产计划",
+  "planning_start_date": "2026-11-03",
+  "tasks_per_order": 0.01,
+  "demand_buffer_percent": 10,
+  "release_lead_hours": 24,
+  "due_hour": 18,
+  "max_tasks": 500,
+  "pickup_node_id": 1,
+  "dropoff_node_id": 20,
+  "cargo_name": "预测订单货物",
+  "cargo_weight": 30,
+  "priority": 2
+}
+```
+
+生成后调用 `POST /api/production-plans/{id}/schedule/`，请求可携带 `strict_deadlines` 和 `weights`。
 
 设备诊断与订单预测的请求体示例见各自模块的 README。
 
@@ -460,6 +518,7 @@ objective = makespan
 - 自动模式使用回测集比较 MAE、RMSE 和 MAPE，选择表现最好的模型。
 - 支持上传包含 `date`、`order_count` 的 CSV，也支持内置订单时间序列。
 - 前端显示历史曲线、未来预测曲线、模型对比和预测记录。
+- 预测结果可生成生产计划并直接进入多 AGV 排程，形成可执行的时间窗任务。
 
 ```powershell
 # 建表（新增 DemandForecast_demandforecastrun）

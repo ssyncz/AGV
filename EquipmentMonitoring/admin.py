@@ -8,6 +8,8 @@ class EquipmentDiagnosisRecordAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "equipment_code",
+        "equipment",
+        "work_order",
         "source",
         "sample_count",
         "predicted_state",
@@ -15,4 +17,4 @@ class EquipmentDiagnosisRecordAdmin(admin.ModelAdmin):
         "created_at",
     )
     list_filter = ("source", "predicted_state", "equipment_code")
-    search_fields = ("equipment_code",)
+    search_fields = ("equipment_code", "work_order__order_no")

@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import AGV, DispatchRecord, MapEdge, MapNode, MapObstacle, ScheduleRun, TransportTask
+from .models import (
+    AGV,
+    DispatchRecord,
+    MapEdge,
+    MapNode,
+    MapObstacle,
+    ProductionPlan,
+    ScheduleRun,
+    TransportTask,
+)
 
 
 @admin.register(MapNode)
@@ -26,9 +35,25 @@ class AGVAdmin(admin.ModelAdmin):
 
 @admin.register(TransportTask)
 class TransportTaskAdmin(admin.ModelAdmin):
-    list_display = ("task_no", "cargo_name", "pickup_node", "dropoff_node", "priority", "status", "assigned_agv")
+    list_display = (
+        "task_no", "cargo_name", "pickup_node", "dropoff_node", "priority",
+        "status", "work_order", "release_at", "due_at", "assigned_agv",
+    )
     list_filter = ("status", "priority")
-    search_fields = ("task_no", "cargo_name")
+    search_fields = (
+        "task_no", "cargo_name", "production_plan__plan_no", "work_order__order_no",
+    )
+
+
+@admin.register(ProductionPlan)
+class ProductionPlanAdmin(admin.ModelAdmin):
+    list_display = (
+        "plan_no", "name", "status", "forecast_run", "planning_start",
+        "planning_end", "work_order", "task_count", "created_at",
+    )
+    list_filter = ("status", "planning_start")
+    search_fields = ("plan_no", "name")
+    readonly_fields = ("created_at", "updated_at", "assumptions")
 
 
 @admin.register(DispatchRecord)
@@ -42,7 +67,8 @@ class DispatchRecordAdmin(admin.ModelAdmin):
 class ScheduleRunAdmin(admin.ModelAdmin):
     list_display = (
         "batch_id", "algorithm", "task_count", "agv_count",
-        "makespan_seconds", "improvement_percent", "created_at",
+        "makespan_seconds", "late_task_count", "on_time_rate",
+        "improvement_percent", "created_at",
     )
     list_filter = ("algorithm",)
     readonly_fields = ("batch_id", "created_at", "metrics", "assignments")
