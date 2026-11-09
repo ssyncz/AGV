@@ -60,22 +60,22 @@ onUnmounted(() => clearInterval(timer))
 
     <div class="command-strip panel mb-16">
       <RouterLink class="command-action" to="/work-orders">
-        <span>工单主线</span><strong>{{ kpis.work_order_total || 0 }}</strong><small>创建、下达与追溯</small>
+        <span>工单主线</span><strong>{{ kpis.work_order_total || 0 }}</strong><small>创建、下达与追溯</small><span class="command-target"><b>前往</b><em>生产工单中心</em><i>→</i></span>
       </RouterLink>
       <RouterLink class="command-action" to="/tasks">
-        <span>运输任务</span><strong>{{ kpis.active_tasks || 0 }}</strong><small>{{ kpis.pending_tasks || 0 }} 个待调度</small>
+        <span>运输任务</span><strong>{{ kpis.active_tasks || 0 }}</strong><small>{{ kpis.pending_tasks || 0 }} 个待调度</small><span class="command-target"><b>前往</b><em>运输任务列表</em><i>→</i></span>
       </RouterLink>
       <RouterLink class="command-action" to="/agvs">
-        <span>可用 AGV</span><strong>{{ kpis.agv_available || 0 }}/{{ kpis.agv_total || 0 }}</strong><small>空闲车辆 / 车队总数</small>
+        <span>可用 AGV</span><strong>{{ kpis.agv_available || 0 }}/{{ kpis.agv_total || 0 }}</strong><small>空闲车辆 / 车队总数</small><span class="command-target"><b>前往</b><em>AGV 车队管理</em><i>→</i></span>
       </RouterLink>
       <RouterLink class="command-action" to="/equipment">
-        <span>设备异常</span><strong>{{ (kpis.equipment_faults || 0) + (kpis.equipment_warnings || 0) }}</strong><small>{{ kpis.equipment_faults || 0 }} 故障 · {{ kpis.equipment_warnings || 0 }} 预警</small>
+        <span>设备异常</span><strong>{{ (kpis.equipment_faults || 0) + (kpis.equipment_warnings || 0) }}</strong><small>{{ kpis.equipment_faults || 0 }} 故障 · {{ kpis.equipment_warnings || 0 }} 预警</small><span class="command-target"><b>前往</b><em>设备状态监测</em><i>→</i></span>
       </RouterLink>
       <RouterLink class="command-action" to="/work-orders?quality_status=fail">
-        <span>质量不合格</span><strong>{{ kpis.quality_failed || 0 }}</strong><small>需要返工或复检</small>
+        <span>质量不合格</span><strong>{{ kpis.quality_failed || 0 }}</strong><small>需要返工或复检</small><span class="command-target"><b>前往</b><em>质量工单列表</em><i>→</i></span>
       </RouterLink>
       <RouterLink class="command-action" to="/tasks">
-        <span>交期风险</span><strong>{{ kpis.overdue_tasks || 0 }}</strong><small>已超过交期的任务</small>
+        <span>交期风险</span><strong>{{ kpis.overdue_tasks || 0 }}</strong><small>已超过交期的任务</small><span class="command-target"><b>前往</b><em>风险运输任务</em><i>→</i></span>
       </RouterLink>
     </div>
 
@@ -157,13 +157,108 @@ onUnmounted(() => clearInterval(timer))
 </template>
 
 <style scoped>
-.command-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); overflow: hidden; }
-.command-action { min-height: 104px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 16px; border-right: 1px solid var(--line); text-decoration: none; transition: background 150ms ease; }
-.command-action:last-child { border-right: 0; }
-.command-action:hover { background: #f5f9f7; }
-.command-action span { color: var(--muted); font-size: 11px; }
-.command-action strong { color: #14262e; font-size: 25px; line-height: 1.1; }
-.command-action small { color: var(--muted); font-size: 10px; }
+.command-strip {
+  counter-reset: command;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.command-action {
+  --command-accent: #4f79e8;
+  position: relative;
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+  padding: 15px 16px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #ffffff, color-mix(in srgb, var(--command-accent) 3%, white));
+  box-shadow: 0 1px 2px rgba(20, 45, 54, 0.025), 0 9px 24px rgba(20, 45, 54, 0.04);
+  text-decoration: none;
+  transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease, background 170ms ease;
+  counter-increment: command;
+}
+.command-action::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--command-accent), color-mix(in srgb, var(--command-accent) 18%, transparent));
+}
+.command-action::after {
+  content: "0" counter(command);
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  color: color-mix(in srgb, var(--command-accent) 62%, #9aa8a4);
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+}
+.command-action:nth-child(2) { --command-accent: #1ba6a3; }
+.command-action:nth-child(3) { --command-accent: #29976a; }
+.command-action:nth-child(4) { --command-accent: #c58a1b; }
+.command-action:nth-child(5) { --command-accent: #cf5260; }
+.command-action:nth-child(6) { --command-accent: #7858ce; }
+.command-action:hover {
+  border-color: color-mix(in srgb, var(--command-accent) 24%, var(--line));
+  background: linear-gradient(145deg, #ffffff, color-mix(in srgb, var(--command-accent) 6%, white));
+  box-shadow: 0 3px 6px rgba(20, 45, 54, 0.03), 0 15px 34px rgba(20, 45, 54, 0.075);
+  transform: translateY(-2px);
+}
+.command-action span { color: #526861; font-size: 11.5px; font-weight: 650; }
+.command-action strong { color: #14262e; font-size: 32px; line-height: 1; letter-spacing: -0.045em; }
+.command-action small { color: #75867f; font-size: 10px; line-height: 1.45; }
+.command-action .command-target {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--command-accent) 16%, #dfe7e4);
+  color: color-mix(in srgb, var(--command-accent) 82%, #52645f);
+  opacity: 1;
+  transition: border-color 160ms ease;
+}
+.command-target b {
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: color-mix(in srgb, var(--command-accent) 76%, #4d625d);
+  background: color-mix(in srgb, var(--command-accent) 8%, white);
+  font-size: 8.5px;
+  font-weight: 800;
+}
+.command-target em {
+  overflow: hidden;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: transform 160ms ease;
+}
+.command-target i {
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+.command-action:hover .command-target {
+  border-top-color: color-mix(in srgb, var(--command-accent) 32%, #dfe7e4);
+}
+.command-action:hover .command-target em { transform: translateX(2px); }
+.command-action:hover .command-target i { transform: translateX(3px); }
 .command-grid { grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); align-items: stretch; }
 .command-grid > .panel { height: 560px; min-height: 0; display: flex; flex-direction: column; }
 .command-grid > .panel > .panel-body { flex: 1; min-height: 0; overflow-y: auto; }
@@ -183,7 +278,7 @@ onUnmounted(() => clearInterval(timer))
 .quality-fail { color: var(--red); background: #fdeef0; }
 .quality-pass { color: var(--green); background: #eaf7f1; }
 .text-danger { color: var(--red); font-weight: 700; }
-@media (max-width: 1180px) { .command-strip { grid-template-columns: repeat(3, 1fr); } .command-action:nth-child(3n) { border-right: 0; } }
+@media (max-width: 1180px) { .command-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 900px) {
   .command-grid { grid-template-columns: 1fr; }
   .command-grid > .panel { height: 520px; }
