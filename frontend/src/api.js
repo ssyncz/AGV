@@ -1,4 +1,7 @@
+import { reactive } from 'vue'
+
 const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1'
+export const apiActivity = reactive({ pending: 0 })
 
 async function request(path, options = {}) {
   const { headers: extraHeaders, ...rest } = options
@@ -7,35 +10,40 @@ async function request(path, options = {}) {
   if (!isFormData) {
     headers['Content-Type'] = 'application/json'
   }
-  let response
+  apiActivity.pending += 1
   try {
-    response = await fetch(`${API_BASE}${path}`, { headers, ...rest })
-  } catch (err) {
-    throw new Error(`无法连接后端服务：${err.message}`)
-  }
-  const text = await response.text()
-  let data = null
-  let nonJson = false
-  if (text) {
+    let response
     try {
-      data = JSON.parse(text)
-    } catch {
-      // 后端 500 在 DEBUG 下会返回整页 HTML；只在控制台保留原文，不要把源码塞进提示条。
-      nonJson = true
-      console.error(`[api] ${path} 返回了非 JSON 内容（HTTP ${response.status}）:`,
-        text.slice(0, 2000))
+      response = await fetch(`${API_BASE}${path}`, { headers, ...rest })
+    } catch (err) {
+      throw new Error(`无法连接后端服务：${err.message}`)
     }
+    const text = await response.text()
+    let data = null
+    let nonJson = false
+    if (text) {
+      try {
+        data = JSON.parse(text)
+      } catch {
+        // 后端 500 在 DEBUG 下会返回整页 HTML；只在控制台保留原文，不要把源码塞进提示条。
+        nonJson = true
+        console.error(`[api] ${path} 返回了非 JSON 内容（HTTP ${response.status}）:`,
+          text.slice(0, 2000))
+      }
+    }
+    if (!response.ok) {
+      const fallback = response.status >= 500
+        ? `服务器内部错误（HTTP ${response.status}），详情见浏览器控制台与后端日志`
+        : `请求失败（HTTP ${response.status}）`
+      throw new Error(detailOf(data) || fallback)
+    }
+    if (nonJson) {
+      throw new Error('后端返回的不是 JSON，请检查接口地址与后端日志')
+    }
+    return data
+  } finally {
+    apiActivity.pending = Math.max(0, apiActivity.pending - 1)
   }
-  if (!response.ok) {
-    const fallback = response.status >= 500
-      ? `服务器内部错误（HTTP ${response.status}），详情见浏览器控制台与后端日志`
-      : `请求失败（HTTP ${response.status}）`
-    throw new Error(detailOf(data) || fallback)
-  }
-  if (nonJson) {
-    throw new Error('后端返回的不是 JSON，请检查接口地址与后端日志')
-  }
-  return data
 }
 
 function unwrap(data) {
@@ -119,10 +127,18 @@ export const api = {
     request(`/operations/alerts/${id}/${action}/`, { method: 'POST', body: '{}' }),
   createSite: (payload) =>
     request('/operations/sites/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateSite: (id, payload) =>
+    request(`/operations/sites/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
   createProduct: (payload) =>
     request('/operations/products/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateProduct: (id, payload) =>
+    request(`/operations/products/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
   createEquipment: (payload) =>
     request('/operations/equipment/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateEquipment: (id, payload) =>
+    request(`/operations/equipment/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  updateWorkCalendar: (id, payload) =>
+    request(`/operations/work-calendars/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
 
   // --- 视觉检测（ManufacturingVision，任务 4/5）---
   visionOverview: () => request('/vision/overview/'),

@@ -66,6 +66,26 @@ const routeShareTotal = computed(
 )
 const scheduleRun = computed(() => scheduleResult.value?.run || {})
 const scheduleEvaluation = computed(() => scheduleResult.value?.evaluation || {})
+const estimatedTaskCount = computed(() => {
+  const forecastTotal = Number(result.value?.predicted_total || 0)
+  const buffered = forecastTotal * (1 + Number(planConfig.demand_buffer_percent || 0) / 100)
+  return Math.max(0, Math.round(buffered * Number(planConfig.tasks_per_order || 0)))
+})
+const planConfigReady = computed(() => {
+  if (!result.value) return false
+  if (routeMode.value === 'multi') return validateMultiRoutes() === ''
+  return Boolean(
+    planConfig.pickup_node_id
+    && planConfig.dropoff_node_id
+    && String(planConfig.pickup_node_id) !== String(planConfig.dropoff_node_id),
+  )
+})
+const planStages = computed(() => [
+  { key: 'forecast', label: '需求预测完成', detail: result.value ? result.value.selected_model_label : '等待预测', done: Boolean(result.value) },
+  { key: 'configure', label: '计划参数就绪', detail: planConfigReady.value ? '路线与时间参数有效' : '完善计划与路线配置', done: planConfigReady.value },
+  { key: 'plan', label: '生成运输任务', detail: planResult.value ? `${planResult.value.task_count} 个任务` : '等待生成生产计划', done: Boolean(planResult.value) },
+  { key: 'schedule', label: '完成 AGV 排程', detail: scheduleResult.value ? `准点率 ${scheduleRun.value.on_time_rate}%` : '等待联合排程', done: Boolean(scheduleResult.value) },
+])
 
 const selectedMetrics = computed(() => result.value?.metrics || {})
 const candidates = computed(() => {
@@ -391,7 +411,7 @@ onUnmounted(() => {
       </div>
 
       <div v-if="subTab === 'predict'" class="grid forecast-grid mt-16">
-        <section class="panel">
+        <section class="panel forecast-config-panel">
           <div class="panel-head"><div><div class="panel-title">预测配置</div><div class="panel-desc">使用内置订单序列，或上传 date/order_count（也支持 date/sales 多序列自动汇总）</div></div></div>
           <div class="panel-body">
             <div class="form-grid">
@@ -433,7 +453,7 @@ onUnmounted(() => {
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel forecast-result-panel">
           <div class="panel-head">
             <div><div class="panel-title">预测结果</div><div class="panel-desc">历史订单与未来预测曲线</div></div>
             <span v-if="result" class="tag">{{ result.selected_model_label }}</span>
@@ -641,12 +661,18 @@ onUnmounted(() => {
         <section class="panel">
           <div class="panel-head">
             <div>
-              <div class="panel-title">生产排程</div>
-              <div class="panel-desc">按释放时间、交期、优先级和 AGV 约束进行多车联合优化</div>
+              <div class="panel-title">{{ planResult ? '生产排程' : '计划执行预览' }}</div>
+              <div class="panel-desc">{{ planResult ? '按释放时间、交期、优先级和 AGV 约束进行多车联合优化' : '确认计划规模与路线后，生成运输任务并进入 AGV 排程' }}</div>
             </div>
             <span v-if="planResult" class="tag">{{ planResult.status_display }}</span>
           </div>
           <div class="panel-body">
+            <div class="plan-stage-track">
+              <div v-for="(stage, index) in planStages" :key="stage.key" class="plan-stage" :class="{ done: stage.done, current: !stage.done && (index === 0 || planStages[index - 1].done) }">
+                <span class="plan-stage-index">{{ stage.done ? '✓' : String(index + 1).padStart(2, '0') }}</span>
+                <div><strong>{{ stage.label }}</strong><small>{{ stage.detail }}</small></div>
+              </div>
+            </div>
             <template v-if="planResult">
               <div class="grid planner-metrics">
                 <div><span>计划编号</span><strong class="mono">{{ planResult.plan_no }}</strong></div>
@@ -668,7 +694,27 @@ onUnmounted(() => {
                 {{ scheduling ? '正在联合排程...' : planResult.status === 'planned' ? '执行生产排程' : '该计划已完成排程' }}
               </button>
             </template>
-            <div v-else class="empty">完成预测并生成生产计划后，可在这里直接执行 AGV 排程</div>
+            <div v-else class="plan-preview">
+              <div class="plan-preview-head">
+                <div><span>预测计划预览</span><strong>{{ planConfig.name || `预测生产计划 #${result?.record_id || '--'}` }}</strong></div>
+                <span class="tag">{{ routeMode === 'single' ? '单一路线' : `${planRoutes.length} 条路线` }}</span>
+              </div>
+              <div class="plan-preview-grid">
+                <div><span>预测订单总量</span><strong>{{ Math.round(result?.predicted_total || 0) }}</strong><small>{{ result?.selected_model_label || '等待预测' }}</small></div>
+                <div><span>估算运输任务</span><strong>{{ estimatedTaskCount }}</strong><small>含 {{ planConfig.demand_buffer_percent }}% 需求缓冲</small></div>
+                <div><span>计划开始</span><strong>{{ planConfig.planning_start_date }}</strong><small>提前 {{ planConfig.release_lead_hours }} 小时释放</small></div>
+                <div><span>计划交期</span><strong>{{ planConfig.due_hour }}:00</strong><small>最多 {{ planConfig.max_tasks }} 个任务</small></div>
+              </div>
+              <div class="plan-preview-route">
+                <span>运输路线</span>
+                <strong v-if="routeMode === 'single'">{{ pickupNodes.find(node => node.id === planConfig.pickup_node_id)?.code || '--' }} → {{ dropoffNodes.find(node => node.id === planConfig.dropoff_node_id)?.code || '--' }}</strong>
+                <strong v-else>{{ planRoutes.length }} 条路线按任务份额分配</strong>
+                <small>{{ planConfig.cargo_name }} · 单任务 {{ planConfig.cargo_weight }} kg · 优先级 {{ planConfig.priority }}</small>
+              </div>
+              <div class="plan-preview-hint">
+                左侧参数完成并生成计划后，这里会显示实际任务数、路线数量、计划期和 AGV 排程结果。
+              </div>
+            </div>
 
             <template v-if="scheduleResult">
               <div class="notice success mt-16">
@@ -728,6 +774,52 @@ onUnmounted(() => {
 .forecast-divider { stroke: #b8c7c1; stroke-width: 1; stroke-dasharray: 4 5; }
 .forecast-axis { display: flex; justify-content: space-between; padding: 6px 42px 0; color: var(--muted); font-size: 10px; }
 .production-chain-grid { grid-template-columns: minmax(360px, 1.08fr) minmax(0, 0.92fr); align-items: start; }
+.plan-stage-track { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.plan-stage {
+  display: grid;
+  grid-template-columns: 27px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid #dfe8e4;
+  border-radius: 9px;
+  background: #f8faf9;
+  opacity: 0.68;
+}
+.plan-stage.current { border-color: #b9dcd3; background: #f1f9f6; opacity: 1; }
+.plan-stage.done { border-color: #bde1d1; background: #f2faf6; opacity: 1; }
+.plan-stage-index {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #70827b;
+  background: #e9efec;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 8px;
+  font-weight: 800;
+}
+.plan-stage.done .plan-stage-index { color: #fff; background: #2b9a76; }
+.plan-stage.current .plan-stage-index { color: #176b63; background: #dff3ed; }
+.plan-stage > div { display: grid; gap: 2px; min-width: 0; }
+.plan-stage strong { color: #425b56; font-size: 9.5px; }
+.plan-stage small { overflow: hidden; color: #8b9893; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.plan-preview { display: grid; gap: 12px; margin-top: 14px; }
+.plan-preview-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.plan-preview-head > div { display: grid; gap: 3px; }
+.plan-preview-head span { color: #7e8d88; font-size: 8.5px; }
+.plan-preview-head strong { color: #29464c; font-size: 12px; }
+.plan-preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.plan-preview-grid > div { display: grid; gap: 3px; padding: 11px 12px; border: 1px solid #dfe8e4; border-radius: 10px; background: #f8faf9; }
+.plan-preview-grid span { color: #7c8b86; font-size: 8.5px; }
+.plan-preview-grid strong { color: #244249; font-size: 17px; line-height: 1.2; }
+.plan-preview-grid small { color: #93a09b; font-size: 8px; }
+.plan-preview-route { display: grid; gap: 4px; padding: 12px 13px; border: 1px solid #dbe9e3; border-radius: 10px; background: #f5faf8; }
+.plan-preview-route span { color: #788883; font-size: 8.5px; }
+.plan-preview-route strong { color: #256d67; font-size: 12px; }
+.plan-preview-route small { color: #82918c; font-size: 8.5px; }
+.plan-preview-hint { padding: 10px 12px; border-left: 3px solid #9ccbc1; border-radius: 0 8px 8px 0; color: #74857f; background: #f4f9f7; font-size: 9px; line-height: 1.55; }
 .deadline-option { display: flex; gap: 10px; align-items: flex-start; padding: 12px 13px; border: 1px solid #dce4e1; border-radius: 10px; background: #f8faf9; cursor: pointer; }
 .deadline-option input { margin-top: 2px; accent-color: var(--cyan); }
 .deadline-option span { display: flex; flex-direction: column; gap: 3px; }
@@ -749,6 +841,10 @@ onUnmounted(() => {
   .route-edit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .route-editor-head { flex-direction: column; }
   .route-editor-actions { justify-content: flex-start; }
+}
+@media (max-width: 620px) {
+  .plan-stage-track,
+  .plan-preview-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 620px) { .route-edit-grid { grid-template-columns: 1fr; } }
 </style>

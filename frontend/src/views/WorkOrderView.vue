@@ -44,6 +44,18 @@ function formatTime(value) {
   return new Date(value).toLocaleString('zh-CN', { hour12: false })
 }
 
+function priorityText(value) {
+  return { 1: '低优先级', 2: '普通优先级', 3: '高优先级', 4: '紧急工单' }[value] || '普通优先级'
+}
+
+function selectedSiteName() {
+  return master.value.sites?.find((item) => item.id === createForm.site)?.name || '未选择站点'
+}
+
+function selectedProductName() {
+  return master.value.products?.find((item) => item.id === createForm.product)?.name || '未选择产品'
+}
+
 function runLastCompletion(run) {
   const times = (run.tasks || [])
     .map((task) => (task.scheduled_end ? new Date(task.scheduled_end).getTime() : null))
@@ -74,10 +86,25 @@ function switchWorkOrderMode(mode) {
   })
 }
 
+function backToQueue() {
+  router.push({ path: '/work-orders' })
+}
+
 async function loadOrders() {
   loading.value = true
   try {
     orders.value = await api.workOrders(queryString())
+    if (
+      pageMode.value === 'center'
+      && !selectedId.value
+      && orders.value.length
+      && window.matchMedia('(min-width: 981px)').matches
+    ) {
+      await router.replace({
+        path: '/work-orders',
+        query: { ...route.query, work_order: orders.value[0].id },
+      })
+    }
   } catch (error) {
     emit('notify', { message: `工单加载失败：${error.message}`, type: 'error' })
   } finally {
@@ -201,15 +228,15 @@ onMounted(async () => {
 
 <template>
   <div class="workorder-page">
-    <section class="workorder-entry-menu">
-      <button type="button" class="workorder-mode-card" :class="{ active: pageMode === 'create' }" @click="switchWorkOrderMode('create')">
-        <span class="workorder-mode-icon">＋</span>
-        <span><strong>新建生产工单</strong><small>建立新的生产任务和工序执行主线</small></span>
-      </button>
-      <button type="button" class="workorder-mode-card" :class="{ active: pageMode === 'center' }" @click="switchWorkOrderMode('center')">
-        <span class="workorder-mode-icon">▤</span>
-        <span><strong>生产工单中心</strong><small>查询工单、推进工序并查看执行记录</small></span>
-      </button>
+    <section class="workorder-command-bar">
+      <div class="workorder-command-copy">
+        <span class="workorder-command-mark">▤</span>
+        <div><strong>生产工单工作台</strong><small>从队列选择工单，在同一工作区完成下达、执行、质检与追溯</small></div>
+      </div>
+      <div class="workorder-mode-tabs">
+        <button type="button" :class="{ active: pageMode === 'center' }" @click="switchWorkOrderMode('center')">工单中心</button>
+        <button type="button" :class="{ active: pageMode === 'create' }" @click="switchWorkOrderMode('create')">＋ 新建工单</button>
+      </div>
     </section>
 
     <div v-if="pageMode === 'create'" class="workorder-create-layout">
@@ -230,45 +257,91 @@ onMounted(async () => {
         <div class="notice info mt-16">通用操作链路：草稿 → 下达 → 执行 → 待质检 → 完成；异常会统一生成告警。</div>
       </div>
     </aside>
+    <aside class="panel create-preview-panel">
+      <div class="panel-head"><div><div class="panel-title">工单预览</div><div class="panel-desc">创建前核对工单信息与后续业务链路</div></div><span class="tag">草稿</span></div>
+      <div class="panel-body">
+        <article class="create-preview-card">
+          <div class="preview-card-head"><span class="mono">NEW WORK ORDER</span><span class="preview-priority">{{ priorityText(createForm.priority) }}</span></div>
+          <h3>{{ createForm.title || '未命名生产工单' }}</h3>
+          <div class="preview-context">{{ selectedSiteName() }} · {{ selectedProductName() }}</div>
+          <div class="preview-numbers">
+            <div><span>计划数量</span><strong>{{ createForm.quantity || 0 }}</strong><small>件</small></div>
+            <div><span>计划开始</span><strong>{{ createForm.planned_start || '待设置' }}</strong></div>
+            <div><span>要求完成</span><strong>{{ createForm.due_at ? formatTime(createForm.due_at) : '待设置' }}</strong></div>
+          </div>
+        </article>
+
+        <section class="create-flow-panel">
+          <div class="create-section-title">工单生命周期</div>
+          <div class="create-flow">
+            <div class="active"><span>01</span><div><strong>草稿</strong><small>当前创建阶段</small></div></div>
+            <div><span>02</span><div><strong>下达</strong><small>分配执行资源</small></div></div>
+            <div><span>03</span><div><strong>执行</strong><small>推进生产工序</small></div></div>
+            <div><span>04</span><div><strong>质检</strong><small>质量门禁确认</small></div></div>
+            <div><span>05</span><div><strong>完成</strong><small>进入归档追溯</small></div></div>
+          </div>
+        </section>
+
+        <section class="create-impact-panel">
+          <div class="create-section-title">创建后将进入</div>
+          <div class="create-impact-grid">
+            <div><span>▤</span><strong>工单主线</strong><small>下达、工序执行与状态追踪</small></div>
+            <div><span>◇</span><strong>运输任务</strong><small>生产配送与 AGV 调度</small></div>
+            <div><span>◈</span><strong>质量追溯</strong><small>视觉质检与设备诊断记录</small></div>
+          </div>
+        </section>
+
+        <div v-if="createForm.notes" class="create-preview-note"><strong>备注</strong><span>{{ createForm.notes }}</span></div>
+      </div>
+    </aside>
     </div>
 
-    <main v-else>
-      <section class="panel">
+    <main v-else class="workorder-workspace" :class="{ 'has-selection': selectedOrder }">
+      <aside class="panel workorder-queue-panel">
         <div class="panel-head">
-          <div><div class="panel-title">生产工单中心</div><div class="panel-desc">按业务状态和质量状态追踪工单</div></div>
-          <div class="toolbar-right">
-            <input v-model="filters.q" class="input filter-input" placeholder="搜索工单或产品..." @keyup.enter="loadOrders" />
-            <select v-model="filters.status" class="select" @change="loadOrders"><option value="">全部状态</option><option value="draft">草稿</option><option value="released">已下达</option><option value="in_progress">执行中</option><option value="quality_check">待质检</option><option value="blocked">已阻塞</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select>
-            <select v-model="filters.quality_status" class="select" @change="loadOrders"><option value="">全部质检</option><option value="pending">待检</option><option value="pass">合格</option><option value="fail">不合格</option><option value="waived">让步放行</option></select>
-            <button class="btn btn-sm" :disabled="loading" @click="loadOrders">刷新</button>
-          </div>
+          <div><div class="panel-title">工单队列</div><div class="panel-desc">选择工单后在右侧查看完整执行链路</div></div>
+          <button class="btn btn-sm queue-refresh" :disabled="loading" @click="loadOrders">{{ loading ? '加载中' : '刷新' }}</button>
         </div>
         <div class="panel-body">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>工单</th><th>站点 / 产品</th><th>状态</th><th>质检</th><th>任务进度</th><th>告警</th><th>交期</th><th>操作</th></tr></thead>
-              <tbody>
-                <tr v-for="order in orders" :key="order.id" :class="{ selected: selectedId === order.id }">
-                  <td><div class="cell-main mono">{{ order.order_no }}</div><div class="cell-sub">{{ order.title }}</div></td>
-                  <td>{{ order.site_detail?.name || '--' }}<div class="cell-sub">{{ order.product_detail?.name || '--' }} · {{ order.quantity }}</div></td>
-                  <td><StatusBadge :status="order.status" :label="order.status_display" /></td>
-                  <td><span class="quality-pill" :class="`quality-${order.quality_status}`">{{ order.quality_status_display }}</span></td>
-                  <td>{{ order.completed_task_count || 0 }}/{{ order.task_count || 0 }}</td>
-                  <td><span :class="{ 'text-danger': order.open_alert_count }">{{ order.open_alert_count || 0 }}</span></td>
-                  <td class="small">{{ formatTime(order.due_at) }}</td>
-                  <td><RouterLink class="link-btn" :to="{ path: '/work-orders', query: { work_order: order.id } }">查看</RouterLink></td>
-                </tr>
-                <tr v-if="!orders.length"><td colspan="8"><div class="empty">暂无工单</div></td></tr>
-              </tbody>
-            </table>
+          <div class="queue-filters">
+            <input v-model="filters.q" class="input" placeholder="搜索工单、产品..." @keyup.enter="loadOrders" />
+            <div class="queue-filter-row">
+              <select v-model="filters.status" class="select" @change="loadOrders"><option value="">全部状态</option><option value="draft">草稿</option><option value="released">已下达</option><option value="in_progress">执行中</option><option value="quality_check">待质检</option><option value="blocked">已阻塞</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select>
+              <select v-model="filters.quality_status" class="select" @change="loadOrders"><option value="">全部质检</option><option value="pending">待检</option><option value="pass">合格</option><option value="fail">不合格</option><option value="waived">让步放行</option></select>
+            </div>
+          </div>
+          <div class="queue-summary"><span>共 {{ orders.length }} 张工单</span><span>{{ orders.filter(order => order.open_alert_count).length }} 张含告警</span></div>
+          <div class="workorder-queue">
+            <RouterLink
+              v-for="order in orders"
+              :key="order.id"
+              class="workorder-queue-item"
+              :class="{ active: selectedId === order.id }"
+              :to="{ path: '/work-orders', query: { work_order: order.id } }"
+            >
+              <div class="queue-item-head">
+                <span class="queue-order-no mono">{{ order.order_no }}</span>
+                <StatusBadge :status="order.status" :label="order.status_display" />
+              </div>
+              <strong class="queue-order-title">{{ order.title }}</strong>
+              <div class="queue-item-meta">{{ order.product_detail?.name || '--' }} · {{ order.quantity }} {{ order.product_detail?.unit || '件' }}</div>
+              <div class="queue-item-foot">
+                <span>运输 {{ order.completed_task_count || 0 }}/{{ order.task_count || 0 }}</span>
+                <span class="quality-pill" :class="`quality-${order.quality_status}`">{{ order.quality_status_display }}</span>
+                <span :class="{ 'text-danger': order.open_alert_count }">{{ order.open_alert_count || 0 }} 告警</span>
+              </div>
+              <div class="queue-item-due">交期 {{ formatTime(order.due_at) }}</div>
+            </RouterLink>
+            <div v-if="!orders.length" class="empty">没有符合筛选条件的工单</div>
           </div>
         </div>
-      </section>
+      </aside>
 
-      <section v-if="selectedOrder" class="panel mt-16">
+      <section v-if="selectedOrder" class="panel workorder-detail-panel">
         <div class="panel-head">
           <div><div class="panel-title">{{ selectedOrder.order_no }} · {{ selectedOrder.title }}</div><div class="panel-desc">{{ selectedOrder.site_detail?.name }} · {{ selectedOrder.product_detail?.name }} · {{ selectedOrder.quantity }} {{ selectedOrder.product_detail?.unit || '件' }}</div></div>
           <div class="toolbar-right">
+            <button class="btn btn-sm workorder-mobile-back" @click="backToQueue">← 返回队列</button>
             <button v-if="selectedOrder.status === 'draft'" class="btn btn-sm btn-primary" :disabled="busy === 'release'" @click="runAction('release')">下达工单</button>
             <button v-if="selectedOrder.status === 'released'" class="btn btn-sm btn-primary" :disabled="busy === 'start'" @click="runAction('start')">开始执行</button>
             <button v-if="['in_progress', 'quality_check'].includes(selectedOrder.status)" class="btn btn-sm" :disabled="busy === 'quality-check'" @click="runAction('quality-check')">提交质检</button>
@@ -329,7 +402,10 @@ onMounted(async () => {
             </section>
 
             <section class="subpanel task-create-subpanel">
-              <div class="subpanel-title">新增运输任务</div>
+              <div class="subpanel-title-row">
+                <div class="subpanel-title">新增运输任务</div>
+                <RouterLink class="subpanel-link" to="/dispatch">查看调度中心 →</RouterLink>
+              </div>
               <div class="form-grid single mt-12">
                 <div class="field"><label>取货点</label><select v-model="taskForm.pickup_node_id" class="select"><option v-for="node in pickupNodes" :key="node.id" :value="node.id">{{ node.code }} · {{ node.name }}</option></select></div>
                 <div class="field"><label>放货点</label><select v-model="taskForm.dropoff_node_id" class="select"><option v-for="node in dropoffNodes" :key="node.id" :value="node.id">{{ node.code }} · {{ node.name }}</option></select></div>
@@ -337,7 +413,6 @@ onMounted(async () => {
                 <div class="field"><label>重量 (kg)</label><input v-model.number="taskForm.cargo_weight" class="input" type="number" min="0.1" step="0.1" /></div>
               </div>
               <button class="btn btn-primary btn-block mt-12" :disabled="busy === 'task'" @click="addTask">{{ busy === 'task' ? '正在创建...' : '加入运输队列' }}</button>
-              <RouterLink class="btn btn-block mt-8" to="/dispatch">前往调度中心</RouterLink>
             </section>
           </div>
 
@@ -402,6 +477,13 @@ onMounted(async () => {
           </div>
         </div>
       </section>
+      <section v-else class="panel workorder-detail-empty">
+        <div class="workorder-empty-visual">
+          <span class="workorder-empty-icon">▤</span>
+          <strong>从工单队列开始</strong>
+          <p>选择左侧工单后，这里会显示工序执行、运输任务、质量记录和业务时间线。</p>
+        </div>
+      </section>
     </main>
   </div>
 </template>
@@ -417,9 +499,52 @@ onMounted(async () => {
 .workorder-mode-card > span:last-child { display: grid; gap: 4px; }
 .workorder-mode-card strong { color: var(--text); font-size: 14px; }
 .workorder-mode-card small { color: var(--muted); font-size: 10px; line-height: 1.45; }
-.workorder-create-layout { display: grid; grid-template-columns: minmax(0, 620px); align-items: start; }
+.workorder-create-layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr); gap: 16px; align-items: start; }
 .workorder-create-layout .create-panel { position: static; }
 .create-panel { position: sticky; top: 112px; }
+.create-preview-panel { position: sticky; top: 18px; overflow: hidden; }
+.create-preview-panel > .panel-body { display: grid; gap: 12px; padding: 16px; }
+.create-preview-card {
+  display: grid;
+  gap: 8px;
+  padding: 17px;
+  border: 1px solid #d9e7e1;
+  border-radius: 14px;
+  background:
+    linear-gradient(rgba(48, 104, 96, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(48, 104, 96, 0.022) 1px, transparent 1px),
+    radial-gradient(circle at 92% 10%, rgba(14, 135, 146, 0.09), transparent 30%),
+    #fbfdfc;
+  background-size: 22px 22px, 22px 22px, auto, auto;
+}
+.preview-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.preview-card-head > span:first-child { color: #7c8f89; font-size: 8px; letter-spacing: 0.08em; }
+.preview-priority { padding: 3px 7px; border-radius: 999px; color: #85651e; background: #fff8e8; font-size: 8.5px; font-weight: 720; }
+.create-preview-card h3 { margin: 2px 0 0; color: #1c3940; font-size: 17px; line-height: 1.4; }
+.preview-context { color: #71817c; font-size: 9.5px; }
+.preview-numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin-top: 5px; }
+.preview-numbers > div { min-width: 0; display: grid; gap: 2px; padding: 9px; border: 1px solid #e0e9e5; border-radius: 8px; background: rgba(255, 255, 255, 0.7); }
+.preview-numbers span { color: #88968f; font-size: 7.5px; }
+.preview-numbers strong { overflow: hidden; color: #2a474d; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.preview-numbers small { color: #96a19d; font-size: 7px; }
+.create-flow-panel,
+.create-impact-panel { padding: 13px; border: 1px solid #dfe8e4; border-radius: 11px; background: #fbfcfb; }
+.create-section-title { margin-bottom: 9px; color: #344e54; font-size: 10.5px; font-weight: 780; }
+.create-flow { display: grid; gap: 4px; }
+.create-flow > div { display: grid; grid-template-columns: 25px minmax(0, 1fr); gap: 8px; align-items: center; padding: 7px 8px; border-radius: 8px; color: #81908b; background: #f5f8f6; }
+.create-flow > div.active { color: #17665f; background: #eaf7f2; box-shadow: inset 3px 0 0 var(--cyan); }
+.create-flow span { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 7px; background: rgba(255, 255, 255, 0.76); font-family: "Cascadia Mono", Consolas, monospace; font-size: 7.5px; font-weight: 800; }
+.create-flow > div > div { display: grid; gap: 1px; }
+.create-flow strong { color: inherit; font-size: 9.5px; }
+.create-flow small { color: #93a09b; font-size: 7.5px; }
+.create-impact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+.create-impact-grid > div { display: grid; gap: 4px; padding: 10px; border: 1px solid #e1e9e5; border-radius: 8px; background: #fff; }
+.create-impact-grid > div > span { color: var(--cyan); font-size: 14px; }
+.create-impact-grid strong { color: #304a50; font-size: 9px; }
+.create-impact-grid small { color: #8b9893; font-size: 7.5px; line-height: 1.4; }
+.create-preview-note { display: grid; gap: 4px; padding: 10px 11px; border: 1px solid #dde8e3; border-radius: 9px; background: #f8faf9; }
+.create-preview-note strong { color: #566b65; font-size: 8.5px; }
+.create-preview-note span { color: #7d8c87; font-size: 9px; line-height: 1.5; white-space: pre-wrap; }
 .form-grid.single { grid-template-columns: minmax(0, 1fr); }
 .toolbar-right { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
 .selected { background: #f1f8f6; }
@@ -435,6 +560,31 @@ onMounted(async () => {
 .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .subpanel { padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfb; }
 .subpanel-title { font-size: 12px; font-weight: 750; color: var(--text); }
+.subpanel-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.subpanel-link {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border: 1px solid #cbded8;
+  border-radius: 8px;
+  color: var(--cyan);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 7px rgba(20, 45, 54, 0.04);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+.subpanel-link:hover {
+  color: #0b6971;
+  border-color: #9fc7bf;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(20, 45, 54, 0.07);
+  text-decoration: none;
+}
 .event-timeline { display: grid; gap: 0; }
 .timeline-panel, .task-create-subpanel { height: 430px; min-height: 0; }
 .timeline-panel { display: flex; flex-direction: column; overflow: hidden; }
@@ -473,6 +623,200 @@ onMounted(async () => {
 .schedule-run-summary-metrics { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 9px; }
 .schedule-run-summary-metrics span { display: flex; align-items: baseline; gap: 4px; }
 .schedule-run-summary-metrics strong { color: var(--text); font-size: 12px; }
+.workorder-command-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 16px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 88% 20%, rgba(14, 135, 146, 0.07), transparent 28%),
+    linear-gradient(135deg, #ffffff, #f8fbf9);
+  box-shadow: 0 8px 24px rgba(20, 45, 54, 0.04);
+}
+.workorder-command-copy { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.workorder-command-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(14, 135, 146, 0.16);
+  border-radius: 11px;
+  color: var(--cyan);
+  background: rgba(233, 247, 243, 0.8);
+  font-size: 17px;
+}
+.workorder-command-copy > div { display: grid; gap: 3px; min-width: 0; }
+.workorder-command-copy strong { color: #173039; font-size: 13px; font-weight: 800; }
+.workorder-command-copy small { color: var(--muted); font-size: 9.5px; line-height: 1.4; }
+.workorder-mode-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #dbe5e0;
+  border-radius: 11px;
+  background: #eef4f1;
+}
+.workorder-mode-tabs button {
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  color: #677a73;
+  background: transparent;
+  font-size: 10.5px;
+  font-weight: 680;
+  white-space: nowrap;
+}
+.workorder-mode-tabs button:hover { color: #1c4a48; background: rgba(255, 255, 255, 0.62); }
+.workorder-mode-tabs button.active {
+  color: #123d3e;
+  background: #ffffff;
+  box-shadow: 0 2px 7px rgba(20, 45, 54, 0.08), inset 0 -1px 0 rgba(14, 135, 146, 0.12);
+}
+.workorder-workspace {
+  display: grid;
+  grid-template-columns: clamp(260px, 18vw, 300px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.workorder-queue-panel {
+  position: sticky;
+  top: 18px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 36px);
+  overflow: hidden;
+}
+.workorder-queue-panel .panel-head { min-height: 68px; padding: 14px 15px 12px; }
+.workorder-queue-panel .panel-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+.queue-refresh { min-width: 58px; }
+.queue-filters { display: grid; gap: 8px; }
+.queue-filter-row { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 7px; }
+.queue-filters .input,
+.queue-filters .select { min-height: 36px; font-size: 10.5px; }
+.queue-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 2px 8px;
+  color: #84928d;
+  font-size: 9px;
+}
+.workorder-queue {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  overflow-y: auto;
+  padding: 1px 3px 1px 1px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(92, 143, 136, 0.25) transparent;
+}
+.workorder-queue-item {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  overflow: hidden;
+  padding: 11px 11px 10px;
+  border: 1px solid #dce6e1;
+  border-radius: 11px;
+  color: inherit;
+  background: linear-gradient(145deg, #ffffff, #f9fbfa);
+  text-decoration: none;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+.workorder-queue-item::before {
+  content: "";
+  position: absolute;
+  inset: 8px auto 8px 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: transparent;
+}
+.workorder-queue-item:hover {
+  border-color: #b9cec7;
+  background: #ffffff;
+  box-shadow: 0 7px 18px rgba(20, 45, 54, 0.055);
+  transform: translateY(-1px);
+}
+.workorder-queue-item.active {
+  border-color: rgba(14, 135, 146, 0.35);
+  background: linear-gradient(90deg, rgba(14, 135, 146, 0.075), rgba(255, 255, 255, 0.8));
+  box-shadow: 0 7px 18px rgba(14, 94, 95, 0.07);
+}
+.workorder-queue-item.active::before { background: var(--cyan); box-shadow: 0 0 10px rgba(14, 135, 146, 0.32); }
+.queue-item-head,
+.queue-item-foot { display: flex; align-items: center; justify-content: space-between; gap: 7px; }
+.queue-order-no { color: #155b62; font-size: 9.5px; font-weight: 760; }
+.queue-item-head :deep(.badge) { padding: 3px 6px; font-size: 8px; }
+.queue-order-title {
+  overflow: hidden;
+  color: #20363e;
+  font-size: 11.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.queue-item-meta { overflow: hidden; color: #7b8984; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.queue-item-foot { color: #71827b; font-size: 8.5px; }
+.queue-item-foot .quality-pill { padding: 2px 6px; font-size: 8px; }
+.queue-item-due { color: #96a19d; font-size: 8.5px; }
+.workorder-queue-panel .empty { padding: 32px 12px; }
+.workorder-detail-panel { min-width: 0; }
+.workorder-detail-empty {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(14, 135, 146, 0.055), transparent 36%),
+    #ffffff;
+}
+.workorder-empty-visual { max-width: 330px; display: grid; justify-items: center; gap: 9px; padding: 30px; text-align: center; }
+.workorder-empty-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(14, 135, 146, 0.15);
+  border-radius: 16px;
+  color: var(--cyan);
+  background: #f1f8f6;
+  font-size: 23px;
+}
+.workorder-empty-visual strong { color: #244049; font-size: 14px; }
+.workorder-empty-visual p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
+.workorder-mobile-back { display: none; }
+@media (max-width: 980px) {
+  .workorder-workspace { grid-template-columns: minmax(0, 1fr); }
+  .workorder-create-layout { grid-template-columns: minmax(0, 1fr); }
+  .create-preview-panel { position: static; }
+  .workorder-queue-panel { position: static; max-height: none; }
+  .workorder-queue { max-height: 430px; }
+  .workorder-workspace.has-selection .workorder-queue-panel { display: none; }
+  .workorder-mobile-back { display: inline-flex; }
+}
+@media (max-width: 760px) {
+  .workorder-command-bar { align-items: stretch; flex-direction: column; gap: 11px; }
+  .workorder-mode-tabs { align-self: stretch; }
+  .workorder-mode-tabs button { flex: 1; }
+  .workorder-detail-panel > .panel-head { gap: 10px; }
+  .workorder-detail-panel > .panel-head .toolbar-right { width: 100%; justify-content: flex-start; }
+  .preview-numbers,
+  .create-impact-grid { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 1200px) { .workorder-layout { grid-template-columns: 1fr; } .create-panel { position: static; } .order-metrics { grid-template-columns: repeat(3, 1fr); } .operation-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .workorder-entry-menu { grid-template-columns: 1fr; } }
 @media (max-width: 760px) { .detail-grid, .order-metrics { grid-template-columns: 1fr; } .schedule-run-summary-head { align-items: flex-start; flex-direction: column; } }

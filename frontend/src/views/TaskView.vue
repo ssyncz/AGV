@@ -1,6 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { api } from '../api'
 import StatusBadge from '../components/StatusBadge.vue'
 
@@ -9,6 +9,7 @@ const props = defineProps({
   nodes: { type: Array, default: () => [] },
 })
 const route = useRoute()
+const router = useRouter()
 const emit = defineEmits(['refresh', 'notify'])
 const query = ref('')
 const statusFilter = ref('')
@@ -67,6 +68,17 @@ const workOrderGroups = computed(() => {
     })
     .sort((left, right) => left.work_order_no.localeCompare(right.work_order_no, 'zh-CN'))
 })
+
+watch(workOrderGroups, (groups) => {
+  if (
+    !planFilter.value
+    && !workOrderFilter.value
+    && groups.length
+    && window.matchMedia('(min-width: 981px)').matches
+  ) {
+    router.replace({ path: '/tasks', query: { work_order: groups[0].id } })
+  }
+}, { immediate: true })
 
 const filtered = computed(() => {
   const keyword = query.value.trim().toLowerCase()
@@ -147,6 +159,10 @@ function taskEntryLink(group) {
   return { path: '/tasks', query: { work_order: group.id } }
 }
 
+function backToQueue() {
+  router.push({ path: '/tasks' })
+}
+
 function orderRangeLabel(run) {
   if (!run.schedule_run) return '尚未生成排期'
   return `全局顺序 ${run.dispatch_order_start}-${run.dispatch_order_end}`
@@ -186,14 +202,20 @@ async function runAction(task, action) {
 </script>
 
 <template>
-  <section v-if="isGroupView" class="panel">
-    <div class="panel-head">
-      <div><div class="panel-title">按工单进入运输任务</div><div class="panel-desc">先选择生产工单，再查看该工单下的全部运输任务与调度顺序</div></div>
-      <span class="tag">{{ workOrderGroups.length }} 个工单入口</span>
-    </div>
-    <div class="panel-body">
-      <div v-if="workOrderGroups.length" class="workorder-entry-grid">
-        <RouterLink v-for="group in workOrderGroups" :key="group.id" :to="taskEntryLink(group)" class="workorder-entry">
+  <div class="task-workspace" :class="{ 'has-selection': !isGroupView }">
+    <aside class="panel task-queue-panel">
+      <div class="panel-head">
+        <div><div class="panel-title">工单任务队列</div><div class="panel-desc">选择工单查看运输任务与排期</div></div>
+        <span class="queue-count">{{ workOrderGroups.length }}</span>
+      </div>
+      <div class="panel-body">
+        <div class="task-queue-summary">
+          <span>任务 {{ tasks.length }}</span>
+          <span>已排程 {{ tasks.filter(task => task.dispatch_order > 0).length }}</span>
+          <span>待调度 {{ tasks.filter(task => task.status === 'pending').length }}</span>
+        </div>
+        <div v-if="workOrderGroups.length" class="task-group-list">
+        <RouterLink v-for="group in workOrderGroups" :key="group.id" :to="taskEntryLink(group)" class="workorder-entry" :class="{ active: workOrderFilter === group.id }">
           <div class="workorder-entry-head">
             <div>
               <div class="workorder-entry-no mono">{{ group.work_order_no }}</div>
@@ -212,19 +234,20 @@ async function runAction(task, action) {
             <span class="link-btn">{{ group.scheduleRunCount }} 个排期 · 查看任务顺序</span>
           </div>
         </RouterLink>
+        </div>
+        <div v-else class="empty">暂无运输任务。请先生成生产计划或从工单创建运输任务。</div>
       </div>
-      <div v-else class="empty">暂无运输任务。请先生成生产计划或从工单创建运输任务。</div>
-    </div>
-  </section>
+    </aside>
 
-  <section v-else class="panel">
+    <div class="task-detail-column">
+  <section v-if="!isGroupView" class="panel">
     <div class="panel-head">
       <div>
         <div class="panel-title">{{ workOrderFilter ? `工单 ${currentTaskGroup?.work_order_no || workOrderFilter}` : '生产计划运输任务' }}</div>
         <div class="panel-desc">{{ workOrderFilter ? '任务按全局调度顺序排列，并显示对应 AGV 的车内执行顺序' : `计划 ID ${planFilter} 下的任务与执行顺序` }}</div>
       </div>
       <div class="toolbar-right">
-        <RouterLink class="btn btn-sm" to="/tasks">返回工单入口</RouterLink>
+        <button class="btn btn-sm task-mobile-back" @click="backToQueue">← 返回队列</button>
         <span v-if="planFilter" class="tag">计划 ID {{ planFilter }}</span>
         <span v-if="workOrderFilter" class="tag">工单 {{ currentTaskGroup?.work_order_no || workOrderFilter }}</span>
         <input v-model="query" class="input filter-input" placeholder="搜索任务、货物或 AGV..." />
@@ -303,20 +326,49 @@ async function runAction(task, action) {
       <div v-else class="empty mt-16">该筛选条件下没有运输任务</div>
     </div>
   </section>
+      <section v-else class="panel task-detail-empty">
+        <div class="task-empty-visual">
+          <span>◇</span>
+          <strong>选择工单查看运输任务</strong>
+          <p>右侧会展示该工单的排期批次、调度顺序、AGV 分配和完整路线。</p>
+        </div>
+      </section>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+.task-workspace { display: grid; grid-template-columns: clamp(350px, 27vw, 430px) minmax(0, 1fr); gap: 18px; align-items: stretch; }
+.task-queue-panel { position: sticky; top: 18px; display: flex; flex-direction: column; min-height: 580px; max-height: calc(100vh - 36px); overflow: hidden; }
+.task-queue-panel .panel-head { min-height: 68px; padding: 14px 15px 12px; }
+.task-queue-panel .panel-body { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 14px; }
+.queue-count { min-width: 29px; height: 25px; display: grid; place-items: center; border: 1px solid #d4e5df; border-radius: 8px; color: #25776f; background: #f1f8f5; font-size: 9px; font-weight: 800; }
+.task-queue-summary { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 1px solid #dfe8e4; border-radius: 9px; color: #667871; background: #f8faf9; font-size: 10.5px; }
+.task-queue-summary span + span::before { content: "·"; margin-right: 9px; color: #b7c4bf; }
+.task-group-list { flex: 1; min-height: 0; display: grid; align-content: start; gap: 8px; margin-top: 9px; overflow-y: auto; padding: 1px 3px 1px 1px; scrollbar-width: thin; scrollbar-color: rgba(92, 143, 136, 0.25) transparent; }
 .workorder-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.workorder-entry { display: grid; gap: 14px; padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfb; color: inherit; text-decoration: none; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
-.workorder-entry:hover { border-color: #a9ccc5; background: #f5faf8; transform: translateY(-1px); }
+.workorder-entry { position: relative; display: grid; gap: 12px; overflow: hidden; padding: 16px; border: 1px solid #dce6e1; border-radius: 12px; background: linear-gradient(145deg, #ffffff, #f9fbfa); color: inherit; text-decoration: none; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease, box-shadow 160ms ease; }
+.workorder-entry::before { content: ""; position: absolute; inset: 8px auto 8px 0; width: 3px; border-radius: 0 3px 3px 0; background: transparent; }
+.workorder-entry:hover { border-color: #a9ccc5; background: #fff; box-shadow: 0 7px 18px rgba(20, 45, 54, 0.055); transform: translateY(-1px); }
+.workorder-entry.active { border-color: rgba(14, 135, 146, 0.34); background: linear-gradient(90deg, rgba(14, 135, 146, 0.075), rgba(255, 255, 255, 0.82)); box-shadow: 0 7px 18px rgba(14, 94, 95, 0.07); }
+.workorder-entry.active::before { background: var(--cyan); }
 .workorder-entry-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.workorder-entry-no { color: #17363e; font-size: 14px; font-weight: 800; }
-.workorder-entry-arrow { color: var(--cyan); font-size: 21px; line-height: 1; }
-.workorder-entry-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-.workorder-entry-stats > div { display: grid; gap: 4px; padding: 9px; border-radius: 8px; background: #eef4f1; }
-.workorder-entry-stats span { color: var(--muted); font-size: 9px; }
-.workorder-entry-stats strong { font-size: 16px; }
-.workorder-entry-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.workorder-entry .cell-sub { font-size: 10px; line-height: 1.5; }
+.workorder-entry-no { color: #17363e; font-size: 13px; font-weight: 800; }
+.workorder-entry-arrow { color: var(--cyan); font-size: 22px; line-height: 1; }
+.workorder-entry-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.workorder-entry-stats > div { display: grid; gap: 4px; padding: 10px; border-radius: 8px; background: #eef4f1; }
+.workorder-entry-stats span { color: var(--muted); font-size: 10px; }
+.workorder-entry-stats strong { font-size: 18px; }
+.workorder-entry-foot { display: flex; align-items: center; justify-content: space-between; gap: 7px; flex-wrap: wrap; font-size: 10px; }
+.workorder-entry-foot :deep(.badge) { padding: 3px 7px; font-size: 8.5px; }
+.task-detail-column { min-width: 0; }
+.task-detail-empty { min-height: 440px; display: grid; place-items: center; background: radial-gradient(circle at center, rgba(14, 135, 146, 0.055), transparent 38%), #fff; }
+.task-empty-visual { max-width: 330px; display: grid; justify-items: center; gap: 9px; padding: 28px; text-align: center; }
+.task-empty-visual > span { width: 54px; height: 54px; display: grid; place-items: center; border: 1px solid rgba(14, 135, 146, 0.15); border-radius: 16px; color: var(--cyan); background: #f1f8f6; font-size: 24px; }
+.task-empty-visual strong { color: #244049; font-size: 14px; }
+.task-empty-visual p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
+.task-mobile-back { display: none; }
 .workorder-context-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: #f8faf9; }
 .workorder-context-strip > div { display: grid; gap: 3px; }
 .workorder-context-strip span { color: var(--muted); font-size: 9px; }
@@ -330,5 +382,15 @@ async function runAction(task, action) {
 .schedule-run-metrics span { display: flex; align-items: baseline; gap: 4px; }
 .schedule-run-metrics strong { color: var(--text); font-size: 12px; }
 .schedule-run-table { border: 0; }
-@media (max-width: 980px) { .workorder-entry-grid { grid-template-columns: 1fr; } .workorder-context-strip { grid-template-columns: repeat(3, 1fr); } .schedule-run-head { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 980px) {
+  .task-workspace { grid-template-columns: minmax(0, 1fr); }
+  .task-queue-panel { position: static; min-height: 0; max-height: none; }
+  .task-group-list { max-height: 440px; }
+  .task-workspace.has-selection .task-queue-panel { display: none; }
+  .task-workspace:not(.has-selection) .task-detail-column { display: none; }
+  .task-mobile-back { display: inline-flex; }
+  .workorder-entry-grid { grid-template-columns: 1fr; }
+  .workorder-context-strip { grid-template-columns: repeat(3, 1fr); }
+  .schedule-run-head { align-items: flex-start; flex-direction: column; }
+}
 </style>

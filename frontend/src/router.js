@@ -1,16 +1,17 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import AgvView from './views/AgvView.vue'
-import AlertCenterView from './views/AlertCenterView.vue'
-import CommandCenterView from './views/CommandCenterView.vue'
-import DispatchView from './views/DispatchView.vue'
-import EquipmentView from './views/EquipmentView.vue'
-import ForecastView from './views/ForecastView.vue'
-import MapView from './views/MapView.vue'
-import MasterDataView from './views/MasterDataView.vue'
-import ProductionPlanView from './views/ProductionPlanView.vue'
-import TaskView from './views/TaskView.vue'
-import VisionView from './views/VisionView.vue'
-import WorkOrderView from './views/WorkOrderView.vue'
+
+const AgvView = () => import('./views/AgvView.vue')
+const AlertCenterView = () => import('./views/AlertCenterView.vue')
+const CommandCenterView = () => import('./views/CommandCenterView.vue')
+const DispatchView = () => import('./views/DispatchView.vue')
+const EquipmentView = () => import('./views/EquipmentView.vue')
+const ForecastView = () => import('./views/ForecastView.vue')
+const MapView = () => import('./views/MapView.vue')
+const MasterDataView = () => import('./views/MasterDataView.vue')
+const ProductionPlanView = () => import('./views/ProductionPlanView.vue')
+const TaskView = () => import('./views/TaskView.vue')
+const VisionView = () => import('./views/VisionView.vue')
+const WorkOrderView = () => import('./views/WorkOrderView.vue')
 
 const routes = [
   { path: '/', redirect: '/dashboard' },

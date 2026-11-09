@@ -90,6 +90,7 @@ const previewUrl = computed(() => {
 })
 const objects = computed(() => result.value?.objects || [])
 const linkableWorkOrders = computed(() => workOrders.value.filter((item) => !['completed', 'cancelled'].includes(item.status)))
+const recentRecords = computed(() => records.value.slice(0, 7))
 
 watch(mode, () => {
   sampleGroup.value = groups.value[0]
@@ -244,6 +245,7 @@ onMounted(() => {
   loadOverview()
   loadAlgoStatus()
   loadWorkOrders()
+  loadRecords()
 })
 
 onUnmounted(() => {
@@ -274,7 +276,7 @@ onUnmounted(() => {
       <div class="muted small mt-12">{{ datasetNote }}</div>
 
       <div v-if="subTab === 'detect'" class="grid vision-grid mt-16">
-        <section class="panel">
+        <section class="panel vision-config-panel">
           <div class="panel-head"><div><div class="panel-title">检测配置</div><div class="panel-desc">支持内置数据集样例或本地上传图片</div></div></div>
           <div class="panel-body">
             <div class="form-grid">
@@ -430,7 +432,7 @@ onUnmounted(() => {
           </div>
         </section>
 
-        <section class="panel">
+        <section class="panel vision-result-panel">
           <div class="panel-head">
             <div><div class="panel-title">检测结果</div><div class="panel-desc">左侧原图，右侧为算法标注后的结果图</div></div>
             <span v-if="result" class="tag">{{ result.task_type === 'crack' ? '裂纹检测' : result.task_type === 'defect' ? '缺陷识别' : '工件识别' }}</span>
@@ -532,6 +534,24 @@ onUnmounted(() => {
             <div v-else class="empty mt-16">请在左侧选择图片后点击「开始检测」</div>
           </div>
         </section>
+        <aside class="panel vision-history-panel">
+          <div class="panel-head"><div><div class="panel-title">最近检测记录</div><div class="panel-desc">共 {{ records.length }} 条</div></div><button class="btn btn-sm" :disabled="loadingRecords" @click="loadRecords">刷新</button></div>
+          <div class="panel-body">
+            <div class="vision-history-list">
+              <article v-for="record in recentRecords" :key="record.id" class="vision-history-item">
+                <img v-if="record.result_image_url" :src="record.result_image_url" alt="检测缩略图" />
+                <div v-else class="vision-history-thumb-placeholder">◉</div>
+                <div class="vision-history-copy">
+                  <div class="vision-history-head"><strong>{{ record.task_type_display }}</strong><span :class="`quality-${record.quality_result}`">{{ record.quality_result_display }}</span></div>
+                  <span>{{ record.verdict }} · {{ record.object_count }} 个结果</span>
+                  <small>{{ record.elapsed_ms }} ms · {{ formatTime(record.created_at) }}</small>
+                  <RouterLink v-if="record.work_order" :to="{ path: '/work-orders', query: { work_order: record.work_order } }">工单 {{ record.work_order_no }} →</RouterLink>
+                </div>
+              </article>
+              <div v-if="!recentRecords.length" class="empty">暂无检测记录</div>
+            </div>
+          </div>
+        </aside>
       </div>
 
       <div v-else class="mt-16">
@@ -579,7 +599,28 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.vision-grid { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); align-items: start; }
+.vision-grid { grid-template-columns: minmax(280px, 320px) minmax(0, 1fr) minmax(250px, 285px); gap: 14px; align-items: start; }
+.vision-config-panel,
+.vision-history-panel { position: sticky; top: 18px; }
+.vision-result-panel { min-width: 0; }
+.vision-history-panel { display: flex; flex-direction: column; max-height: calc(100vh - 36px); overflow: hidden; }
+.vision-history-panel .panel-head { min-height: 68px; padding: 14px 14px 12px; }
+.vision-history-panel .panel-body { flex: 1; min-height: 0; padding: 11px; overflow-y: auto; scrollbar-width: thin; }
+.vision-history-list { display: grid; gap: 8px; }
+.vision-history-item { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 9px; padding: 9px; border: 1px solid #dfe8e4; border-radius: 10px; background: linear-gradient(145deg, #fff, #f9fbfa); }
+.vision-history-item > img,
+.vision-history-thumb-placeholder { width: 58px; height: 50px; object-fit: cover; border: 1px solid #d6e2dd; border-radius: 7px; background: #eef4f1; }
+.vision-history-thumb-placeholder { display: grid; place-items: center; color: var(--cyan); }
+.vision-history-copy { min-width: 0; display: grid; gap: 3px; }
+.vision-history-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.vision-history-head strong { overflow: hidden; color: #29444a; font-size: 9.5px; text-overflow: ellipsis; white-space: nowrap; }
+.vision-history-head span { padding: 2px 5px; border-radius: 999px; background: #edf2f0; font-size: 7.5px; font-weight: 720; }
+.vision-history-head .quality-pass { color: var(--green); background: #eaf7f1; }
+.vision-history-head .quality-fail { color: var(--red); background: #fdeef0; }
+.vision-history-copy > span { color: #657771; font-size: 8.5px; }
+.vision-history-copy small { color: #93a09b; font-size: 7.5px; }
+.vision-history-copy a { color: var(--cyan); font-size: 8px; text-decoration: none; }
+.vision-history-copy a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .vision-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .vision-figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .vision-preview {
@@ -603,4 +644,19 @@ onUnmounted(() => {
 /* ---- 缺陷识别 top-3 概率条 ---- */
 .defect-bar-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 12px; margin-bottom: 7px; }
 .defect-bar-label { color: #5f7179; }
+@media (max-width: 1400px) {
+  .vision-grid { grid-template-columns: minmax(280px, 320px) minmax(0, 1fr); }
+  .vision-history-panel { position: static; grid-column: 1 / -1; max-height: none; }
+  .vision-history-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .vision-grid { grid-template-columns: minmax(0, 1fr); }
+  .vision-config-panel { position: static; }
+  .vision-history-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .vision-compare { grid-template-columns: minmax(0, 1fr); }
+  .vision-preview,
+  .vision-placeholder { height: 280px; }
+}
 </style>
