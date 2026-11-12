@@ -130,6 +130,7 @@ export const api = {
   visionSamples: () => request('/vision/samples/'),
   visionCrack: (payload) => postVision('/vision/crack/', payload),
   visionDefect: (payload) => postVision('/vision/algo/defect/', payload),
+  visionDetectDefect: (payload) => postVision('/vision/detect/defect/', payload),
   visionDetect: (payload) => postVision('/vision/detect/', payload),
   visionRecords: (query = '') => request(`/vision/records/${query}`).then(unwrap),
   deleteVisionRecord: (id) => request(`/vision/records/${id}/`, { method: 'DELETE' }),

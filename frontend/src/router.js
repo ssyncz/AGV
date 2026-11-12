@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+﻿import { createRouter, createWebHashHistory } from 'vue-router'
 import AgvView from './views/AgvView.vue'
 import AlertCenterView from './views/AlertCenterView.vue'
 import CommandCenterView from './views/CommandCenterView.vue'
@@ -26,7 +26,7 @@ const routes = [
   { path: '/plans', name: 'plans', component: ProductionPlanView, meta: { title: '生产计划', subtitle: '预测驱动的计划、排程与执行工单追踪' } },
   { path: '/agvs', name: 'agvs', component: AgvView, meta: { title: 'AGV 管理', subtitle: '车辆状态、电量、载重和位置管理' } },
   { path: '/equipment', name: 'equipment', component: EquipmentView, meta: { title: '设备监测', subtitle: '多变量传感器状态分类、磨损识别与规则告警' } },
-  { path: '/vision', name: 'vision', component: VisionView, meta: { title: '视觉质检', subtitle: '裂纹、缺陷与工件识别并关联生产工单' } },
+  { path: '/vision', name: 'vision', component: VisionView, meta: { title: '视觉质检', subtitle: '裂纹检测、缺陷定位与分类，并关联生产工单' } },
   { path: '/forecast', name: 'forecast', component: ForecastView, meta: { title: '订单预测', subtitle: '需求预测、模型回测与生产计划生成' } },
   { path: '/master-data', name: 'master-data', component: MasterDataView, meta: { title: '主数据管理', subtitle: '站点、产品和设备的统一编码档案' } },
 ]

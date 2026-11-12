@@ -29,6 +29,7 @@ from rest_framework.views import APIView
 from . import datasets
 from .services_supervised import segment_crack, status as deepcrack_status
 from .services_defect import classify_defect, status as defect_status
+from .services_detector import status as detector_status
 from .services_algo import (
     anomalib_available,
     build_dataset_from_project,
@@ -91,6 +92,7 @@ class AlgoStatusView(APIView):
             "anomalib": anomalib_available(),
             "deepcrack": deepcrack_status(),
             "defect": defect_status(),
+            "detector": detector_status(),
             "dataset": {k: len(v) for k, v in paths.items()},
             "install": "pip install -e ./vendor/anomalib",
         })
