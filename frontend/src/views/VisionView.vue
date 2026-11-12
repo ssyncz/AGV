@@ -584,7 +584,7 @@ onUnmounted(() => {
 .vision-figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .vision-preview {
   width: 100%; height: 240px; object-fit: contain; border-radius: 10px;
-  border: 1px solid var(--line-strong); background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--line-strong); background: var(--track-bg-deep);
 }
 .vision-placeholder {
   height: 240px; display: flex; align-items: center; justify-content: center;
@@ -602,5 +602,5 @@ onUnmounted(() => {
 
 /* ---- 缺陷识别 top-3 概率条 ---- */
 .defect-bar-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 12px; margin-bottom: 7px; }
-.defect-bar-label { color: #5f7179; }
+.defect-bar-label { color: var(--text-soft); }
 </style>

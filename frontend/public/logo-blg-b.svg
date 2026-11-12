@@ -1,0 +1,31 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="BLG 风格 B 标">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#104233"/>
+      <stop offset="0.55" stop-color="#0a2b21"/>
+      <stop offset="1" stop-color="#05180f"/>
+    </linearGradient>
+    <linearGradient id="bFill" x1="0.1" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#8ceeff"/>
+      <stop offset="0.45" stop-color="#3cc9ef"/>
+      <stop offset="1" stop-color="#1396c6"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 深色底牌：和现有玻璃主题贴合 -->
+  <rect x="1" y="1" width="62" height="62" rx="16" fill="url(#tile)"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="15.5" fill="none" stroke="#9ff0ff" stroke-opacity="0.16"/>
+  <rect x="1" y="1" width="62" height="62" rx="16" fill="url(#gloss)"/>
+
+  <!-- 斜体 B：上下两段留缝，模仿 BLG 的切块字 -->
+  <g transform="translate(32 0) skewX(-12) translate(-32 0)">
+    <path d="M19 12 H38 L50.5 22.5 V28 L42 35 H19 Z" fill="url(#bFill)"/>
+    <path d="M19 37.5 H42 L54 48 V53.5 L44 60 H19 Z" fill="url(#bFill)"/>
+    <!-- 粉色斜块：取自 BLG 的粉色强调色 -->
+    <path d="M39 9.2 H46 L57 19.4 H50 Z" fill="#f4739b"/>
+  </g>
+</svg>
