@@ -203,7 +203,7 @@ onUnmounted(() => {
 
       <aside class="sidebar">
         <div class="brand">
-          <img class="brand-logo" src="/logo-blg-b.svg" alt="BLG" />
+          <img class="brand-logo" src="/logo-agv.svg" alt="AGV" />
           <div><div class="brand-title">制造运营中心</div><div class="brand-subtitle">Intelligent Operations</div></div>
         </div>
         <nav class="sidebar-nav">
