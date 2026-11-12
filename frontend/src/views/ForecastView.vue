@@ -463,8 +463,8 @@ onUnmounted(() => {
                   :y2="tick.y"
                   class="chart-grid"
                 />
-                <polyline :points="chart.historyPoints" fill="none" stroke="#0e8792" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-                <polyline :points="chart.forecastPoints" fill="none" stroke="#cf5260" stroke-width="4" stroke-dasharray="9 7" stroke-linecap="round" stroke-linejoin="round" />
+                <polyline :points="chart.historyPoints" fill="none" stroke="var(--cyan)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                <polyline :points="chart.forecastPoints" fill="none" stroke="var(--red)" stroke-width="4" stroke-dasharray="9 7" stroke-linecap="round" stroke-linejoin="round" />
                 <line :x1="chart.historyEndX" :x2="chart.historyEndX" y1="34" :y2="chart.height - 34" class="forecast-divider" />
               </svg>
               <div class="forecast-axis">
@@ -723,24 +723,24 @@ onUnmounted(() => {
 
 <style scoped>
 .forecast-grid { grid-template-columns: minmax(340px, 0.78fr) minmax(0, 1.52fr); align-items: start; }
-.forecast-chart { width: 100%; min-height: 280px; margin-top: 4px; border-radius: 10px; background: #f8faf9; border: 1px solid #e1e8e5; }
-.chart-grid { stroke: #e2e9e6; stroke-width: 1; }
-.forecast-divider { stroke: #b8c7c1; stroke-width: 1; stroke-dasharray: 4 5; }
+.forecast-chart { width: 100%; min-height: 280px; margin-top: 4px; border-radius: 10px; background: var(--chart-bg); border: 1px solid var(--line); }
+.chart-grid { stroke: var(--chart-grid); stroke-width: 1; }
+.forecast-divider { stroke: var(--chart-divider); stroke-width: 1; stroke-dasharray: 4 5; }
 .forecast-axis { display: flex; justify-content: space-between; padding: 6px 42px 0; color: var(--muted); font-size: 10px; }
 .production-chain-grid { grid-template-columns: minmax(360px, 1.08fr) minmax(0, 0.92fr); align-items: start; }
-.deadline-option { display: flex; gap: 10px; align-items: flex-start; padding: 12px 13px; border: 1px solid #dce4e1; border-radius: 10px; background: #f8faf9; cursor: pointer; }
+.deadline-option { display: flex; gap: 10px; align-items: flex-start; padding: 12px 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--fill-1); cursor: pointer; }
 .deadline-option input { margin-top: 2px; accent-color: var(--cyan); }
 .deadline-option span { display: flex; flex-direction: column; gap: 3px; }
 .deadline-option small { color: var(--muted); font-size: 10px; line-height: 1.5; }
-.route-mode-switch { display: inline-flex; width: fit-content; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: #f4f7f5; }
+.route-mode-switch { display: inline-flex; width: fit-content; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--track-bg-deep); }
 .route-mode-switch button { padding: 7px 14px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 650; }
-.route-mode-switch button.active { color: #fff; background: var(--cyan); box-shadow: 0 3px 9px rgba(14, 135, 146, .18); }
+.route-mode-switch button.active { color: var(--on-accent); background: var(--cyan); box-shadow: 0 3px 10px rgba(47,214,195,.28); font-weight: 700; }
 .route-editor-field { gap: 10px; }
 .route-editor-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
 .route-editor-head > div:first-child { display: grid; gap: 3px; }
 .route-editor-actions { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
 .route-edit-list { display: grid; gap: 10px; margin-top: 4px; }
-.route-edit-card { padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: #fbfcfb; }
+.route-edit-card { padding: 13px; border: 1px solid var(--line); border-radius: 11px; background: var(--fill-1); }
 .route-edit-card-head { display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 11px; }
 .route-edit-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
 .link-btn.danger { color: var(--red); }

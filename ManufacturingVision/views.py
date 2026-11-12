@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import datasets
+from . import services_detector
 from . import services_supervised
 from .models import VisionRecord
 from .serializers import VisionRecordSerializer
@@ -244,6 +245,69 @@ class WorkpieceDetectView(APIView):
             "objects": analysis["objects"],
             "class_counts": analysis["class_counts"],
             "class_labels": SHAPE_LABELS_ZH,
+            "image_url": record.result_image.url,
+            "input_image_url": record.input_image.url,
+            "record_id": record.id,
+            "work_order_id": work_order.id if work_order else None,
+            "work_order_no": work_order.order_no if work_order else "",
+            "quality_result": quality_result,
+            "elapsed_ms": analysis["elapsed_ms"],
+            "params": analysis["params"],
+            "width": analysis["width"],
+            "height": analysis["height"],
+        })
+
+
+class DefectDetectView(APIView):
+    """POST /api/vision/detect/defect/ 缺陷检测（定位 + 分类，一次出框和类别）。"""
+
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def post(self, request):
+        try:
+            image, source, input_name = _resolve_input(request)
+            params = _resolve_params(request)
+            work_order = _resolve_work_order(request)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            analysis = services_detector.detect_defects(image, params)
+        except (RuntimeError, ImportError) as exc:
+            return Response(
+                {"detail": f"{type(exc).__name__}: {exc}", **services_detector.status()},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        annotated = services_detector.annotate_defects(image, analysis)
+        analysis["result"] = analysis["objects"][0]["class"] if analysis["objects"] else "normal"
+        analysis["algorithm"] = "yolo"
+        try:
+            quality_result = _resolve_quality_result(
+                request,
+                fallback=("fail" if analysis["objects"] else "pass") if work_order else "not_assessed",
+            )
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        record = _save_record(
+            VisionRecord.TaskType.DEFECT, source, input_name, image, annotated, analysis,
+            analysis["objects"],
+            work_order=work_order,
+            quality_result=quality_result,
+        )
+        _apply_quality_link(request, record, quality_result)
+        return Response({
+            "success": True,
+            "task_type": "defect",
+            "algorithm": "yolo",
+            "localized": True,
+            "count": analysis["count"],
+            "objects": analysis["objects"],
+            "class_counts": analysis["class_counts"],
+            "class_labels": services_detector.CLASS_LABELS_ZH,
+            "result": analysis["result"],
+            "model": analysis["model"],
             "image_url": record.result_image.url,
             "input_image_url": record.input_image.url,
             "record_id": record.id,

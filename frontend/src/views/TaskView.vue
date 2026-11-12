@@ -307,24 +307,24 @@ async function runAction(task, action) {
 
 <style scoped>
 .workorder-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.workorder-entry { display: grid; gap: 14px; padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfb; color: inherit; text-decoration: none; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
-.workorder-entry:hover { border-color: #a9ccc5; background: #f5faf8; transform: translateY(-1px); }
+.workorder-entry { display: grid; gap: 14px; padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: var(--fill-1); color: inherit; text-decoration: none; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
+.workorder-entry:hover { border-color: rgba(47,214,195,.42); background: var(--fill-2); transform: translateY(-1px); }
 .workorder-entry-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.workorder-entry-no { color: #17363e; font-size: 14px; font-weight: 800; }
+.workorder-entry-no { color: var(--text); font-size: 14px; font-weight: 800; }
 .workorder-entry-arrow { color: var(--cyan); font-size: 21px; line-height: 1; }
 .workorder-entry-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-.workorder-entry-stats > div { display: grid; gap: 4px; padding: 9px; border-radius: 8px; background: #eef4f1; }
+.workorder-entry-stats > div { display: grid; gap: 4px; padding: 9px; border-radius: 8px; background: var(--fill-2); }
 .workorder-entry-stats span { color: var(--muted); font-size: 9px; }
 .workorder-entry-stats strong { font-size: 16px; }
 .workorder-entry-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.workorder-context-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: #f8faf9; }
+.workorder-context-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; padding: 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--fill-1); }
 .workorder-context-strip > div { display: grid; gap: 3px; }
 .workorder-context-strip span { color: var(--muted); font-size: 9px; }
 .workorder-context-strip strong { font-size: 15px; }
-.dispatch-order-badge { display: inline-grid; place-items: center; min-width: 34px; padding: 4px 7px; border-radius: 8px; background: #dff1eb; color: #1d755b; font-size: 11px; font-weight: 800; }
+.dispatch-order-badge { display: inline-grid; place-items: center; min-width: 34px; padding: 4px 7px; border-radius: 8px; background: var(--tint-green); color: var(--ok-fg); font-size: 11px; font-weight: 800; }
 .schedule-run-stack { display: grid; gap: 14px; }
-.schedule-run-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
-.schedule-run-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 15px; border-bottom: 1px solid var(--line); background: #f8faf9; }
+.schedule-run-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--fill-1); }
+.schedule-run-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--fill-1); }
 .schedule-run-title { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 13px; font-weight: 780; }
 .schedule-run-metrics { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 9px; flex-wrap: wrap; }
 .schedule-run-metrics span { display: flex; align-items: baseline; gap: 4px; }

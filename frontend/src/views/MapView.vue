@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, ref, watch } from 'vue'
 import { api } from '../api'
 
@@ -9,7 +9,7 @@ const hoveredNode = ref(null)
 const width = 920
 const height = 880
 const padding = 36
-const colors = ['#0e8792', '#2f6fda', '#7858ce', '#c58a1b', '#29976a', '#cf5260']
+const colors = ['#2ec9b4', '#5f95ea', '#a383e0', '#e0a83a', '#46c07c', '#e2675e']
 
 const nodes = computed(() => props.mapData.nodes || [])
 const edges = computed(() => props.mapData.edges || [])
@@ -150,7 +150,7 @@ function obstacleRect(item) {
 }
 
 function nodeColor(type) {
-  return { parking: '#7b8d98', pickup: '#29976a', dropoff: '#c58a1b', charging: '#7858ce', intersection: '#67808d' }[type] || '#67808d'
+  return { parking: '#7f9a8b', pickup: '#2f9e63', dropoff: '#c98f1c', charging: '#7a55c0', intersection: '#6d8a7c' }[type] || '#6d8a7c'
 }
 
 function routeColor(index) {
@@ -203,7 +203,7 @@ function clearPath() {
   <div class="map-layout map-layout-wide">
     <section class="panel">
       <div class="panel-head">
-        <div><div class="panel-title">仓库障碍地图与路径规划</div><div class="panel-desc">灰色路网、黑色障碍块、S1-S10 工作站以及 AGV 彩色路线</div></div>
+        <div><div class="panel-title">仓库障碍地图与路径规划</div><div class="panel-desc">青色路网、深色障碍块、S1-S10 工作站以及 AGV 彩色路线</div></div>
         <div class="toolbar-right">
           <span v-if="selectedRouteGroup" class="tag">{{ selectedRouteGroup.work_order_no }}</span>
           <span v-if="selectedRouteDetail" class="tag">调度顺序 #{{ selectedRouteDetail.dispatch_order || selectedRouteGroup.routes.indexOf(selectedRouteDetail) + 1 }}</span>
@@ -225,13 +225,13 @@ function clearPath() {
               <text v-if="node.node_type !== 'intersection'" class="map-node-label" :x="point(node.id).x" :y="point(node.id).y + 23" text-anchor="middle">{{ node.code }}</text>
             </g>
             <g v-if="pathResult" class="planner-endpoints">
-              <circle :cx="point(pathResult.route.nodes[0]).x" :cy="point(pathResult.route.nodes[0]).y" r="15" fill="none" stroke="#29976a" stroke-width="4" />
-              <circle :cx="point(pathResult.route.nodes[pathResult.route.nodes.length - 1]).x" :cy="point(pathResult.route.nodes[pathResult.route.nodes.length - 1]).y" r="15" fill="none" stroke="#cf5260" stroke-width="4" />
+              <circle :cx="point(pathResult.route.nodes[0]).x" :cy="point(pathResult.route.nodes[0]).y" r="15" fill="none" stroke="var(--green)" stroke-width="4" />
+              <circle :cx="point(pathResult.route.nodes[pathResult.route.nodes.length - 1]).x" :cy="point(pathResult.route.nodes[pathResult.route.nodes.length - 1]).y" r="15" fill="none" stroke="var(--red)" stroke-width="4" />
             </g>
             <g v-for="(agv, index) in agvs" :key="agv.id" class="map-agv">
-              <circle :cx="point(agv.current_node).x + (index % 2) * 10 - 5" :cy="point(agv.current_node).y - 10 - Math.floor(index / 2) * 10" r="12" fill="#0e8792" opacity="0.2" />
-              <circle :cx="point(agv.current_node).x + (index % 2) * 10 - 5" :cy="point(agv.current_node).y - 10 - Math.floor(index / 2) * 10" r="6" fill="#0e8792" stroke="#ffffff" stroke-width="2" />
-              <text :x="point(agv.current_node).x + (index % 2) * 10 - 5" :y="point(agv.current_node).y - 28 - Math.floor(index / 2) * 10" text-anchor="middle" fill="#2f6f75" font-size="10">{{ agv.code }}</text>
+              <circle :cx="point(agv.current_node).x + (index % 2) * 10 - 5" :cy="point(agv.current_node).y - 10 - Math.floor(index / 2) * 10" r="12" fill="var(--cyan)" opacity="0.2" />
+              <circle :cx="point(agv.current_node).x + (index % 2) * 10 - 5" :cy="point(agv.current_node).y - 10 - Math.floor(index / 2) * 10" r="6" fill="var(--cyan)" :style="{ stroke: 'var(--map-node-stroke)' }" stroke-width="2" />
+              <text :x="point(agv.current_node).x + (index % 2) * 10 - 5" :y="point(agv.current_node).y - 28 - Math.floor(index / 2) * 10" text-anchor="middle" :style="{ fill: 'var(--map-label)' }" font-size="10">{{ agv.code }}</text>
             </g>
             <g v-if="hoverTooltip" class="map-node-tooltip" pointer-events="none">
               <rect :x="hoverTooltip.x" :y="hoverTooltip.y" :width="hoverTooltip.width" height="30" rx="6" />
@@ -257,10 +257,10 @@ function clearPath() {
           <div v-if="pathResult.agv" class="notice mt-12" :class="pathResult.agv.battery_ok ? 'success' : 'warning'">预计耗电 {{ pathResult.agv.battery_required }}%，{{ pathResult.agv.battery_ok ? '电量满足约束' : '电量不足' }}</div>
         </div>
         <div class="legend-list mt-16">
-          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #000"></span>障碍区域</span></div>
-          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #29976a"></span>取货点</span></div>
-          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #c58a1b"></span>放货点</span></div>
-          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #cf5260"></span>规划路径</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #7fa394"></span>障碍区域</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #55e08c"></span>取货点</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #f3c04b"></span>放货点</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #ff7a72"></span>规划路径</span></div>
         </div>
         <div class="executing-routes mt-16">
           <div class="route-section-head"><strong>工单调度路线</strong><span>{{ routeGroups.length }} 个工单 · {{ executingRoutes.length }} 条路线</span></div>
@@ -306,13 +306,13 @@ function clearPath() {
 <style scoped>
 .route-navigation { display: grid; gap: 12px; }
 .route-order-buttons { display: grid; gap: 7px; max-height: 245px; overflow-y: auto; padding-right: 3px; }
-.route-order-button { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; align-items: center; width: 100%; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcfb; color: inherit; text-align: left; }
-.route-order-button:hover { background: #f3f8f6; }
-.route-order-button.active { border-color: var(--cyan); background: #eef7f5; box-shadow: 0 0 0 2px rgba(14,135,146,.08); }
-.route-order-index { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: #dce9e5; color: #24726e; font-size: 10px; font-weight: 800; }
-.route-order-button.active .route-order-index { background: var(--cyan); color: #fff; }
+.route-order-button { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; align-items: center; width: 100%; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; background: var(--fill-1); color: inherit; text-align: left; transition: background 150ms ease, border-color 150ms ease; }
+.route-order-button:hover { background: var(--fill-2); }
+.route-order-button.active { border-color: var(--accent-line); background: var(--accent-tint-weak); box-shadow: inset 3px 0 0 var(--cyan); }
+.route-order-index { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; background: var(--fill-3); color: var(--text-soft); font-size: 10px; font-weight: 800; }
+.route-order-button.active .route-order-index { background: var(--cyan); color: var(--on-accent); }
 .route-order-main { min-width: 0; display: grid; gap: 2px; }
 .route-order-main strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
 .route-order-main small { color: var(--muted); font-size: 9px; }
-.route-current { border: 1px solid var(--line); border-radius: 10px; background: #fbfcfb; }
+.route-current { border: 1px solid var(--line); border-radius: 10px; background: var(--fill-1); }
 </style>

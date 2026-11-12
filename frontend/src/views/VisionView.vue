@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { api } from '../api'
@@ -8,8 +8,7 @@ const route = useRoute()
 
 const MODES = [
   { key: 'crack', label: '表面裂纹检测', groups: ['crack', 'free'] },
-  { key: 'defect', label: '缺陷类型识别（NEU 6类）', groups: ['neu'], requires: 'defect' },
-  { key: 'workpiece', label: '工件识别', groups: ['workpiece'] },
+  { key: 'defect', label: '缺陷检测（定位 + 分类）', groups: ['neu', 'crack', 'free', 'workpiece'], requires: 'detector' },
 ]
 const SHAPE_LABELS = {
   circle: '圆形', triangle: '三角形', square: '正方形',
@@ -51,8 +50,12 @@ const frangiParams = ref({
   mask_dilation: 3,
 })
 const workpieceParams = ref({ min_area: 300, approx_epsilon: 0.02, morph_kernel: 5 })
+// 缺陷检测（YOLOv8n）：一次给出外接框 + 类别 + 置信度
+const detectorParams = ref({ conf: 0.25, iou: 0.45 })
 
 const currentMode = computed(() => MODES.find((item) => item.key === mode.value) || MODES[0])
+const detectorAvailable = computed(() => Boolean(algoStatus.value?.detector?.available))
+const detectorModel = computed(() => algoStatus.value?.detector?.model || 'YOLOv8n')
 const defectAvailable = computed(() => Boolean(algoStatus.value?.defect?.available))
 const defectAccuracy = computed(() => algoStatus.value?.defect?.test_accuracy)
 const defectAccuracyText = computed(() =>
@@ -67,7 +70,7 @@ const currentModeReady = computed(() => {
 const groups = computed(() => currentMode.value.groups)
 const activeSamples = computed(() => samples.value[sampleGroup.value] || [])
 const activeParams = computed(() => {
-  if (mode.value === 'defect') return {}
+  if (mode.value === 'defect') return detectorParams.value
   if (mode.value === 'crack') {
     return crackAlgorithm.value === 'deepcrack' ? deepcrackParams.value : frangiParams.value
   }
@@ -202,7 +205,7 @@ async function runDetect() {
       }
     }
     if (mode.value === 'defect') {
-      result.value = await api.visionDefect(payload)
+      result.value = await api.visionDetectDefect(payload)
     } else {
       result.value = mode.value === 'crack'
         ? await api.visionCrack(payload)
@@ -256,7 +259,7 @@ onUnmounted(() => {
     <div class="panel-head">
       <div>
         <div class="panel-title">视觉检测</div>
-        <div class="panel-desc">Frangi 传统方法（默认）+ DeepCrack 监督分割（实验）：任务 4 表面裂纹检测（MT 数据集）、NEU 缺陷分类与任务 5 几何工件识别</div>
+        <div class="panel-desc">Frangi / DeepCrack 裂纹分割 + YOLOv8n 缺陷检测（定位 + 分类）：MT 磁瓦裂纹与 NEU 六类表面缺陷，一次检测同时给出位置和类别</div>
       </div>
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'detect' }" @click="subTab = 'detect'">在线检测</button>
@@ -386,10 +389,19 @@ onUnmounted(() => {
                 <div class="field full">
                   <div class="notice">
                     <span>
-                      使用 NEU 热轧带钢 <b>6 类缺陷</b> CNN（crazing / inclusion / patches / pitted / rolled-in / scratches），
-                      验证准确率 <b>{{ defectAccuracyText }}</b>；该任务<b>无需调参</b>，直接点「开始检测」。
+                      <b>{{ detectorModel }}</b> 缺陷检测器：一次给出<b>位置 + 类别 + 置信度</b>，
+                      覆盖热轧带钢 6 类缺陷（龟裂 / 夹杂 / 斑块 / 麻点 / 氧化皮压入 / 划痕）。
+                      置信度阈值越低越灵敏，可先按默认值跑。
                     </span>
                   </div>
+                </div>
+                <div class="field">
+                  <label>置信度阈值 conf</label>
+                  <input v-model.number="detectorParams.conf" class="input" type="number" step="0.05" min="0.05" max="0.95" />
+                </div>
+                <div class="field">
+                  <label>重叠抑制 IoU</label>
+                  <input v-model.number="detectorParams.iou" class="input" type="number" step="0.05" min="0.1" max="0.9" />
                 </div>
               </template>
               <template v-if="mode === 'workpiece'">
@@ -408,9 +420,9 @@ onUnmounted(() => {
               </template>
             </div>
 
-            <div v-if="mode === 'defect' && !defectAvailable" class="notice mt-12">
-              NEU 六类缺陷分类权重未就绪（runs/vision/neu_cnn.pt）。
-              请先运行 scripts/train_neu.py 训练，或改选其他检测任务。
+            <div v-if="mode === 'defect' && !detectorAvailable" class="notice mt-12">
+              缺陷检测权重未就绪（runs/neu_yolo_runs/train/weights/best.pt）。
+              请先训练 YOLOv8n 检测器，或改选裂纹检测。
             </div>
             <div v-if="mode === 'crack' && crackAlgorithm === 'deepcrack' && !deepcrackAvailable"
                  class="notice mt-12">
@@ -433,7 +445,7 @@ onUnmounted(() => {
         <section class="panel">
           <div class="panel-head">
             <div><div class="panel-title">检测结果</div><div class="panel-desc">左侧原图，右侧为算法标注后的结果图</div></div>
-            <span v-if="result" class="tag">{{ result.task_type === 'crack' ? '裂纹检测' : result.task_type === 'defect' ? '缺陷识别' : '工件识别' }}</span>
+            <span v-if="result" class="tag">{{ result.task_type === 'crack' ? '裂纹检测' : result.task_type === 'defect' ? '缺陷检测' : '工件识别' }}</span>
           </div>
           <div class="panel-body">
             <div class="vision-compare">
@@ -470,33 +482,41 @@ onUnmounted(() => {
             </template>
 
             <template v-else-if="result && result.task_type === 'defect'">
-              <div class="notice mt-16" :class="result.is_line_like ? 'warning' : 'success'">
-                <strong>判定：{{ result.predicted_label }}</strong>
-                <span>（置信度 {{ (result.confidence * 100).toFixed(1) }}%）</span>
-                <span v-if="result.is_line_like"> · 线状缺陷，建议再做裂纹分割定位</span>
-              </div>
-              <div v-if="result.ground_truth_class" class="notice mt-12"
-                   :class="result.match ? 'success' : 'warning'">
-                真值：{{ result.ground_truth_label }}　预测：{{ result.predicted_label }}　
-                <strong>{{ result.match ? '一致' : '不一致，建议复核' }}</strong>
+              <div class="notice mt-16" :class="result.count ? 'warning' : 'success'">
+                <strong v-if="result.count">
+                  判定：检出 {{ result.count }} 处缺陷（主类 {{ result.objects[0].label }}）
+                </strong>
+                <strong v-else>判定：未检出缺陷</strong>
+                <span v-if="result.count">（最高置信度 {{ (result.objects[0].confidence * 100).toFixed(1) }}%）</span>
               </div>
               <div class="grid metric-grid mt-16">
-                <div class="optimization-metric"><span>缺陷类型</span><strong>{{ result.predicted_class }}</strong></div>
-                <div class="optimization-metric"><span>中文</span><strong>{{ result.predicted_label }}</strong></div>
-                <div class="optimization-metric"><span>置信度</span><strong>{{ (result.confidence * 100).toFixed(1) }}%</strong></div>
-                <div class="optimization-metric"><span>线状缺陷</span><strong>{{ result.is_line_like ? '是' : '否' }}</strong></div>
+                <div class="optimization-metric"><span>缺陷目标数</span><strong>{{ result.count }}</strong></div>
+                <div class="optimization-metric"><span>缺陷类别数</span><strong>{{ Object.keys(result.class_counts || {}).length }}</strong></div>
+                <div class="optimization-metric"><span>模型</span><strong>{{ result.model || 'YOLOv8n' }}</strong></div>
                 <div class="optimization-metric"><span>原图尺寸</span><strong>{{ result.width }}×{{ result.height }}</strong></div>
                 <div class="optimization-metric"><span>耗时</span><strong>{{ result.elapsed_ms }} ms</strong></div>
               </div>
-              <div class="mt-16">
-                <div class="cell-sub mb-8">Top-3 概率</div>
-                <div v-for="item in result.top3 || []" :key="item.class" class="defect-bar-row">
-                  <span class="defect-bar-label">{{ item.label }}</span>
-                  <div class="progress-track"><div class="progress-bar" :style="{ width: `${item.probability * 100}%` }"></div></div>
-                  <strong>{{ (item.probability * 100).toFixed(1) }}%</strong>
-                </div>
+              <div class="legend-list mt-16">
+                <span v-for="(value, key) in result.class_counts || {}" :key="key" class="tag">
+                  {{ (result.class_labels || {})[key] || key }} × {{ value }}
+                </span>
+                <span v-if="!result.count" class="cell-sub">未检出缺陷，可降低 conf 阈值重试</span>
               </div>
-              <div class="notice mt-16">{{ result.note }}</div>
+              <div class="table-wrap mt-16">
+                <table>
+                  <thead><tr><th>#</th><th>类别</th><th>置信度</th><th>外接框 (x,y,w,h)</th><th>面积</th></tr></thead>
+                  <tbody>
+                    <tr v-for="item in result.objects || []" :key="item.index">
+                      <td class="mono">{{ item.index }}</td>
+                      <td><span class="cell-main">{{ item.label }}</span><span class="cell-sub mono">{{ item.class }}</span></td>
+                      <td>{{ (item.confidence * 100).toFixed(1) }}%</td>
+                      <td class="mono">{{ (item.bbox || []).join(', ') }}</td>
+                      <td>{{ Math.round(item.area || 0) }}</td>
+                    </tr>
+                    <tr v-if="!(result.objects || []).length"><td colspan="5"><div class="empty">未检出缺陷</div></td></tr>
+                  </tbody>
+                </table>
+              </div>
             </template>
 
             <template v-else-if="result">
@@ -584,7 +604,7 @@ onUnmounted(() => {
 .vision-figure { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .vision-preview {
   width: 100%; height: 240px; object-fit: contain; border-radius: 10px;
-  border: 1px solid var(--line-strong); background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--line-strong); background: var(--track-bg-deep);
 }
 .vision-placeholder {
   height: 240px; display: flex; align-items: center; justify-content: center;
@@ -602,5 +622,5 @@ onUnmounted(() => {
 
 /* ---- 缺陷识别 top-3 概率条 ---- */
 .defect-bar-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px; gap: 10px; align-items: center; font-size: 12px; margin-bottom: 7px; }
-.defect-bar-label { color: #5f7179; }
+.defect-bar-label { color: var(--text-soft); }
 </style>
