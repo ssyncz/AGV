@@ -10,6 +10,7 @@ from .views import (
     EquipmentOverviewView,
     EquipmentRecordViewSet,
     EquipmentSampleView,
+    ToolChangeRecordViewSet,
     ToolViewSet,
 )
 
@@ -17,6 +18,7 @@ from .views import (
 router = DefaultRouter()
 router.register("records", EquipmentRecordViewSet, basename="equipment-record")
 router.register("tools", ToolViewSet, basename="equipment-tool")
+router.register("tool-changes", ToolChangeRecordViewSet, basename="equipment-tool-change")
 
 urlpatterns = [
     path("", include(router.urls)),

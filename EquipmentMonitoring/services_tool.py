@@ -6,7 +6,7 @@ import uuid
 from django.db import transaction
 from django.utils import timezone
 
-from .models import Tool
+from .models import Tool, ToolChangeRecord
 
 # 两端都从设备档案读：刀具库 = 设备 TOOL-CRIB 的 map_node，机床 = 该设备的 map_node
 TOOL_CRIB_EQUIPMENT_CODE = "TOOL-CRIB"
@@ -78,12 +78,21 @@ def recommend(tool: Tool, next_task_minutes: float = 90.0) -> dict:
 
 
 @transaction.atomic
-def create_change_task(tool: Tool, *, actor: str = "system", notes: str = "") -> "object":
-    """生成「刀具配送」运输任务：刀具库 S10 → 机床所在站点，未分配、待调度。"""
+def create_change_task(tool: Tool, *, actor: str = "system", notes: str = ""):
+    """送新刀：刀具库 → 机床，同时登记一条待完成的换刀记录。"""
     from SchedulingDecision.models import MapNode, TransportTask
 
     if tool.status == Tool.Status.PENDING_CHANGE:
         raise ToolError("该刀具已经在待换状态，可能已有配送任务。")
+
+    replacement = (
+        Tool.objects.filter(equipment__isnull=True, status=Tool.Status.IN_USE)
+        .exclude(id=tool.id)
+        .order_by("code")
+        .first()
+    )
+    if replacement is None:
+        raise ToolError("没有可用的备用刀具，请先在刀具库补一把（equipment 为空的在机刀）")
 
     equipment = tool.equipment
     equipment_code = equipment.code if equipment else "未绑定设备"
@@ -98,30 +107,106 @@ def create_change_task(tool: Tool, *, actor: str = "system", notes: str = "") ->
         raise ToolError("刀具库与机床站点相同，无法生成配送任务")
 
     task = TransportTask.objects.create(
-        task_no=f"TOOL-{tool.code}-{uuid.uuid4().hex[:6].upper()}",
+        task_no=f"TOOL-{replacement.code}-{uuid.uuid4().hex[:6].upper()}",
         pickup_node=pickup,
         dropoff_node=dropoff,
-        cargo_name=f"刀具 {tool.code}",
+        cargo_name=f"新刀 {replacement.code}",
         cargo_weight=2,
         priority=3,
         status=TransportTask.Status.PENDING,
-        notes=notes or f"换刀配送：{tool.code} → {equipment_code}",
+        notes=notes or f"换刀配送：{replacement.code} → {equipment_code}（替换 {tool.code}）",
+    )
+    record = ToolChangeRecord.objects.create(
+        equipment=equipment,
+        old_tool=tool,
+        new_tool=replacement,
+        old_wear=tool.wear_ratio,
+        old_used_minutes=tool.used_minutes,
+        status=ToolChangeRecord.Status.PENDING,
+        operator=actor,
+        change_task_no=task.task_no,
+        note=notes,
     )
     tool.status = Tool.Status.PENDING_CHANGE
     tool.save(update_fields=["status", "updated_at"])
-    return task
+    return task, record
 
 
 @transaction.atomic
-def change_tool(tool: Tool, *, actor: str = "system") -> Tool:
-    """换刀完成：磨损清零、寿命重新累计、状态回到在机。"""
-    tool.wear_ratio = 0.0
-    tool.used_minutes = 0.0
-    tool.status = Tool.Status.IN_USE
-    tool.changed_at = timezone.now()
-    tool.notes = f"{tool.notes}\n[{timezone.now():%Y-%m-%d %H:%M}] 换刀完成（{actor}）".strip()
-    tool.save(update_fields=["wear_ratio", "used_minutes", "status", "changed_at", "notes", "updated_at"])
-    return tool
+def complete_change(tool: Tool, *, actor: str = "system", destination: str = "刀具库待刃磨") -> ToolChangeRecord:
+    """换刀完成：旧刀下机、新刀装上，记录旧刀磨损与去向。"""
+    record = (
+        ToolChangeRecord.objects.filter(old_tool=tool, status=ToolChangeRecord.Status.PENDING)
+        .order_by("-id")
+        .first()
+    )
+    if record is None or record.new_tool is None:
+        # 兜底：没有登记记录时，仍按“寿命复位”处理
+        tool.wear_ratio = 0.0
+        tool.used_minutes = 0.0
+        tool.status = Tool.Status.IN_USE
+        tool.changed_at = timezone.now()
+        tool.save(update_fields=["wear_ratio", "used_minutes", "status", "changed_at", "updated_at"])
+        return None
+
+    equipment = tool.equipment
+    old_code, new_code = tool.code, record.new_tool.code
+
+    tool.status = Tool.Status.CHANGED
+    tool.equipment = None
+    tool.notes = f"{tool.notes}\n[{timezone.now():%Y-%m-%d %H:%M}] 换下，去向：{destination}".strip()
+    tool.save(update_fields=["status", "equipment", "notes", "updated_at"])
+
+    new_tool = record.new_tool
+    new_tool.equipment = equipment
+    new_tool.status = Tool.Status.IN_USE
+    new_tool.wear_ratio = 0.0
+    new_tool.used_minutes = 0.0
+    new_tool.changed_at = timezone.now()
+    new_tool.save(update_fields=["equipment", "status", "wear_ratio", "used_minutes",
+                                 "changed_at", "updated_at"])
+
+    record.status = ToolChangeRecord.Status.DONE
+    record.completed_at = timezone.now()
+    record.operator = actor or record.operator
+    record.note = f"{record.note}\n[{timezone.now():%Y-%m-%d %H:%M}] {old_code} 下机 → {new_code} 装机".strip()
+    record.save(update_fields=["status", "completed_at", "operator", "note"])
+    return record
+
+
+@transaction.atomic
+def create_return_task(record: ToolChangeRecord, *, actor: str = "system") -> "object":
+    """旧刀回收：机床站点 → 刀具库，自动带上旧刀编号。"""
+    from SchedulingDecision.models import MapNode, TransportTask
+
+    if record.status != ToolChangeRecord.Status.DONE:
+        raise ToolError("换刀还没完成，不能回收旧刀")
+    if record.return_task_no:
+        raise ToolError(f"已经生成过回收任务（{record.return_task_no}）")
+    if record.old_tool is None:
+        raise ToolError("该记录没有旧刀信息")
+
+    machine_code = _node_code_of(record.equipment, DEFAULT_EQUIPMENT_NODE_CODE)
+    crib_code = _crib_node_code()
+    pickup = MapNode.objects.filter(code=machine_code).first()
+    dropoff = MapNode.objects.filter(code=crib_code).first()
+    if pickup is None or dropoff is None:
+        raise ToolError(f"地图节点缺失：机床 {machine_code} 或刀具库 {crib_code}")
+
+    task = TransportTask.objects.create(
+        task_no=f"RET-{record.old_tool.code}-{uuid.uuid4().hex[:6].upper()}",
+        pickup_node=pickup,
+        dropoff_node=dropoff,
+        cargo_name=f"旧刀 {record.old_tool.code}（待刃磨）",
+        cargo_weight=2,
+        priority=2,
+        status=TransportTask.Status.PENDING,
+        notes=f"旧刀回收：{record.old_tool.code} → {crib_code}（磨损 {record.old_wear:.0%}）",
+    )
+    record.return_task_no = task.task_no
+    record.save(update_fields=["return_task_no"])
+    return task
+
 
 def sync_from_diagnosis(equipment, feature_summary, series=None) -> list[dict]:
     """把在线诊断算出的刀具磨损写回在机刀具（换刀闭环的第一环）。"""

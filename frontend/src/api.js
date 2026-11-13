@@ -161,6 +161,12 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ actor: 'manufacturing-ui' }),
     }),
+  toolChanges: () => request('/equipment/tool-changes/').then(unwrap),
+  toolReturn: (recordId) =>
+    request(`/equipment/tool-changes/${recordId}/return/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+    }),
   toolChange: (id) =>
     request(`/equipment/tools/${id}/change/`, {
       method: 'POST',

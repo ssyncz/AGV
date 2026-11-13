@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import EquipmentDiagnosisRecord, Tool
+from .models import EquipmentDiagnosisRecord, Tool, ToolChangeRecord
 
 
 class ToolSerializer(serializers.ModelSerializer):
@@ -65,5 +65,22 @@ class EquipmentDiagnosisRecordListSerializer(EquipmentDiagnosisRecordSerializer)
             field
             for field in EquipmentDiagnosisRecordSerializer.Meta.fields
             if field != "series"
+        ]
+        read_only_fields = fields
+
+
+class ToolChangeRecordSerializer(serializers.ModelSerializer):
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    equipment_code = serializers.CharField(source="equipment.code", read_only=True, allow_null=True)
+    old_tool_code = serializers.CharField(source="old_tool.code", read_only=True, allow_null=True)
+    new_tool_code = serializers.CharField(source="new_tool.code", read_only=True, allow_null=True)
+
+    class Meta:
+        model = ToolChangeRecord
+        fields = [
+            "id", "equipment", "equipment_code", "old_tool", "old_tool_code",
+            "new_tool", "new_tool_code", "old_wear", "old_used_minutes",
+            "status", "status_display", "operator", "change_task_no",
+            "return_task_no", "note", "created_at", "completed_at",
         ]
         read_only_fields = fields

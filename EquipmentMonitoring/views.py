@@ -11,13 +11,15 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import EquipmentDiagnosisRecord, Tool
+from .models import EquipmentDiagnosisRecord, Tool, ToolChangeRecord
 from .serializers import (
     EquipmentDiagnosisRecordListSerializer,
     EquipmentDiagnosisRecordSerializer,
     ToolSerializer,
+    ToolChangeRecordSerializer,
 )
-from .services_tool import ToolError, change_tool, create_change_task, recommend, sync_from_diagnosis
+from .services_tool import (ToolError, complete_change, create_change_task, create_return_task,
+                            recommend, sync_from_diagnosis)
 from .services import (
     EquipmentMonitoringError,
     available_datasets,
@@ -311,7 +313,7 @@ class ToolViewSet(viewsets.ModelViewSet):
     def dispatch_task(self, request, pk=None):
         tool = self.get_object()
         try:
-            task = create_change_task(
+            task, record = create_change_task(
                 tool,
                 actor=str(request.data.get("actor") or "operator"),
                 notes=str(request.data.get("notes") or ""),
@@ -324,7 +326,8 @@ class ToolViewSet(viewsets.ModelViewSet):
             {
                 "tool": ToolSerializer(tool).data,
                 "task": TransportTaskSerializer(task, context={"request": request}).data,
-                "detail": "已生成刀具配送任务，可在调度中心派车",
+                "record": ToolChangeRecordSerializer(record).data,
+                "detail": "已生成新刀配送任务，可在调度中心派车",
             },
             status=status.HTTP_201_CREATED,
         )
@@ -332,5 +335,43 @@ class ToolViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def change(self, request, pk=None):
         tool = self.get_object()
-        tool = change_tool(tool, actor=str(request.data.get("actor") or "operator"))
-        return Response({"tool": ToolSerializer(tool).data, "detail": "换刀完成，磨损与寿命已复位"})
+        record = complete_change(tool, actor=str(request.data.get("actor") or "operator"))
+        return Response(
+            {
+                "record": ToolChangeRecordSerializer(record).data if record else None,
+                "tools": ToolSerializer(
+                    Tool.objects.filter(code__in=[
+                        record.old_tool.code if record and record.old_tool else "",
+                        record.new_tool.code if record and record.new_tool else "",
+                    ]), many=True
+                ).data,
+                "detail": "换刀完成：旧刀下机，新刀装上",
+            }
+        )
+
+
+class ToolChangeRecordViewSet(viewsets.ReadOnlyModelViewSet):
+    """换刀记录：谁、何时、旧刀磨损、新旧刀编号、物流任务号。"""
+
+    serializer_class = ToolChangeRecordSerializer
+    queryset = ToolChangeRecord.objects.select_related(
+        "equipment", "old_tool", "new_tool"
+    ).all()
+
+    @action(detail=True, methods=["post"], url_path="return")
+    def return_tool(self, request, pk=None):
+        record = self.get_object()
+        try:
+            task = create_return_task(record, actor=str(request.data.get("actor") or "operator"))
+        except ToolError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        from SchedulingDecision.serializers import TransportTaskSerializer
+
+        return Response(
+            {
+                "record": ToolChangeRecordSerializer(record).data,
+                "task": TransportTaskSerializer(task, context={"request": request}).data,
+                "detail": "已生成旧刀回收任务",
+            },
+            status=status.HTTP_201_CREATED,
+        )

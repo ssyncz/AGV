@@ -20,6 +20,31 @@ const tools = ref([])
 const nextTaskMinutes = ref(90)
 const toolAdvice = ref(null)
 const lastToolTask = ref(null)
+const toolRecords = ref([])
+const lastReturnTask = ref(null)
+
+async function loadToolRecords() {
+  try {
+    toolRecords.value = await api.toolChanges()
+  } catch (err) {
+    notify(`换刀记录加载失败：${err.message}`, 'error')
+  }
+}
+
+async function createReturnTask(record) {
+  toolBusy.value = `return-${record.id}`
+  try {
+    const data = await api.toolReturn(record.id)
+    lastReturnTask.value = data.task
+    notify(`已生成旧刀回收任务 ${data.task.task_no}，去调度中心派车`)
+    await loadToolRecords()
+  } catch (err) {
+    notify(err.message, 'error')
+  } finally {
+    toolBusy.value = ''
+  }
+}
+
 const toolBusy = ref('')
 
 async function loadTools() {
@@ -60,14 +85,17 @@ async function runToolAction(tool, key) {
       const data = await api.toolDispatch(tool.id)
       lastToolTask.value = data.task
       toolAdvice.value = null
-      notify(`已生成刀具配送任务 ${data.task.task_no}，去「调度中心」派车`)
-      await loadTools()
+      notify(`已生成新刀配送任务 ${data.task.task_no}，去「调度中心」派车`)
+      await Promise.all([loadTools(), loadToolRecords()])
     } else if (key === 'change') {
-      await api.toolChange(tool.id)
+      const data = await api.toolChange(tool.id)
       toolAdvice.value = null
       lastToolTask.value = null
-      notify('换刀完成：磨损与寿命已复位')
-      await loadTools()
+      const record = data.record
+      notify(record
+        ? `换刀完成：${record.old_tool_code} 已换下，${record.new_tool_code} 已装上`
+        : '换刀完成：磨损与寿命已复位')
+      await Promise.all([loadTools(), loadToolRecords()])
     }
   } catch (err) {
     notify(err.message, 'error')
@@ -280,6 +308,7 @@ const route = useRoute()
 if (route.query.tab === 'tools') {
   subTab.value = 'tools'
   loadTools()
+  loadToolRecords()
 } else if (route.query.tab === 'records') {
   openRecords()
 }
@@ -305,7 +334,7 @@ onUnmounted(() => {
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'diagnose' }" @click="subTab = 'diagnose'">在线诊断</button>
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'records' }" @click="openRecords">诊断记录</button>
-        <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'tools' }" @click="subTab = 'tools'; loadTools()">刀具与换刀</button>
+        <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'tools' }" @click="subTab = 'tools'; loadTools(); loadToolRecords()">刀具与换刀</button>
       </div>
     </div>
 
@@ -606,6 +635,55 @@ onUnmounted(() => {
             </div>
           </div>
         </section>
+
+        <section v-if="toolRecords.length" class="panel mt-16">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">换刀记录</div>
+              <div class="panel-desc">旧刀换下 → 新刀装上；完成后可生成旧刀回收任务（机床 → 刀具库）</div>
+            </div>
+            <button class="btn btn-sm" :disabled="Boolean(toolBusy)" @click="loadToolRecords">刷新</button>
+          </div>
+          <div class="panel-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>时间</th><th>设备</th><th>换刀</th><th>旧刀磨损</th>
+                    <th>状态</th><th>操作人</th><th>配送任务</th><th>回收任务</th><th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="record in toolRecords" :key="record.id">
+                    <td class="small">{{ formatTime(record.created_at) }}</td>
+                    <td class="cell-main">{{ record.equipment_code || '--' }}</td>
+                    <td><span class="mono">{{ record.old_tool_code }}</span> → <span class="mono strong">{{ record.new_tool_code }}</span></td>
+                    <td>{{ (record.old_wear * 100).toFixed(0) }}%</td>
+                    <td><span class="tag" :class="{ danger: record.status !== 'done' }">{{ record.status_display }}</span></td>
+                    <td>{{ record.operator || '--' }}</td>
+                    <td class="mono small">{{ record.change_task_no || '--' }}</td>
+                    <td class="mono small">{{ record.return_task_no || '--' }}</td>
+                    <td>
+                      <button v-if="record.status === 'done' && !record.return_task_no"
+                              class="btn btn-sm"
+                              :disabled="Boolean(toolBusy)"
+                              @click="createReturnTask(record)">
+                        {{ toolBusy === `return-${record.id}` ? '生成中...' : '生成回收任务' }}
+                      </button>
+                      <span v-else class="muted small">--</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div v-if="lastReturnTask" class="notice success mt-12">
+          已生成旧刀回收任务 <strong class="mono">{{ lastReturnTask.task_no }}</strong>
+          （{{ lastReturnTask.pickup_node_detail?.code }} → {{ lastReturnTask.dropoff_node_detail?.code }}），
+          去 <RouterLink class="link-btn" to="/dispatch">调度中心</RouterLink> 派车
+        </div>
 
         <div v-if="lastToolTask" class="notice success mt-12">
           已生成配送任务 <strong class="mono">{{ lastToolTask.task_no }}</strong>（{{ lastToolTask.pickup_node_detail?.code }} → {{ lastToolTask.dropoff_node_detail?.code }}），
