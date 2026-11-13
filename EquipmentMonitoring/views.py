@@ -1,19 +1,23 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 
 import pandas as pd
 from django.db.models import Avg, Count
+from django.utils import timezone
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import EquipmentDiagnosisRecord
+from .models import EquipmentDiagnosisRecord, Tool
 from .serializers import (
     EquipmentDiagnosisRecordListSerializer,
     EquipmentDiagnosisRecordSerializer,
+    ToolSerializer,
 )
+from .services_tool import ToolError, change_tool, create_change_task, recommend
 from .services import (
     EquipmentMonitoringError,
     available_datasets,
@@ -271,3 +275,57 @@ class EquipmentRecordViewSet(
         if work_order:
             queryset = queryset.filter(work_order_id=work_order)
         return queryset
+
+class ToolViewSet(viewsets.ModelViewSet):
+    """刀具档案 + 换刀闭环动作。"""
+
+    serializer_class = ToolSerializer
+    queryset = Tool.objects.select_related("equipment").all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        equipment = self.request.query_params.get("equipment")
+        if equipment:
+            queryset = queryset.filter(equipment_id=equipment)
+        state = self.request.query_params.get("status")
+        if state:
+            queryset = queryset.filter(status=state)
+        return queryset
+
+    @action(detail=True, methods=["post"])
+    def advice(self, request, pk=None):
+        tool = self.get_object()
+        try:
+            payload = recommend(tool, request.data.get("next_task_minutes", 90))
+        except ToolError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        data = ToolSerializer(tool).data
+        return Response({"tool": data, **payload, "generated_at": timezone.now().isoformat()})
+
+    @action(detail=True, methods=["post"], url_path="dispatch")
+    def dispatch_task(self, request, pk=None):
+        tool = self.get_object()
+        try:
+            task = create_change_task(
+                tool,
+                actor=str(request.data.get("actor") or "operator"),
+                notes=str(request.data.get("notes") or ""),
+            )
+        except ToolError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        from SchedulingDecision.serializers import TransportTaskSerializer
+
+        return Response(
+            {
+                "tool": ToolSerializer(tool).data,
+                "task": TransportTaskSerializer(task, context={"request": request}).data,
+                "detail": "已生成刀具配送任务，可在调度中心派车",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=True, methods=["post"])
+    def change(self, request, pk=None):
+        tool = self.get_object()
+        tool = change_tool(tool, actor=str(request.data.get("actor") or "operator"))
+        return Response({"tool": ToolSerializer(tool).data, "detail": "换刀完成，磨损与寿命已复位"})

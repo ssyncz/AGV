@@ -1,0 +1,111 @@
+"""换刀闭环：刀具状态 → 换刀建议 → 生成刀具配送运输任务 → 执行换刀。"""
+from __future__ import annotations
+
+import uuid
+
+from django.db import transaction
+from django.utils import timezone
+
+from .models import Tool
+
+# 刀具库固定用取货站 S10；机床位置取 Equipment.metadata["map_node"]，缺省 S6
+TOOL_CRIB_NODE_CODE = "S10"
+DEFAULT_EQUIPMENT_NODE_CODE = "S6"
+
+
+class ToolError(ValueError):
+    """换刀流程异常。"""
+
+
+def recommend(tool: Tool, next_task_minutes: float = 90.0) -> dict:
+    """换刀建议：磨损阈值 + 剩余寿命能否覆盖下一单。"""
+    next_task_minutes = max(float(next_task_minutes or 0), 0.0)
+    remaining = tool.remaining_minutes
+    reasons: list[str] = []
+
+    if tool.wear_ratio >= tool.threshold:
+        reasons.append(
+            f"磨损率 {tool.wear_ratio:.2f} 已达阈值 {tool.threshold:.2f}"
+        )
+    if remaining <= 0:
+        reasons.append("额定寿命已用尽")
+    elif remaining < next_task_minutes:
+        reasons.append(
+            f"剩余寿命 {remaining:.0f} 分钟 < 下一单需求 {next_task_minutes:.0f} 分钟"
+        )
+    elif remaining < next_task_minutes * 2:
+        reasons.append(
+            f"剩余寿命 {remaining:.0f} 分钟不足以覆盖两单（{next_task_minutes:.0f} 分钟/单）"
+        )
+
+    if tool.wear_ratio >= tool.threshold or remaining <= 0 or remaining < next_task_minutes:
+        decision = "change_now"
+        label = "立即换刀"
+        window = "本单结束后、下一单开始前（建议 ≤ 30 分钟窗口）"
+    elif remaining < next_task_minutes * 2:
+        decision = "change_soon"
+        label = "准备换刀"
+        window = "下一单开始前安排，可先备刀到刀具库出口"
+    else:
+        decision = "continue"
+        label = "可继续使用"
+        window = "无需换刀"
+
+    return {
+        "decision": decision,
+        "decision_label": label,
+        "reasons": reasons,
+        "remaining_minutes": round(remaining, 1),
+        "required_minutes": round(next_task_minutes, 1),
+        "suggested_window": window,
+        "can_continue": decision == "continue",
+        "needs_dispatch": decision != "continue" and tool.status != Tool.Status.PENDING_CHANGE,
+    }
+
+
+@transaction.atomic
+def create_change_task(tool: Tool, *, actor: str = "system", notes: str = "") -> "object":
+    """生成「刀具配送」运输任务：刀具库 S10 → 机床所在站点，未分配、待调度。"""
+    from SchedulingDecision.models import MapNode, TransportTask
+
+    if tool.status == Tool.Status.PENDING_CHANGE:
+        raise ToolError("该刀具已经在待换状态，可能已有配送任务。")
+
+    equipment = tool.equipment
+    equipment_code = equipment.code if equipment else "未绑定设备"
+    node_code = DEFAULT_EQUIPMENT_NODE_CODE
+    if equipment and isinstance(equipment.metadata, dict):
+        node_code = str(equipment.metadata.get("map_node") or node_code)
+
+    pickup = MapNode.objects.filter(code=TOOL_CRIB_NODE_CODE).first()
+    dropoff = MapNode.objects.filter(code=node_code).first()
+    if pickup is None or dropoff is None:
+        raise ToolError(f"地图节点缺失：刀具库 {TOOL_CRIB_NODE_CODE} 或机床站点 {node_code}")
+    if pickup.id == dropoff.id:
+        raise ToolError("刀具库与机床站点相同，无法生成配送任务")
+
+    task = TransportTask.objects.create(
+        task_no=f"TOOL-{tool.code}-{uuid.uuid4().hex[:6].upper()}",
+        pickup_node=pickup,
+        dropoff_node=dropoff,
+        cargo_name=f"刀具 {tool.code}",
+        cargo_weight=2,
+        priority=3,
+        status=TransportTask.Status.PENDING,
+        notes=notes or f"换刀配送：{tool.code} → {equipment_code}",
+    )
+    tool.status = Tool.Status.PENDING_CHANGE
+    tool.save(update_fields=["status", "updated_at"])
+    return task
+
+
+@transaction.atomic
+def change_tool(tool: Tool, *, actor: str = "system") -> Tool:
+    """换刀完成：磨损清零、寿命重新累计、状态回到在机。"""
+    tool.wear_ratio = 0.0
+    tool.used_minutes = 0.0
+    tool.status = Tool.Status.IN_USE
+    tool.changed_at = timezone.now()
+    tool.notes = f"{tool.notes}\n[{timezone.now():%Y-%m-%d %H:%M}] 换刀完成（{actor}）".strip()
+    tool.save(update_fields=["wear_ratio", "used_minutes", "status", "changed_at", "notes", "updated_at"])
+    return tool

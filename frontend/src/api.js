@@ -147,6 +147,23 @@ export const api = {
   equipmentRecords: (query = '') => request(`/equipment/records/${query}`).then(unwrap),
   deleteEquipmentRecord: (id) =>
     request(`/equipment/records/${id}/`, { method: 'DELETE' }),
+  // 刀具与换刀闭环
+  equipmentTools: () => request('/equipment/tools/').then(unwrap),
+  toolAdvice: (id, nextTaskMinutes = 90) =>
+    request(`/equipment/tools/${id}/advice/`, {
+      method: 'POST',
+      body: JSON.stringify({ next_task_minutes: nextTaskMinutes }),
+    }),
+  toolDispatch: (id) =>
+    request(`/equipment/tools/${id}/dispatch/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+    }),
+  toolChange: (id) =>
+    request(`/equipment/tools/${id}/change/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+    }),
 
   // --- 订单需求预测（任务 7）---
   forecastOverview: () => request('/forecast/overview/'),

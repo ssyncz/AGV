@@ -1,6 +1,23 @@
 from rest_framework import serializers
 
-from .models import EquipmentDiagnosisRecord
+from .models import EquipmentDiagnosisRecord, Tool
+
+
+class ToolSerializer(serializers.ModelSerializer):
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    equipment_code = serializers.CharField(source="equipment.code", read_only=True, allow_null=True)
+    remaining_minutes = serializers.FloatField(read_only=True)
+    wear_alert = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Tool
+        fields = [
+            "id", "code", "name", "equipment", "equipment_code",
+            "wear_ratio", "threshold", "life_minutes", "used_minutes",
+            "remaining_minutes", "wear_alert", "status", "status_display",
+            "changed_at", "notes", "created_at", "updated_at",
+        ]
+        read_only_fields = ["created_at", "updated_at"]
 
 
 class EquipmentDiagnosisRecordSerializer(serializers.ModelSerializer):
