@@ -128,6 +128,26 @@ function coordinatePoint(x, y) {
   }
 }
 
+// 一条任务路线 = 空驶段（AGV 当前 → 取货点）+ 载货段（取货点 → 放货点）
+// 拆分后地图上就能一眼看出哪段是空跑、哪段是拉货
+function routeParts(route) {
+  const nodes = route?.route?.nodes || []
+  const legs = route?.route?.legs || []
+  const pickup = route?.pickup_node ?? route?.route?.pickup_node
+  const index = nodes.indexOf(pickup)
+  const cut = index > 0 ? index : 0
+  const sum = (from, to) => legs.slice(from, to).reduce((total, leg) => total + (Number(leg.distance) || 0), 0)
+  return {
+    deadheadNodes: cut > 0 ? nodes.slice(0, cut + 1) : [],
+    loadedNodes: nodes.slice(cut),
+    deadheadMeters: Math.round(sum(0, cut)),
+    loadedMeters: Math.round(sum(cut, legs.length)),
+    startNode: route?.route?.start_node ?? nodes[0],
+    pickupNode: pickup,
+    dropoffNode: route?.dropoff_node ?? route?.route?.dropoff_node,
+  }
+}
+
 function point(nodeId) {
   const node = nodeMap.value[nodeId]
   if (!node) return { x: 0, y: 0 }
@@ -217,7 +237,40 @@ function clearPath() {
             <line v-for="y in gridYs" :key="`h-${y}`" class="map-grid-line" :x1="coordinatePoint(extent.minX, y).x" :y1="coordinatePoint(extent.minX, y).y" :x2="coordinatePoint(extent.maxX, y).x" :y2="coordinatePoint(extent.maxX, y).y" />
             <line v-for="edge in edges" :key="edge.id" class="map-edge" :x1="point(edge.start_node).x" :y1="point(edge.start_node).y" :x2="point(edge.end_node).x" :y2="point(edge.end_node).y" />
             <rect v-for="item in obstacles" :key="item.id" class="map-obstacle" v-bind="obstacleRect(item)" rx="3" />
-            <polyline v-for="(route, index) in visibleRoutes" :key="route.task_id" class="map-route route-selected" :points="points(route.route?.nodes)" :style="{ stroke: routeColor(index), color: routeColor(index) }" />
+            <g v-for="(route, index) in visibleRoutes" :key="route.task_id" class="route-group">
+              <!-- 空驶段：AGV 当前位置 → 取货点（虚线） -->
+              <polyline
+                v-if="routeParts(route).deadheadNodes.length"
+                class="map-route-deadhead"
+                :points="points(routeParts(route).deadheadNodes)"
+                :style="{ stroke: routeColor(index) }"
+              />
+              <!-- 载货段：取货点 → 放货点（实线 + 流动） -->
+              <polyline
+                class="map-route route-selected"
+                :points="points(routeParts(route).loadedNodes)"
+                :style="{ stroke: routeColor(index), color: routeColor(index) }"
+              />
+              <!-- 关键点标注 -->
+              <g v-if="routeParts(route).startNode" class="route-mark">
+                <circle :cx="point(routeParts(route).startNode).x" :cy="point(routeParts(route).startNode).y" r="7"
+                        fill="none" :stroke="routeColor(index)" stroke-width="2.5" />
+                <text :x="point(routeParts(route).startNode).x" :y="point(routeParts(route).startNode).y - 13"
+                      text-anchor="middle" class="map-node-label">出发</text>
+              </g>
+              <g v-if="routeParts(route).pickupNode" class="route-mark">
+                <rect :x="point(routeParts(route).pickupNode).x - 6" :y="point(routeParts(route).pickupNode).y - 6"
+                      width="12" height="12" rx="3" fill="#55e08c" stroke="#04150c" stroke-width="2" />
+                <text :x="point(routeParts(route).pickupNode).x" :y="point(routeParts(route).pickupNode).y + 20"
+                      text-anchor="middle" class="map-node-label">取货</text>
+              </g>
+              <g v-if="routeParts(route).dropoffNode" class="route-mark">
+                <rect :x="point(routeParts(route).dropoffNode).x - 6" :y="point(routeParts(route).dropoffNode).y - 6"
+                      width="12" height="12" rx="3" fill="#f3c04b" stroke="#04150c" stroke-width="2" />
+                <text :x="point(routeParts(route).dropoffNode).x" :y="point(routeParts(route).dropoffNode).y + 20"
+                      text-anchor="middle" class="map-node-label">放货</text>
+              </g>
+            </g>
             <polyline v-if="pathResult" class="map-route manual-route" :points="points(pathResult.route.nodes)" />
             <g v-for="node in nodes" :key="node.id" class="map-node-group" @mouseenter="hoveredNode = node" @mouseleave="hoveredNode = null">
               <circle class="map-node-hit" :cx="point(node.id).x" :cy="point(node.id).y" r="11" />
@@ -260,7 +313,8 @@ function clearPath() {
           <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #7fa394"></span>障碍区域</span></div>
           <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #55e08c"></span>取货点</span></div>
           <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #f3c04b"></span>放货点</span></div>
-          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #ff7a72"></span>规划路径</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #ff7a72"></span>载货段（实线）</span></div>
+          <div class="legend-row"><span class="legend-name"><span class="legend-dot" style="--dot: #7fa394"></span>空驶段（虚线）</span></div>
         </div>
         <div class="executing-routes mt-16">
           <div class="route-section-head"><strong>工单调度路线</strong><span>{{ routeGroups.length }} 个工单 · {{ executingRoutes.length }} 条路线</span></div>
@@ -293,7 +347,11 @@ function clearPath() {
               </div>
               <div class="route-path">{{ nodeMap[selectedRouteDetail.pickup_node]?.code || '--' }} → {{ nodeMap[selectedRouteDetail.dropoff_node]?.code || '--' }} · 全局第 {{ selectedRouteDetail.dispatch_order || '-' }} 项 · 车内第 {{ selectedRouteDetail.sequence_number || '-' }} 项</div>
               <div class="route-path">{{ selectedRouteDetail.total_distance || 0 }} m · {{ selectedRouteDetail.estimated_duration || 0 }} s</div>
-              <div class="route-full-path"><span>完整路径</span><code>{{ routeText(selectedRouteDetail) || '暂无路径' }}</code></div>
+              <div class="route-full-path">
+                <span>完整路径（出发 → 取货 → 放货）</span>
+                <code>{{ routeText(selectedRouteDetail) || '暂无路径' }}</code>
+                <span v-if="selectedRouteDetail">空驶 {{ routeParts(selectedRouteDetail).deadheadMeters }} m · 载货 {{ routeParts(selectedRouteDetail).loadedMeters }} m</span>
+              </div>
             </div>
           </div>
           <div v-else class="empty small-empty">暂无正在执行的任务路线</div>
@@ -303,6 +361,15 @@ function clearPath() {
   </div>
 </template>
 
+<style scoped>
+.map-route-deadhead {
+  fill: none;
+  stroke-width: 3;
+  stroke-dasharray: 7 6;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.route-mark text { font-size: 10px; font-weight: 650; paint-order: stroke; stroke: rgba(4, 21, 12, 0.55); stroke-width: 3px; }
 <style scoped>
 .route-navigation { display: grid; gap: 12px; }
 .route-order-buttons { display: grid; gap: 7px; max-height: 245px; overflow-y: auto; padding-right: 3px; }
