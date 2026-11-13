@@ -59,7 +59,29 @@ function toggleWeekday(day) {
   }
 }
 
-onMounted(load)
+const mapNodes = ref([])
+
+async function loadMapNodes() {
+  try {
+    const nodes = await api.nodes()
+    mapNodes.value = (nodes || []).filter((node) => ['pickup', 'dropoff'].includes(node.node_type))
+  } catch {
+    mapNodes.value = []
+  }
+}
+
+async function saveMapNode(item, code) {
+  try {
+    const metadata = { ...(item.metadata || {}), map_node: code }
+    await api.updateEquipment(item.id, { metadata })
+    item.metadata = metadata
+    emit('notify', { message: `${item.code} 的地图站点已设为 ${code || '（清空）'}` })
+  } catch (error) {
+    emit('notify', { message: error.message, type: 'error' })
+  }
+}
+
+onMounted(() => { load(); loadMapNodes() })
 </script>
 
 <template>
@@ -87,7 +109,7 @@ onMounted(load)
       <div class="panel-body">
         <div class="form-grid"><div class="field"><label>设备编号</label><input v-model="equipmentForm.code" class="input" /></div><div class="field"><label>设备名称</label><input v-model="equipmentForm.name" class="input" /></div><div class="field"><label>设备类型</label><input v-model="equipmentForm.equipment_type" class="input" /></div><div class="field"><label>所属站点</label><select v-model="equipmentForm.site" class="select"><option v-for="site in data.sites" :key="site.id" :value="site.id">{{ site.name }}</option></select></div></div>
         <button class="btn btn-primary mt-12" :disabled="busy === 'equipment'" @click="create('equipment')">新增设备</button>
-        <div class="table-wrap mt-16"><table><thead><tr><th>设备编号</th><th>名称</th><th>类型</th><th>站点</th><th>状态</th><th>最后诊断</th></tr></thead><tbody><tr v-for="item in data.equipment" :key="item.id"><td class="mono">{{ item.code }}</td><td>{{ item.name || '--' }}</td><td>{{ item.equipment_type || '--' }}</td><td>{{ item.site_detail?.name || '--' }}</td><td><span class="tag">{{ item.status_display }}</span></td><td class="small">{{ item.last_seen_at ? new Date(item.last_seen_at).toLocaleString('zh-CN', { hour12: false }) : '--' }}</td></tr><tr v-if="!data.equipment.length"><td colspan="6"><div class="empty">暂无设备</div></td></tr></tbody></table></div>
+        <div class="table-wrap mt-16"><table><thead><tr><th>设备编号</th><th>名称</th><th>类型</th><th>站点</th><th>地图站点</th><th>状态</th><th>最后诊断</th></tr></thead><tbody><tr v-for="item in data.equipment" :key="item.id"><td class="mono">{{ item.code }}</td><td>{{ item.name || '--' }}</td><td>{{ item.equipment_type || '--' }}</td><td>{{ item.site_detail?.name || '--' }}</td><td><select class="select select-sm" :value="item.metadata?.map_node || ''" @change="saveMapNode(item, $event.target.value)"><option value="">未设置</option><option v-for="node in mapNodes" :key="node.id" :value="node.code">{{ node.code }} · {{ node.name }}</option></select></td><td><span class="tag">{{ item.status_display }}</span></td><td class="small">{{ item.last_seen_at ? new Date(item.last_seen_at).toLocaleString('zh-CN', { hour12: false }) : '--' }}</td></tr><tr v-if="!data.equipment.length"><td colspan="7"><div class="empty">暂无设备</div></td></tr></tbody></table></div>
       </div>
     </section>
 

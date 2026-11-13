@@ -123,6 +123,8 @@ export const api = {
     request('/operations/products/', { method: 'POST', body: JSON.stringify(payload) }),
   createEquipment: (payload) =>
     request('/operations/equipment/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateEquipment: (id, payload) =>
+    request(`/operations/equipment/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
 
   // --- 视觉检测（ManufacturingVision，任务 4/5）---
   visionOverview: () => request('/vision/overview/'),

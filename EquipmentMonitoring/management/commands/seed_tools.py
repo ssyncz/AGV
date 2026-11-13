@@ -26,6 +26,18 @@ class Command(BaseCommand):
         equipment.metadata = metadata
         equipment.save(update_fields=["metadata", "updated_at"])
 
+        # 刀具库也是一条设备档案：它的 map_node 就是配送起点
+        crib, _ = Equipment.objects.update_or_create(
+            code="TOOL-CRIB",
+            defaults={
+                "name": "刀具库",
+                "equipment_type": "tool_crib",
+                "site": equipment.site,
+                "status": Equipment.Status.NORMAL,
+                "metadata": {"map_node": "S10"},
+            },
+        )
+
         tool, created = Tool.objects.update_or_create(
             code="T-001",
             defaults={

@@ -8,9 +8,23 @@ from django.utils import timezone
 
 from .models import Tool
 
-# 刀具库固定用取货站 S10；机床位置取 Equipment.metadata["map_node"]，缺省 S6
-TOOL_CRIB_NODE_CODE = "S10"
-DEFAULT_EQUIPMENT_NODE_CODE = "S6"
+# 两端都从设备档案读：刀具库 = 设备 TOOL-CRIB 的 map_node，机床 = 该设备的 map_node
+TOOL_CRIB_EQUIPMENT_CODE = "TOOL-CRIB"
+TOOL_CRIB_NODE_CODE = "S10"          # 兜底：没建刀具库档案时用
+DEFAULT_EQUIPMENT_NODE_CODE = "S6"   # 兜底：没填站点时用
+
+
+def _node_code_of(equipment, fallback: str) -> str:
+    if equipment is not None and isinstance(equipment.metadata, dict):
+        return str(equipment.metadata.get("map_node") or fallback)
+    return fallback
+
+
+def _crib_node_code() -> str:
+    from Operations.models import Equipment
+
+    crib = Equipment.objects.filter(code=TOOL_CRIB_EQUIPMENT_CODE).first()
+    return _node_code_of(crib, TOOL_CRIB_NODE_CODE)
 
 
 class ToolError(ValueError):
@@ -73,14 +87,13 @@ def create_change_task(tool: Tool, *, actor: str = "system", notes: str = "") ->
 
     equipment = tool.equipment
     equipment_code = equipment.code if equipment else "未绑定设备"
-    node_code = DEFAULT_EQUIPMENT_NODE_CODE
-    if equipment and isinstance(equipment.metadata, dict):
-        node_code = str(equipment.metadata.get("map_node") or node_code)
+    node_code = _node_code_of(equipment, DEFAULT_EQUIPMENT_NODE_CODE)
+    crib_code = _crib_node_code()
 
-    pickup = MapNode.objects.filter(code=TOOL_CRIB_NODE_CODE).first()
+    pickup = MapNode.objects.filter(code=crib_code).first()
     dropoff = MapNode.objects.filter(code=node_code).first()
     if pickup is None or dropoff is None:
-        raise ToolError(f"地图节点缺失：刀具库 {TOOL_CRIB_NODE_CODE} 或机床站点 {node_code}")
+        raise ToolError(f"地图节点缺失：刀具库 {crib_code} 或机床站点 {node_code}")
     if pickup.id == dropoff.id:
         raise ToolError("刀具库与机床站点相同，无法生成配送任务")
 
