@@ -20,6 +20,22 @@ const tools = ref([])
 const nextTaskMinutes = ref(90)
 const toolAdvice = ref(null)
 const lastToolTask = ref(null)
+const sortedTools = computed(() => {
+  const rank = (tool) => (tool.status === 'in_use' ? 0 : tool.status === 'pending_change' ? 1 : 2)
+  return [...tools.value].sort((a, b) => rank(a) - rank(b) || String(a.code).localeCompare(String(b.code)))
+})
+
+const machineSummary = computed(() => {
+  const ids = (item) => item.status === 'in_use' && item.equipment_code
+  const onMachine = tools.value.filter(ids)
+  const offMachine = tools.value.filter((item) => ['changed', 'retired'].includes(item.status))
+  return { onMachine, offMachine }
+})
+
+function isOffMachine(tool) {
+  return ['changed', 'retired'].includes(tool.status)
+}
+
 const toolRecords = ref([])
 const lastReturnTask = ref(null)
 
@@ -69,6 +85,7 @@ async function loadTools() {
 
 // 每把刀只露一个主按钮：待换→换刀完成；超阈值→生成配送任务；其余→换刀建议
 function toolPrimary(tool) {
+  if (['changed', 'retired'].includes(tool.status)) return null
   if (tool.status === 'pending_change') return { key: 'change', label: '换刀完成' }
   if (tool.wear_alert) return { key: 'dispatch', label: '生成配送任务' }
   return { key: 'advice', label: '换刀建议' }
@@ -76,6 +93,7 @@ function toolPrimary(tool) {
 
 function toolMenu(tool) {
   const items = []
+  if (!toolPrimary(tool)) return items
   if (toolPrimary(tool).key !== 'advice') items.push({ key: 'advice', label: '查看换刀建议' })
   if (tool.status === 'pending_change') items.push({ key: 'change', label: '换刀完成' })
   return items
@@ -83,6 +101,7 @@ function toolMenu(tool) {
 
 // 只要不是在待换状态，「生成配送任务」都直接露出来，不用翻菜单
 function showDispatch(tool) {
+  if (!toolPrimary(tool)) return false
   return tool.status !== 'pending_change' && toolPrimary(tool).key !== 'dispatch'
 }
 
@@ -586,8 +605,19 @@ onUnmounted(() => {
           </div>
         </div>
 
+        <div class="tool-summary mt-12">
+          <span v-if="machineSummary.onMachine.length">
+            在机：<strong v-for="tool in machineSummary.onMachine" :key="tool.id" class="mono">{{ tool.code }}</strong>
+            <span class="muted">（{{ machineSummary.onMachine.map((item) => item.equipment_code).join('、') }}）</span>
+          </span>
+          <span v-if="machineSummary.offMachine.length" class="muted">
+            已换下：<span class="mono">{{ machineSummary.offMachine.map((item) => item.code).join('、') }}</span>
+            （等待回收/刃磨）
+          </span>
+        </div>
+
         <div class="grid tool-grid mt-12">
-          <article v-for="tool in tools" :key="tool.id" class="panel tool-card">
+          <article v-for="tool in sortedTools" :key="tool.id" class="panel tool-card" :class="{ 'tool-card-off': isOffMachine(tool) }">
             <div class="tool-card-head">
               <div>
                 <div class="cell-main mono">{{ tool.code }}</div>
@@ -610,7 +640,10 @@ onUnmounted(() => {
               <div><span>累计切削</span><strong>{{ tool.used_minutes.toFixed(0) }} / {{ tool.life_minutes.toFixed(0) }}</strong></div>
               <div><span>上次换刀</span><strong>{{ tool.changed_at ? formatTime(tool.changed_at) : '--' }}</strong></div>
             </div>
-            <div class="action-bar mt-12">
+            <div v-if="isOffMachine(tool)" class="cell-sub mt-12">
+              已下机，磨损 {{ (tool.wear_ratio * 100).toFixed(0) }}% 已归档 · 去向见换刀记录
+            </div>
+            <div v-else class="action-bar mt-12">
               <button v-if="toolPrimary(tool)" class="btn btn-sm btn-primary"
                       :disabled="Boolean(toolBusy)"
                       @click="runToolAction(tool, toolPrimary(tool).key)">
@@ -743,6 +776,9 @@ onUnmounted(() => {
 <style scoped>
 .tool-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 .tool-card { padding: 14px 16px; display: grid; gap: 12px; }
+.tool-card-off { opacity: 0.62; }
+.tool-card-off .progress-bar { background: var(--faint); }
+.tool-summary { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-soft); }
 .tool-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .tool-wear-labels { display: flex; align-items: baseline; justify-content: space-between; font-size: 11.5px; color: var(--muted); }
 .tool-wear-labels strong { font-size: 15px; color: var(--text); }
