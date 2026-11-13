@@ -32,6 +32,7 @@ const recordFilter = ref('')
 const workOrders = ref([])
 const selectedWorkOrderId = ref('')
 
+const showParams = ref(false)
 const running = ref(false)
 const loadingRecords = ref(false)
 const error = ref('')
@@ -325,6 +326,18 @@ onUnmounted(() => {
                 <input class="input" type="file" accept="image/*" @change="onFileChange" />
               </div>
 
+            </div>
+
+            <div class="disclosure mt-12" :class="{ open: showParams }">
+              <button type="button" class="disclosure-head" @click="showParams = !showParams">
+              <span>
+                参数设置
+                <span class="cell-sub">· 默认值即可跑，需要微调阈值时再展开</span>
+              </span>
+              <span class="caret">{{ showParams ? '收起' : '展开' }}</span>
+            </button>
+            <div v-if="showParams" class="disclosure-body">
+              <div class="form-grid single">
               <template v-if="mode === 'crack'">
                 <div class="field">
                   <label>裂纹算法</label>
@@ -418,6 +431,9 @@ onUnmounted(() => {
                   <input v-model.number="workpieceParams.morph_kernel" class="input" type="number" step="2" min="1" max="15" />
                 </div>
               </template>
+              </div>
+            </div>
+
             </div>
 
             <div v-if="mode === 'defect' && !detectorAvailable" class="notice mt-12">

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { api } from '../api'
 import StatusBadge from '../components/StatusBadge.vue'
+import ActionMenu from '../components/ActionMenu.vue'
 
 const props = defineProps({
   tasks: { type: Array, default: () => [] },
@@ -170,6 +171,30 @@ function runWorkingSeconds(run) {
   )
 }
 
+// 每个任务只暴露一个主按钮，其余（路线/取消）收进「更多」
+function taskPrimary(task) {
+  if (task.status === 'assigned') return { key: 'start', label: '开始' }
+  if (task.status === 'in_progress') return { key: 'complete', label: '完成' }
+  return null
+}
+
+function taskMenu(task) {
+  const items = []
+  if (task.route?.nodes?.length) items.push({ key: 'route', label: '查看路线' })
+  if (['pending', 'assigned'].includes(task.status)) {
+    items.push({ key: 'cancel', label: '取消任务', danger: true })
+  }
+  return items
+}
+
+function onTaskMore(task, key) {
+  if (key === 'route') {
+    expanded.value = expanded.value === task.id ? null : task.id
+    return
+  }
+  runAction(task, key)
+}
+
 async function runAction(task, action) {
   busyId.value = `${task.id}-${action}`
   try {
@@ -269,18 +294,27 @@ async function runAction(task, action) {
                   <tr>
                     <td><span v-if="task.dispatch_order" class="dispatch-order-badge">#{{ task.dispatch_order }}</span><span v-else class="tag">待排程</span></td>
                     <td><div class="cell-main mono">{{ task.task_no }}</div><div class="cell-sub">{{ task.operation_step_name ? `工序 ${task.operation_step_name} · ` : '' }}<RouterLink v-if="task.work_order" class="link-btn" :to="{ path: '/work-orders', query: { work_order: task.work_order } }">工单 {{ task.work_order_no }}</RouterLink><span v-else>{{ task.production_plan_no ? `计划 ${task.production_plan_no}` : formatDateTime(task.created_at) }}</span></div></td>
-                    <td><span class="strong">{{ task.pickup_node_detail?.code }}</span> → <span class="strong">{{ task.dropoff_node_detail?.code }}</span><button v-if="task.route?.nodes?.length" class="link-btn" @click="expanded = expanded === task.id ? null : task.id">路线</button></td>
+                    <td><span class="strong">{{ task.pickup_node_detail?.code }}</span> → <span class="strong">{{ task.dropoff_node_detail?.code }}</span></td>
                     <td><div class="cell-sub">释放 {{ formatDateTime(task.release_at) }}</div><div class="cell-sub">交期 {{ formatDateTime(task.due_at) }}</div><span v-if="deadlineState(task)" class="badge" :class="deadlineState(task) === '逾期' ? 'badge-failed' : 'badge-completed'">{{ deadlineState(task) }}</span></td>
                     <td>{{ task.cargo_name }}<div class="cell-sub">{{ task.cargo_weight }} kg · P{{ task.priority }}</div></td>
                     <td>{{ task.assigned_agv_detail?.code || '--' }}<div class="cell-sub">{{ task.sequence_number ? `车内第 ${task.sequence_number} 项` : '未分配' }}</div></td>
                     <td>{{ task.total_distance || 0 }} m<div class="cell-sub">{{ task.estimated_duration || 0 }} s</div></td>
                     <td><StatusBadge :status="task.status" /></td>
                     <td>
-                      <div class="table-actions">
-                        <button v-if="task.status === 'assigned'" class="btn btn-sm btn-primary" :disabled="busyId === `${task.id}-start`" @click="runAction(task, 'start')">开始</button>
-                        <button v-if="task.status === 'in_progress'" class="btn btn-sm btn-success" :disabled="busyId === `${task.id}-complete`" @click="runAction(task, 'complete')">完成</button>
-                        <button v-if="['pending', 'assigned'].includes(task.status)" class="btn btn-sm btn-danger" :disabled="busyId === `${task.id}-cancel`" @click="runAction(task, 'cancel')">取消</button>
-                        <span v-if="['completed', 'cancelled'].includes(task.status)" class="muted small">--</span>
+                      <div class="action-bar">
+                        <button
+                          v-if="taskPrimary(task)"
+                          class="btn btn-sm"
+                          :class="task.status === 'in_progress' ? 'btn-success' : 'btn-primary'"
+                          :disabled="Boolean(busyId)"
+                          @click="runAction(task, taskPrimary(task).key)"
+                        >{{ busyId === `${task.id}-${taskPrimary(task).key}` ? '处理中...' : taskPrimary(task).label }}</button>
+                        <ActionMenu
+                          v-if="taskMenu(task).length"
+                          :items="taskMenu(task)"
+                          @select="onTaskMore(task, $event)"
+                        />
+                        <span v-if="!taskPrimary(task) && !taskMenu(task).length" class="muted small">--</span>
                       </div>
                     </td>
                   </tr>
