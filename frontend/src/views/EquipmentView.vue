@@ -40,13 +40,13 @@ function toolPrimary(tool) {
 function toolMenu(tool) {
   const items = []
   if (toolPrimary(tool).key !== 'advice') items.push({ key: 'advice', label: '查看换刀建议' })
-  if (toolPrimary(tool).key !== 'dispatch' && tool.status !== 'pending_change') {
-    items.push({ key: 'dispatch', label: '生成配送任务' })
-  }
-  if (toolPrimary(tool).key !== 'change' && tool.status === 'pending_change') {
-    items.push({ key: 'change', label: '换刀完成' })
-  }
+  if (tool.status === 'pending_change') items.push({ key: 'change', label: '换刀完成' })
   return items
+}
+
+// 只要不是在待换状态，「生成配送任务」都直接露出来，不用翻菜单
+function showDispatch(tool) {
+  return tool.status !== 'pending_change' && toolPrimary(tool).key !== 'dispatch'
 }
 
 async function runToolAction(tool, key) {
@@ -567,6 +567,11 @@ onUnmounted(() => {
                       @click="runToolAction(tool, toolPrimary(tool).key)">
                 {{ toolBusy === `${tool.id}-${toolPrimary(tool).key}` ? '处理中...' : toolPrimary(tool).label }}
               </button>
+              <button v-if="showDispatch(tool)" class="btn btn-sm"
+                      :disabled="Boolean(toolBusy)"
+                      @click="runToolAction(tool, 'dispatch')">
+                {{ toolBusy === `${tool.id}-dispatch` ? '生成中...' : '生成配送任务' }}
+              </button>
               <ActionMenu :items="toolMenu(tool)" @select="runToolAction(tool, $event)" />
             </div>
           </article>
@@ -592,6 +597,12 @@ onUnmounted(() => {
             </ul>
             <div class="notice mt-12">
               流程：换刀建议 → 生成配送任务（刀具库 S10 → 机床站点）→ 调度中心派车 → 送达后点「换刀完成」复位寿命
+            </div>
+            <div v-if="toolAdvice.decision !== 'continue'" class="action-bar mt-12">
+              <button class="btn btn-sm btn-primary" :disabled="Boolean(toolBusy)"
+                      @click="runToolAction(tools.find((item) => item.code === toolAdvice.tool_code) || tools[0], 'dispatch')">
+                按建议生成配送任务
+              </button>
             </div>
           </div>
         </section>
