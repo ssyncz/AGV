@@ -317,6 +317,7 @@ class ToolViewSet(viewsets.ModelViewSet):
                 tool,
                 actor=str(request.data.get("actor") or "operator"),
                 notes=str(request.data.get("notes") or ""),
+                work_order_id=request.data.get("work_order_id"),
             )
         except ToolError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)

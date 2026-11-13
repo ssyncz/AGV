@@ -229,6 +229,11 @@ class TransportTask(models.Model):
         HIGH = 3, "高"
         URGENT = 4, "紧急"
 
+    class BizType(models.TextChoices):
+        TRANSPORT = "transport", "普通运输"
+        TOOL_CHANGE = "tool_change", "换刀配送"
+        TOOL_RETURN = "tool_return", "旧刀回收"
+
     class Status(models.TextChoices):
         PENDING = "pending", "待调度"
         ASSIGNED = "assigned", "已分配"
@@ -238,6 +243,9 @@ class TransportTask(models.Model):
         CANCELLED = "cancelled", "已取消"
 
     task_no = models.CharField("任务编号", max_length=32, unique=True)
+    biz_type = models.CharField(
+        "业务类型", max_length=16, choices=BizType.choices, default=BizType.TRANSPORT
+    )
     work_order = models.ForeignKey(
         "Operations.WorkOrder",
         on_delete=models.SET_NULL,

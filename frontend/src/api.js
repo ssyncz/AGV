@@ -156,10 +156,10 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ next_task_minutes: nextTaskMinutes }),
     }),
-  toolDispatch: (id) =>
+  toolDispatch: (id, workOrderId = null) =>
     request(`/equipment/tools/${id}/dispatch/`, {
       method: 'POST',
-      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+      body: JSON.stringify({ actor: 'manufacturing-ui', work_order_id: workOrderId }),
     }),
   toolChanges: () => request('/equipment/tool-changes/').then(unwrap),
   toolReturn: (recordId) =>

@@ -136,3 +136,8 @@ html[data-theme="light"] .action-menu-list {
   font-weight: 650;
 }
 html[data-theme="light"] .segmented button.active { color: #04170d; }
+
+/* 业务类型徽标：换刀配送 / 旧刀回收 */
+.biz-tag { margin-left: 6px; font-size: 10px; }
+.biz-tag.tool_change { color: #4ec9a8; border-color: rgba(78, 201, 168, 0.5); }
+.biz-tag.tool_return { color: #d6a85c; border-color: rgba(214, 168, 92, 0.5); }

@@ -31,6 +31,16 @@ async function loadToolRecords() {
   }
 }
 
+async function loadActiveOrders() {
+  try {
+    const orders = await api.workOrders()
+    activeOrders.value = (orders || []).filter((order) =>
+      ['released', 'in_progress', 'quality_check'].includes(order.status))
+  } catch {
+    activeOrders.value = []
+  }
+}
+
 async function createReturnTask(record) {
   toolBusy.value = `return-${record.id}`
   try {
@@ -46,6 +56,8 @@ async function createReturnTask(record) {
 }
 
 const toolBusy = ref('')
+const linkWorkOrderId = ref('')
+const activeOrders = ref([])
 
 async function loadTools() {
   try {
@@ -82,7 +94,7 @@ async function runToolAction(tool, key) {
       toolAdvice.value = { ...data, tool_code: tool.code }
       notify(`换刀建议：${data.decision_label}`)
     } else if (key === 'dispatch') {
-      const data = await api.toolDispatch(tool.id)
+      const data = await api.toolDispatch(tool.id, linkWorkOrderId.value || null)
       lastToolTask.value = data.task
       toolAdvice.value = null
       notify(`已生成新刀配送任务 ${data.task.task_no}，去「调度中心」派车`)
@@ -309,6 +321,7 @@ if (route.query.tab === 'tools') {
   subTab.value = 'tools'
   loadTools()
   loadToolRecords()
+  loadActiveOrders()
 } else if (route.query.tab === 'records') {
   openRecords()
 }
@@ -334,7 +347,7 @@ onUnmounted(() => {
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'diagnose' }" @click="subTab = 'diagnose'">在线诊断</button>
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'records' }" @click="openRecords">诊断记录</button>
-        <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'tools' }" @click="subTab = 'tools'; loadTools(); loadToolRecords()">刀具与换刀</button>
+        <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'tools' }" @click="subTab = 'tools'; loadTools(); loadToolRecords(); loadActiveOrders()">刀具与换刀</button>
       </div>
     </div>
 
@@ -562,6 +575,13 @@ onUnmounted(() => {
               <input v-model.number="nextTaskMinutes" class="input input-sm" type="number" min="10" step="10" />
               分钟
             </label>
+            <label class="inline-field">
+              关联工单
+              <select v-model="linkWorkOrderId" class="select select-sm">
+                <option value="">不关联</option>
+                <option v-for="order in activeOrders" :key="order.id" :value="order.id">{{ order.order_no }}</option>
+              </select>
+            </label>
             <button class="btn btn-sm" :disabled="toolBusy" @click="loadTools">刷新刀具</button>
           </div>
         </div>
@@ -735,6 +755,7 @@ onUnmounted(() => {
 .tool-metrics span { font-size: 10.5px; color: var(--muted); }
 .tool-metrics strong { font-size: 12.5px; }
 .tool-reasons { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--text-soft); font-size: 12px; }
+.inline-field { white-space: nowrap; }
 .inline-field { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--muted); }
 .input-sm { width: 76px; padding: 5px 8px; }
 .equipment-grid { grid-template-columns: minmax(340px, 0.85fr) minmax(0, 1.35fr); align-items: start; }
@@ -772,4 +793,5 @@ onUnmounted(() => {
 .anomaly-grid strong { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
 .anomaly-foot { line-height: 1.5; }
 @media (max-width: 980px) { .anomaly-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.inline-field .select { width: 150px; }
 </style>

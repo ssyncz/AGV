@@ -78,7 +78,7 @@ def recommend(tool: Tool, next_task_minutes: float = 90.0) -> dict:
 
 
 @transaction.atomic
-def create_change_task(tool: Tool, *, actor: str = "system", notes: str = ""):
+def create_change_task(tool: Tool, *, actor: str = "system", notes: str = "", work_order_id=None):
     """送新刀：刀具库 → 机床，同时登记一条待完成的换刀记录。"""
     from SchedulingDecision.models import MapNode, TransportTask
 
@@ -106,11 +106,19 @@ def create_change_task(tool: Tool, *, actor: str = "system", notes: str = ""):
     if pickup.id == dropoff.id:
         raise ToolError("刀具库与机床站点相同，无法生成配送任务")
 
+    from Operations.models import WorkOrder
+
+    work_order = None
+    if work_order_id not in (None, "", "null"):
+        work_order = WorkOrder.objects.filter(pk=work_order_id).first()
+
     task = TransportTask.objects.create(
-        task_no=f"TOOL-{replacement.code}-{uuid.uuid4().hex[:6].upper()}",
+        task_no=f"TC-{equipment_code}-{replacement.code}-{uuid.uuid4().hex[:4].upper()}",
+        biz_type=TransportTask.BizType.TOOL_CHANGE,
+        work_order=work_order,
         pickup_node=pickup,
         dropoff_node=dropoff,
-        cargo_name=f"新刀 {replacement.code}",
+        cargo_name=f"换刀：{replacement.code} → {equipment_code}",
         cargo_weight=2,
         priority=3,
         status=TransportTask.Status.PENDING,
@@ -193,11 +201,14 @@ def create_return_task(record: ToolChangeRecord, *, actor: str = "system") -> "o
     if pickup is None or dropoff is None:
         raise ToolError(f"地图节点缺失：机床 {machine_code} 或刀具库 {crib_code}")
 
+    equipment_code = record.equipment.code if record.equipment else "STATION"
     task = TransportTask.objects.create(
-        task_no=f"RET-{record.old_tool.code}-{uuid.uuid4().hex[:6].upper()}",
+        task_no=f"RT-{equipment_code}-{record.old_tool.code}-{uuid.uuid4().hex[:4].upper()}",
+        biz_type=TransportTask.BizType.TOOL_RETURN,
+        work_order=record.equipment and None,
         pickup_node=pickup,
         dropoff_node=dropoff,
-        cargo_name=f"旧刀 {record.old_tool.code}（待刃磨）",
+        cargo_name=f"旧刀回收：{record.old_tool.code}（待刃磨）",
         cargo_weight=2,
         priority=2,
         status=TransportTask.Status.PENDING,

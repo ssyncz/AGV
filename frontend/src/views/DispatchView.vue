@@ -157,6 +157,7 @@ async function createTask() {
             <input type="checkbox" :checked="isSelected(task)" tabindex="-1" />
             <span class="select-main">
               <span class="mono strong">{{ task.task_no }}</span>
+              <span v-if="task.biz_type && task.biz_type !== 'transport'" class="tag biz-tag" :class="task.biz_type">{{ task.biz_type_display }}</span>
               <span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span>
               <span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span>
             </span>
