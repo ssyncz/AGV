@@ -17,7 +17,7 @@ from .serializers import (
     EquipmentDiagnosisRecordSerializer,
     ToolSerializer,
 )
-from .services_tool import ToolError, change_tool, create_change_task, recommend
+from .services_tool import ToolError, change_tool, create_change_task, recommend, sync_from_diagnosis
 from .services import (
     EquipmentMonitoringError,
     available_datasets,
@@ -236,12 +236,17 @@ class EquipmentDiagnoseView(APIView):
             actor=actor_from_request(request),
             trace_id=trace_id_from_request(request),
         )
+        # 换刀闭环第一环：诊断出的磨损写回在机刀具，供「刀具与换刀」判断
+        tool_updates = sync_from_diagnosis(
+            equipment, result.get("feature_summary"), result.get("series")
+        )
         return Response(
             {
                 "success": True,
                 "record_id": record.id,
                 "work_order_id": work_order.id if work_order else None,
                 "work_order_no": work_order.order_no if work_order else "",
+                "tool_updates": tool_updates,
                 **result,
             }
         )

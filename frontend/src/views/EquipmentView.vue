@@ -250,6 +250,12 @@ async function runDiagnosis() {
       }
     }
     result.value = await api.equipmentDiagnose(payload)
+    const updates = result.value?.tool_updates || []
+    if (updates.length) {
+      const first = updates[0]
+      notify(`已同步刀具 ${first.code}：磨损 ${(first.new_wear * 100).toFixed(0)}%，剩余 ${first.remaining_minutes.toFixed(0)} 分钟`)
+      await loadTools()
+    }
     notify(result.value.work_order_no
       ? `设备诊断完成并已关联工单 ${result.value.work_order_no}`
       : `设备诊断完成：${result.value.predicted_state_label}`)

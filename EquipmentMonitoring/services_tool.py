@@ -109,3 +109,43 @@ def change_tool(tool: Tool, *, actor: str = "system") -> Tool:
     tool.notes = f"{tool.notes}\n[{timezone.now():%Y-%m-%d %H:%M}] 换刀完成（{actor}）".strip()
     tool.save(update_fields=["wear_ratio", "used_minutes", "status", "changed_at", "notes", "updated_at"])
     return tool
+
+def sync_from_diagnosis(equipment, feature_summary, series=None) -> list[dict]:
+    """把在线诊断算出的刀具磨损写回在机刀具（换刀闭环的第一环）。"""
+    if equipment is None:
+        return []
+    tools = list(
+        Tool.objects.filter(equipment=equipment).exclude(
+            status__in=[Tool.Status.CHANGED, Tool.Status.RETIRED]
+        )
+    )
+    if not tools:
+        return []
+
+    entry = (feature_summary or {}).get("tool_wear") or {}
+    wear = entry.get("mean")
+    if wear is None:
+        wear = entry.get("latest")
+    if wear is None and series:
+        values = [
+            float(row["tool_wear"]) for row in series
+            if isinstance(row, dict) and isinstance(row.get("tool_wear"), (int, float))
+        ]
+        wear = sum(values) / len(values) if values else None
+    if wear is None:
+        return []
+
+    wear = max(0.0, min(float(wear), 1.0))
+    updates = []
+    for tool in tools:
+        old = tool.wear_ratio
+        tool.wear_ratio = round(wear, 4)
+        tool.used_minutes = round(min(wear * tool.life_minutes, tool.life_minutes), 1)
+        tool.save(update_fields=["wear_ratio", "used_minutes", "updated_at"])
+        updates.append({
+            "code": tool.code,
+            "old_wear": round(old, 3),
+            "new_wear": round(wear, 3),
+            "remaining_minutes": round(tool.remaining_minutes, 1),
+        })
+    return updates
