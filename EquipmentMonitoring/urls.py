@@ -1,4 +1,4 @@
-from django.urls import include, path
+﻿from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views_algo import (AlgoStatusView, AnomalyDetectView, DatasetCompareView, DetectorCompareView,
@@ -10,11 +10,15 @@ from .views import (
     EquipmentOverviewView,
     EquipmentRecordViewSet,
     EquipmentSampleView,
+    ToolChangeRecordViewSet,
+    ToolViewSet,
 )
 
 
 router = DefaultRouter()
 router.register("records", EquipmentRecordViewSet, basename="equipment-record")
+router.register("tools", ToolViewSet, basename="equipment-tool")
+router.register("tool-changes", ToolChangeRecordViewSet, basename="equipment-tool-change")
 
 urlpatterns = [
     path("", include(router.urls)),

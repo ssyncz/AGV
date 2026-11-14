@@ -1,8 +1,9 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { api } from '../api'
 import StatusBadge from '../components/StatusBadge.vue'
+import ActionMenu from '../components/ActionMenu.vue'
 
 const emit = defineEmits(['notify'])
 const route = useRoute()
@@ -137,6 +138,42 @@ async function createOrder() {
   }
 }
 
+// 动作区规范化：每个状态只暴露一个主按钮，其余收进「更多」
+const PRIMARY_BY_STATUS = {
+  draft: { key: 'release', label: '下达工单' },
+  released: { key: 'start', label: '开始执行' },
+  in_progress: { key: 'quality-check', label: '提交质检' },
+  quality_check: { key: 'complete', label: '完成工单' },
+  blocked: { key: 'resume', label: '恢复工单' },
+}
+const primaryAction = computed(() => {
+  const status = selectedOrder.value?.status
+  return PRIMARY_BY_STATUS[status] || null
+})
+const moreActions = computed(() => {
+  const order = selectedOrder.value
+  if (!order) return []
+  const status = order.status
+  const items = []
+  if (!['completed', 'cancelled', 'blocked'].includes(status)) {
+    items.push({ key: 'block', label: '阻塞工单', hint: '异常时中止' })
+  }
+  if (order.quality_status === 'fail' && status !== 'completed') {
+    items.push({ key: 'quality-check', label: '重新提交质检' })
+  }
+  if (!['completed', 'cancelled'].includes(status)) {
+    items.push({ key: 'cancel', label: '取消工单', danger: true })
+  }
+  return items
+})
+function onPrimary() {
+  if (primaryAction.value) runAction(primaryAction.value.key)
+}
+function onMore(key) {
+  if (key === 'block') blockOrder()
+  else runAction(key)
+}
+
 async function runAction(action, payload = {}) {
   if (!selectedOrder.value) return
   busy.value = action
@@ -268,14 +305,16 @@ onMounted(async () => {
       <section v-if="selectedOrder" class="panel mt-16">
         <div class="panel-head">
           <div><div class="panel-title">{{ selectedOrder.order_no }} · {{ selectedOrder.title }}</div><div class="panel-desc">{{ selectedOrder.site_detail?.name }} · {{ selectedOrder.product_detail?.name }} · {{ selectedOrder.quantity }} {{ selectedOrder.product_detail?.unit || '件' }}</div></div>
-          <div class="toolbar-right">
-            <button v-if="selectedOrder.status === 'draft'" class="btn btn-sm btn-primary" :disabled="busy === 'release'" @click="runAction('release')">下达工单</button>
-            <button v-if="selectedOrder.status === 'released'" class="btn btn-sm btn-primary" :disabled="busy === 'start'" @click="runAction('start')">开始执行</button>
-            <button v-if="['in_progress', 'quality_check'].includes(selectedOrder.status)" class="btn btn-sm" :disabled="busy === 'quality-check'" @click="runAction('quality-check')">提交质检</button>
-            <button v-if="selectedOrder.status === 'quality_check'" class="btn btn-sm btn-success" :disabled="busy === 'complete'" @click="runAction('complete')">完成工单</button>
-            <button v-if="!['completed', 'cancelled', 'blocked'].includes(selectedOrder.status)" class="btn btn-sm btn-danger" :disabled="busy === 'block'" @click="blockOrder">阻塞</button>
-            <button v-if="selectedOrder.status === 'blocked'" class="btn btn-sm btn-primary" :disabled="busy === 'resume'" @click="runAction('resume')">恢复</button>
-            <button v-if="!['completed', 'cancelled'].includes(selectedOrder.status)" class="btn btn-sm btn-danger" :disabled="busy === 'cancel'" @click="runAction('cancel')">取消</button>
+          <div class="action-bar">
+            <StatusBadge :status="selectedOrder.status" :label="selectedOrder.status_display" />
+            <button
+              v-if="primaryAction"
+              class="btn btn-sm btn-primary"
+              :disabled="Boolean(busy)"
+              @click="onPrimary"
+            >{{ busy === primaryAction.key ? '处理中...' : primaryAction.label }}</button>
+            <span v-else class="tag">流程已结束</span>
+            <ActionMenu :items="moreActions" @select="onMore" />
           </div>
         </div>
         <div class="panel-body">

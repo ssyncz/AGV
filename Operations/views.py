@@ -135,10 +135,18 @@ def _work_order_queryset():
         WorkOrder.objects.select_related("site", "product")
         .prefetch_related("production_plans", "operation_steps__equipment")
         .annotate(
-            task_count=Count("transport_tasks", distinct=True),
+            # 工单运输进度只统计“普通运输”，换刀/回收任务不计入主线进度
+            task_count=Count(
+                "transport_tasks",
+                filter=Q(transport_tasks__biz_type="transport"),
+                distinct=True,
+            ),
             completed_task_count=Count(
                 "transport_tasks",
-                filter=Q(transport_tasks__status=TransportTask.Status.COMPLETED),
+                filter=Q(
+                    transport_tasks__status=TransportTask.Status.COMPLETED,
+                    transport_tasks__biz_type="transport",
+                ),
                 distinct=True,
             ),
             open_alert_count=Count(

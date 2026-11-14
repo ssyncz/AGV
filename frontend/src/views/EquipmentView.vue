@@ -1,7 +1,8 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { api } from '../api'
+import ActionMenu from '../components/ActionMenu.vue'
 
 const emit = defineEmits(['notify'])
 
@@ -14,6 +15,125 @@ const FEATURES = [
 ]
 const STATE_LABELS = { normal: '正常', worn: '磨损', fault: '故障' }
 const STATE_COLORS = { normal: '#3fa877', worn: '#c99a2e', fault: '#d0524a' }
+
+const tools = ref([])
+const nextTaskMinutes = ref(90)
+const toolAdvice = ref(null)
+const lastToolTask = ref(null)
+const sortedTools = computed(() => {
+  const rank = (tool) => (tool.status === 'in_use' ? 0 : tool.status === 'pending_change' ? 1 : 2)
+  return [...tools.value].sort((a, b) => rank(a) - rank(b) || String(a.code).localeCompare(String(b.code)))
+})
+
+const machineSummary = computed(() => {
+  const ids = (item) => item.status === 'in_use' && item.equipment_code
+  const onMachine = tools.value.filter(ids)
+  const offMachine = tools.value.filter((item) => ['changed', 'retired'].includes(item.status))
+  return { onMachine, offMachine }
+})
+
+function isOffMachine(tool) {
+  return ['changed', 'retired'].includes(tool.status)
+}
+
+const toolRecords = ref([])
+const lastReturnTask = ref(null)
+
+async function loadToolRecords() {
+  try {
+    toolRecords.value = await api.toolChanges()
+  } catch (err) {
+    notify(`换刀记录加载失败：${err.message}`, 'error')
+  }
+}
+
+async function loadActiveOrders() {
+  try {
+    const orders = await api.workOrders()
+    activeOrders.value = (orders || []).filter((order) =>
+      ['released', 'in_progress', 'quality_check'].includes(order.status))
+  } catch {
+    activeOrders.value = []
+  }
+}
+
+async function createReturnTask(record) {
+  toolBusy.value = `return-${record.id}`
+  try {
+    const data = await api.toolReturn(record.id)
+    lastReturnTask.value = data.task
+    notify(`已生成旧刀回收任务 ${data.task.task_no}，去调度中心派车`)
+    await loadToolRecords()
+  } catch (err) {
+    notify(err.message, 'error')
+  } finally {
+    toolBusy.value = ''
+  }
+}
+
+const toolBusy = ref('')
+const linkWorkOrderId = ref('')
+const activeOrders = ref([])
+
+async function loadTools() {
+  try {
+    tools.value = await api.equipmentTools()
+  } catch (err) {
+    notify(`刀具列表加载失败：${err.message}`, 'error')
+  }
+}
+
+// 每把刀只露一个主按钮：待换→换刀完成；超阈值→生成配送任务；其余→换刀建议
+function toolPrimary(tool) {
+  if (['changed', 'retired'].includes(tool.status)) return null
+  if (tool.status === 'pending_change') return { key: 'change', label: '换刀完成' }
+  if (tool.wear_alert) return { key: 'dispatch', label: '生成配送任务' }
+  return { key: 'advice', label: '换刀建议' }
+}
+
+function toolMenu(tool) {
+  const items = []
+  if (!toolPrimary(tool)) return items
+  if (toolPrimary(tool).key !== 'advice') items.push({ key: 'advice', label: '查看换刀建议' })
+  if (tool.status === 'pending_change') items.push({ key: 'change', label: '换刀完成' })
+  return items
+}
+
+// 只要不是在待换状态，「生成配送任务」都直接露出来，不用翻菜单
+function showDispatch(tool) {
+  if (!toolPrimary(tool)) return false
+  return tool.status !== 'pending_change' && toolPrimary(tool).key !== 'dispatch'
+}
+
+async function runToolAction(tool, key) {
+  toolBusy.value = `${tool.id}-${key}`
+  try {
+    if (key === 'advice') {
+      const data = await api.toolAdvice(tool.id, nextTaskMinutes.value)
+      toolAdvice.value = { ...data, tool_code: tool.code }
+      notify(`换刀建议：${data.decision_label}`)
+    } else if (key === 'dispatch') {
+      const data = await api.toolDispatch(tool.id, linkWorkOrderId.value || null)
+      lastToolTask.value = data.task
+      toolAdvice.value = null
+      notify(`已生成新刀配送任务 ${data.task.task_no}，去「调度中心」派车`)
+      await Promise.all([loadTools(), loadToolRecords()])
+    } else if (key === 'change') {
+      const data = await api.toolChange(tool.id)
+      toolAdvice.value = null
+      lastToolTask.value = null
+      const record = data.record
+      notify(record
+        ? `换刀完成：${record.old_tool_code} 已换下，${record.new_tool_code} 已装上`
+        : '换刀完成：磨损与寿命已复位')
+      await Promise.all([loadTools(), loadToolRecords()])
+    }
+  } catch (err) {
+    notify(err.message, 'error')
+  } finally {
+    toolBusy.value = ''
+  }
+}
 
 const subTab = ref('diagnose')
 const sourceKind = ref('dataset')
@@ -189,6 +309,12 @@ async function runDiagnosis() {
       }
     }
     result.value = await api.equipmentDiagnose(payload)
+    const updates = result.value?.tool_updates || []
+    if (updates.length) {
+      const first = updates[0]
+      notify(`已同步刀具 ${first.code}：磨损 ${(first.new_wear * 100).toFixed(0)}%，剩余 ${first.remaining_minutes.toFixed(0)} 分钟`)
+      await loadTools()
+    }
     notify(result.value.work_order_no
       ? `设备诊断完成并已关联工单 ${result.value.work_order_no}`
       : `设备诊断完成：${result.value.predicted_state_label}`)
@@ -206,6 +332,17 @@ async function runDiagnosis() {
 function openRecords() {
   subTab.value = 'records'
   loadRecords()
+}
+
+const route = useRoute()
+// 深链接：/equipment?tab=tools 直达刀具与换刀
+if (route.query.tab === 'tools') {
+  subTab.value = 'tools'
+  loadTools()
+  loadToolRecords()
+  loadActiveOrders()
+} else if (route.query.tab === 'records') {
+  openRecords()
 }
 
 onMounted(() => {
@@ -229,6 +366,7 @@ onUnmounted(() => {
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'diagnose' }" @click="subTab = 'diagnose'">在线诊断</button>
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'records' }" @click="openRecords">诊断记录</button>
+        <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'tools' }" @click="subTab = 'tools'; loadTools(); loadToolRecords(); loadActiveOrders()">刀具与换刀</button>
       </div>
     </div>
 
@@ -445,6 +583,167 @@ onUnmounted(() => {
         </section>
       </div>
 
+      <div v-else-if="subTab === 'tools'" class="mt-16">
+        <div class="section-toolbar toolbar-bar">
+          <span class="muted small">
+            刀具磨损来自设备监测的 <span class="mono">tool_wear</span>：超阈值或剩余寿命不够下一单时，生成配送任务交给 AGV
+          </span>
+          <div class="toolbar-right">
+            <label class="inline-field">
+              下一单需求
+              <input v-model.number="nextTaskMinutes" class="input input-sm" type="number" min="10" step="10" />
+              分钟
+            </label>
+            <label class="inline-field">
+              关联工单
+              <select v-model="linkWorkOrderId" class="select select-sm">
+                <option value="">不关联</option>
+                <option v-for="order in activeOrders" :key="order.id" :value="order.id">{{ order.order_no }}</option>
+              </select>
+            </label>
+            <button class="btn btn-sm" :disabled="toolBusy" @click="loadTools">刷新刀具</button>
+          </div>
+        </div>
+
+        <div class="tool-summary mt-12">
+          <span v-if="machineSummary.onMachine.length">
+            在机：<strong v-for="tool in machineSummary.onMachine" :key="tool.id" class="mono">{{ tool.code }}</strong>
+            <span class="muted">（{{ machineSummary.onMachine.map((item) => item.equipment_code).join('、') }}）</span>
+          </span>
+          <span v-if="machineSummary.offMachine.length" class="muted">
+            已换下：<span class="mono">{{ machineSummary.offMachine.map((item) => item.code).join('、') }}</span>
+            （等待回收/刃磨）
+          </span>
+        </div>
+
+        <div class="grid tool-grid mt-12">
+          <article v-for="tool in sortedTools" :key="tool.id" class="panel tool-card" :class="{ 'tool-card-off': isOffMachine(tool) }">
+            <div class="tool-card-head">
+              <div>
+                <div class="cell-main mono">{{ tool.code }}</div>
+                <div class="cell-sub">{{ tool.name || '未命名刀具' }} · {{ tool.equipment_code || '未装夹' }}</div>
+              </div>
+              <span class="tag" :class="{ danger: tool.wear_alert }">{{ tool.status_display }}</span>
+            </div>
+            <div class="tool-wear">
+              <div class="tool-wear-labels">
+                <span>磨损率</span>
+                <strong :class="{ danger: tool.wear_alert }">{{ (tool.wear_ratio * 100).toFixed(0) }}%</strong>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar" :class="{ danger: tool.wear_alert }" :style="{ width: `${Math.min(tool.wear_ratio * 100, 100)}%` }"></div>
+                <span class="tool-threshold" :style="{ left: `${Math.min(tool.threshold * 100, 100)}%` }"></span>
+              </div>
+            </div>
+            <div class="tool-metrics">
+              <div><span>剩余寿命</span><strong>{{ tool.remaining_minutes.toFixed(0) }} 分钟</strong></div>
+              <div><span>累计切削</span><strong>{{ tool.used_minutes.toFixed(0) }} / {{ tool.life_minutes.toFixed(0) }}</strong></div>
+              <div><span>上次换刀</span><strong>{{ tool.changed_at ? formatTime(tool.changed_at) : '--' }}</strong></div>
+            </div>
+            <div v-if="isOffMachine(tool)" class="cell-sub mt-12">
+              已下机，磨损 {{ (tool.wear_ratio * 100).toFixed(0) }}% 已归档 · 去向见换刀记录
+            </div>
+            <div v-else class="action-bar mt-12">
+              <button v-if="toolPrimary(tool)" class="btn btn-sm btn-primary"
+                      :disabled="Boolean(toolBusy)"
+                      @click="runToolAction(tool, toolPrimary(tool).key)">
+                {{ toolBusy === `${tool.id}-${toolPrimary(tool).key}` ? '处理中...' : toolPrimary(tool).label }}
+              </button>
+              <button v-if="showDispatch(tool)" class="btn btn-sm"
+                      :disabled="Boolean(toolBusy)"
+                      @click="runToolAction(tool, 'dispatch')">
+                {{ toolBusy === `${tool.id}-dispatch` ? '生成中...' : '生成配送任务' }}
+              </button>
+              <ActionMenu :items="toolMenu(tool)" @select="runToolAction(tool, $event)" />
+            </div>
+          </article>
+          <div v-if="!tools.length" class="empty">暂无刀具档案，运行 <span class="mono">python manage.py seed_tools</span> 初始化</div>
+        </div>
+
+        <section v-if="toolAdvice" class="panel mt-16">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">换刀建议 · {{ toolAdvice.tool_code }}</div>
+              <div class="panel-desc">依据磨损阈值与剩余寿命，判断能否覆盖下一单</div>
+            </div>
+            <span class="tag" :class="{ danger: toolAdvice.decision !== 'continue' }">{{ toolAdvice.decision_label }}</span>
+          </div>
+          <div class="panel-body">
+            <div class="grid metric-grid">
+              <div class="optimization-metric"><span>剩余寿命</span><strong>{{ toolAdvice.remaining_minutes }} 分钟</strong></div>
+              <div class="optimization-metric"><span>下一单需求</span><strong>{{ toolAdvice.required_minutes }} 分钟</strong></div>
+              <div class="optimization-metric"><span>建议窗口</span><strong>{{ toolAdvice.suggested_window }}</strong></div>
+            </div>
+            <ul v-if="toolAdvice.reasons?.length" class="tool-reasons mt-12">
+              <li v-for="reason in toolAdvice.reasons" :key="reason">{{ reason }}</li>
+            </ul>
+            <div class="notice mt-12">
+              流程：换刀建议 → 生成配送任务（刀具库 S10 → 机床站点）→ 调度中心派车 → 送达后点「换刀完成」复位寿命
+            </div>
+            <div v-if="toolAdvice.decision !== 'continue'" class="action-bar mt-12">
+              <button class="btn btn-sm btn-primary" :disabled="Boolean(toolBusy)"
+                      @click="runToolAction(tools.find((item) => item.code === toolAdvice.tool_code) || tools[0], 'dispatch')">
+                按建议生成配送任务
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section v-if="toolRecords.length" class="panel mt-16">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">换刀记录</div>
+              <div class="panel-desc">旧刀换下 → 新刀装上；完成后可生成旧刀回收任务（机床 → 刀具库）</div>
+            </div>
+            <button class="btn btn-sm" :disabled="Boolean(toolBusy)" @click="loadToolRecords">刷新</button>
+          </div>
+          <div class="panel-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>时间</th><th>设备</th><th>换刀</th><th>旧刀磨损</th>
+                    <th>状态</th><th>操作人</th><th>配送任务</th><th>回收任务</th><th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="record in toolRecords" :key="record.id">
+                    <td class="small">{{ formatTime(record.created_at) }}</td>
+                    <td class="cell-main">{{ record.equipment_code || '--' }}</td>
+                    <td><span class="mono">{{ record.old_tool_code }}</span> → <span class="mono strong">{{ record.new_tool_code }}</span></td>
+                    <td>{{ (record.old_wear * 100).toFixed(0) }}%</td>
+                    <td><span class="tag" :class="{ danger: record.status !== 'done' }">{{ record.status_display }}</span></td>
+                    <td>{{ record.operator || '--' }}</td>
+                    <td class="mono small">{{ record.change_task_no || '--' }}</td>
+                    <td class="mono small">{{ record.return_task_no || '--' }}</td>
+                    <td>
+                      <button v-if="record.status === 'done' && !record.return_task_no"
+                              class="btn btn-sm"
+                              :disabled="Boolean(toolBusy)"
+                              @click="createReturnTask(record)">
+                        {{ toolBusy === `return-${record.id}` ? '生成中...' : '生成回收任务' }}
+                      </button>
+                      <span v-else class="muted small">--</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <div v-if="lastReturnTask" class="notice success mt-12">
+          已生成旧刀回收任务 <strong class="mono">{{ lastReturnTask.task_no }}</strong>
+          （{{ lastReturnTask.pickup_node_detail?.code }} → {{ lastReturnTask.dropoff_node_detail?.code }}），
+          去 <RouterLink class="link-btn" to="/dispatch">调度中心</RouterLink> 派车
+        </div>
+
+        <div v-if="lastToolTask" class="notice success mt-12">
+          已生成配送任务 <strong class="mono">{{ lastToolTask.task_no }}</strong>（{{ lastToolTask.pickup_node_detail?.code }} → {{ lastToolTask.dropoff_node_detail?.code }}），
+          去 <RouterLink class="link-btn" to="/dispatch">调度中心</RouterLink> 勾选它派车
+        </div>
+      </div>
+
       <div v-else class="mt-16">
         <div class="section-toolbar">
           <span class="muted small">共 {{ records.length }} 条诊断记录</span>
@@ -475,6 +774,26 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.tool-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.tool-card { padding: 14px 16px; display: grid; gap: 12px; }
+.tool-card-off { opacity: 0.62; }
+.tool-card-off .progress-bar { background: var(--faint); }
+.tool-summary { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-soft); }
+.tool-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.tool-wear-labels { display: flex; align-items: baseline; justify-content: space-between; font-size: 11.5px; color: var(--muted); }
+.tool-wear-labels strong { font-size: 15px; color: var(--text); }
+.tool-wear-labels .danger, .tag.danger { color: var(--danger-fg); }
+.progress-track { position: relative; margin-top: 6px; }
+.progress-bar.danger { background: linear-gradient(90deg, #ff8a72, #ff5f5f); }
+.tool-threshold { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-soft); opacity: 0.65; border-radius: 2px; }
+.tool-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tool-metrics div { display: grid; gap: 2px; }
+.tool-metrics span { font-size: 10.5px; color: var(--muted); }
+.tool-metrics strong { font-size: 12.5px; }
+.tool-reasons { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--text-soft); font-size: 12px; }
+.inline-field { white-space: nowrap; }
+.inline-field { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--muted); }
+.input-sm { width: 76px; padding: 5px 8px; }
 .equipment-grid { grid-template-columns: minmax(340px, 0.85fr) minmax(0, 1.35fr); align-items: start; }
 .equipment-chart { width: 100%; min-height: 250px; margin-top: 4px; border-radius: 10px; background: var(--chart-bg); border: 1px solid var(--line); }
 .chart-grid { stroke: var(--chart-grid); stroke-width: 1; }
@@ -510,4 +829,5 @@ onUnmounted(() => {
 .anomaly-grid strong { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
 .anomaly-foot { line-height: 1.5; }
 @media (max-width: 980px) { .anomaly-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.inline-field .select { width: 150px; }
 </style>

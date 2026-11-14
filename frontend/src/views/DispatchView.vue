@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { api } from '../api'
 import ScheduleGantt from '../components/ScheduleGantt.vue'
@@ -23,6 +23,25 @@ const newTask = reactive({
   pickup_node: '', dropoff_node: '', cargo_name: '', cargo_weight: 30,
   priority: 2, release_at: '', due_at: '',
 })
+// 交互瘦身：单台/多台合并为一个面板，用分段切换；新建任务默认折叠
+const mode = ref('single')
+const showCreate = ref(false)
+
+const selection = computed(() => (mode.value === 'single' ? singleSelection.value : batchSelection.value))
+function isSelected(task) {
+  return selection.value.includes(task.id)
+}
+function toggleTask(task) {
+  const target = mode.value === 'single' ? singleSelection.value : batchSelection.value
+  const index = target.indexOf(task.id)
+  if (index >= 0) target.splice(index, 1)
+  else target.push(task.id)
+}
+const dispatchDisabled = computed(() => {
+  if (mode.value === 'single') return busy.single || !singleSelection.value.length
+  return busy.batch || !pendingTasks.value.length || !idleAgvs.value.length
+})
+
 const busy = reactive({ single: false, batch: false, create: false })
 const result = ref(null)
 const resultMode = ref('')
@@ -113,61 +132,76 @@ async function createTask() {
   <div class="grid dispatch-grid">
     <section class="panel">
       <div class="panel-head">
-        <div><div class="panel-title">单台 AGV 多任务顺序优化</div><div class="panel-desc">选择多个任务，系统自动选择一台 AGV 并用动态规划优化执行顺序</div></div>
-        <span class="tag">精确 DP / 2-opt</span>
+        <div>
+          <div class="panel-title">{{ mode === 'single' ? '单台 AGV 任务顺序优化' : '多台 AGV 联合调度' }}</div>
+          <div class="panel-desc">
+            {{ mode === 'single'
+              ? '勾选待调度任务，系统自动挑一台 AGV 并用动态规划优化执行顺序'
+              : '统一优化任务分配、车辆内顺序与避碰时间窗' }}
+          </div>
+        </div>
+        <div class="segmented">
+          <button type="button" :class="{ active: mode === 'single' }" @click="mode = 'single'">单台顺序</button>
+          <button type="button" :class="{ active: mode === 'multi' }" @click="mode = 'multi'">多台联合</button>
+        </div>
       </div>
       <div class="panel-body">
         <div class="task-select-list compact-list">
-          <label v-for="task in pendingTasks" :key="task.id" class="task-select-row" :class="{ selected: singleSelection.includes(task.id) }">
-            <input v-model="singleSelection" type="checkbox" :value="task.id" />
-            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span><span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span></span>
+          <label
+            v-for="task in pendingTasks"
+            :key="task.id"
+            class="task-select-row"
+            :class="{ selected: isSelected(task) }"
+            @click.prevent="toggleTask(task)"
+          >
+            <input type="checkbox" :checked="isSelected(task)" tabindex="-1" />
+            <span class="select-main">
+              <span class="mono strong">{{ task.task_no }}</span>
+              <span v-if="task.biz_type && task.biz_type !== 'transport'" class="tag biz-tag" :class="task.biz_type">{{ task.biz_type_display }}</span>
+              <span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span>
+              <span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span>
+            </span>
             <span class="tag">{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</span>
             <span :class="`priority-${task.priority}`">P{{ task.priority }}</span>
           </label>
-          <div v-if="!pendingTasks.length" class="empty">暂无待调度任务</div>
+          <div v-if="!pendingTasks.length" class="empty">暂无待调度任务，先在下方「新建运输任务」</div>
         </div>
-        <div class="field mt-16">
+
+        <div v-if="mode === 'single'" class="field mt-16">
           <label>指定 AGV（可选，留空自动择优）</label>
           <select v-model="singleAgvId" class="select">
             <option value="">系统自动选择单台 AGV</option>
             <option v-for="agv in idleAgvs" :key="agv.id" :value="agv.id">{{ agv.code }} · 电量 {{ agv.battery_percent }}% · 载重 {{ agv.payload_capacity }}kg</option>
           </select>
         </div>
-        <button class="btn btn-primary btn-block mt-16" :disabled="busy.single || !singleSelection.length" @click="runSingle">
-          {{ busy.single ? '正在优化任务顺序...' : `优化单台 AGV 的 ${singleSelection.length} 个任务顺序` }}
-        </button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <div><div class="panel-title">多台 AGV 联合优化</div><div class="panel-desc">最优插入初始化 + 变邻域搜索，统一优化任务分配、车辆内顺序和避碰时间窗</div></div>
-        <span class="tag">VNS 多目标优化</span>
-      </div>
-      <div class="panel-body">
-        <div class="task-select-list compact-list">
-          <label v-for="task in pendingTasks" :key="task.id" class="task-select-row" :class="{ selected: batchSelection.includes(task.id) }">
-            <input v-model="batchSelection" type="checkbox" :value="task.id" />
-            <span class="select-main"><span class="mono strong">{{ task.task_no }}</span><span class="cell-sub">{{ task.cargo_name }} · {{ task.cargo_weight }}kg</span><span v-if="task.due_at" class="cell-sub">交期 {{ new Date(task.due_at).toLocaleString('zh-CN', { hour12: false }) }}</span></span>
-            <span class="tag">{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</span>
-            <span :class="`priority-${task.priority}`">P{{ task.priority }}</span>
-          </label>
-          <div v-if="!pendingTasks.length" class="empty">暂无待调度任务</div>
-        </div>
-        <div class="form-grid mt-16">
+        <div v-else class="form-grid mt-16">
           <div class="field"><label>AGV 数量权重</label><input v-model.number="agvWeight" type="number" min="0" max="200" class="input" /></div>
-          <div class="field"><label>交期约束</label><label class="check-inline"><input v-model="strictDeadlines" type="checkbox" /> 硬交期模式：不接受任何拖期</label></div>
+          <div class="field"><label>交期约束</label><label class="check-inline"><input v-model="strictDeadlines" type="checkbox" /> 硬交期：不接受拖期</label></div>
         </div>
+
         <div class="toolbar-row mt-16">
-          <span class="muted small">已选择 {{ batchSelection.length }} 个任务 · 权重越高越倾向减少使用车辆</span>
-          <button class="btn btn-primary" :disabled="busy.batch || !pendingTasks.length || !idleAgvs.length" @click="runBatch">{{ busy.batch ? '正在执行联合优化...' : '执行多台 AGV 联合调度' }}</button>
+          <span class="muted small">
+            已选 {{ selection.length }} 个任务<span v-if="mode === 'multi'"> · 权重越高越倾向少用车</span>
+          </span>
+          <button
+            class="btn btn-primary"
+            :disabled="dispatchDisabled"
+            @click="mode === 'single' ? runSingle() : runBatch()"
+          >
+            {{ mode === 'single'
+              ? (busy.single ? '正在优化...' : `优化单台 AGV 的 ${singleSelection.length} 个任务顺序`)
+              : (busy.batch ? '正在联合优化...' : '执行多台 AGV 联合调度') }}
+          </button>
         </div>
       </div>
     </section>
 
     <section class="panel">
-      <div class="panel-head"><div><div class="panel-title">新建运输任务</div><div class="panel-desc">创建后可参与单台顺序优化或多台联合调度</div></div></div>
-      <div class="panel-body">
+      <button type="button" class="disclosure-head" @click="showCreate = !showCreate">
+        <span><strong>新建运输任务</strong><span class="cell-sub" style="display:block">创建后可参与上面的单台或多台调度</span></span>
+        <span class="caret">{{ showCreate ? '收起' : '展开' }}</span>
+      </button>
+      <div v-if="showCreate" class="disclosure-body">
         <div class="form-grid">
           <div class="field full"><label>货物名称</label><input v-model="newTask.cargo_name" class="input" placeholder="例如：电子元件箱" /></div>
           <div class="field"><label>取货点</label><select v-model="newTask.pickup_node" class="select"><option value="">请选择</option><option v-for="node in pickupNodes" :key="node.id" :value="node.id">{{ node.code }} · {{ node.name }}</option></select></div>
@@ -184,3 +218,9 @@ async function createTask() {
 
   <ScheduleGantt :result="result" />
 </template>
+<style scoped>
+/* 调度页只保留一个主面板：单台/多台用分段切换，任务列表整行铺满 */
+.dispatch-grid { grid-template-columns: minmax(0, 1fr); }
+.dispatch-grid .panel { grid-column: 1 / -1; }
+.dispatch-grid .task-select-list { max-height: 320px; }
+</style>
