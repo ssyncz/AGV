@@ -57,3 +57,4 @@ datasets/auto/
 
 # 例外：缺陷检测权重随仓库分发（约 6 MB），clone 后开箱可演示
 !models/neu_yolo.pt
+!models/README.md
