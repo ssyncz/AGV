@@ -6,14 +6,14 @@ import { api } from '../api'
 const emit = defineEmits(['notify'])
 
 const FEATURES = [
-  { key: 'temperature_c', label: '温度 ℃', threshold: 74, color: '#d97934' },
-  { key: 'vibration_mm_s', label: '振动 mm/s', threshold: 3.1, color: '#cf5260' },
-  { key: 'current_a', label: '电流 A', threshold: 6.2, color: '#4f6fd1' },
-  { key: 'spindle_speed_rpm', label: '主轴转速 rpm', threshold: null, color: '#2b9a76' },
-  { key: 'tool_wear', label: '刀具磨损', threshold: 0.78, color: '#8b5bc7' },
+  { key: 'temperature_c', label: '温度 ℃', threshold: 74, color: '#e08a3c' },
+  { key: 'vibration_mm_s', label: '振动 mm/s', threshold: 3.1, color: '#e05a54' },
+  { key: 'current_a', label: '电流 A', threshold: 6.2, color: '#5d86e8' },
+  { key: 'spindle_speed_rpm', label: '主轴转速 rpm', threshold: null, color: '#3fa877' },
+  { key: 'tool_wear', label: '刀具磨损', threshold: 0.78, color: '#9b6fd6' },
 ]
 const STATE_LABELS = { normal: '正常', worn: '磨损', fault: '故障' }
-const STATE_COLORS = { normal: '#2b9a76', worn: '#d2902e', fault: '#cf5260' }
+const STATE_COLORS = { normal: '#3fa877', worn: '#c99a2e', fault: '#d0524a' }
 
 const subTab = ref('diagnose')
 const sourceKind = ref('dataset')
@@ -53,7 +53,7 @@ const stateRows = computed(() => {
     label: value.label || STATE_LABELS[key] || key,
     count: value.count || 0,
     ratio: value.ratio || 0,
-    color: STATE_COLORS[key] || '#89979d',
+    color: STATE_COLORS[key] || '#9fb6ab',
   }))
 })
 
@@ -274,7 +274,7 @@ onUnmounted(() => {
                   <td>{{ row.accuracy != null ? (row.accuracy * 100).toFixed(1) + '%' : '--' }}</td>
                   <td>{{ row.macro_f1 ?? '--' }}</td>
                   <td>
-                    <strong :style="{ color: row.dataset === compareBest ? '#2b9a76' : '#5f7179' }">
+                    <strong :style="{ color: row.dataset === compareBest ? 'var(--green)' : 'var(--text-soft)' }">
                       {{ row.worn_f1 ?? '--' }}
                     </strong>
                   </td>
@@ -382,7 +382,7 @@ onUnmounted(() => {
               </div>
               <div class="worn-foot">
                 <span class="muted small">阈值 {{ wornWarning.worn_threshold }}</span>
-                <span v-if="wornWarning.error" class="small" style="color:#cf5260">{{ wornWarning.error }}</span>
+                <span v-if="wornWarning.error" class="small" style="color: var(--red)">{{ wornWarning.error }}</span>
                 <span v-else class="muted small">概率超过阈值即亮红灯（阈值越低越灵敏）</span>
               </div>
             </div>
@@ -476,38 +476,38 @@ onUnmounted(() => {
 
 <style scoped>
 .equipment-grid { grid-template-columns: minmax(340px, 0.85fr) minmax(0, 1.35fr); align-items: start; }
-.equipment-chart { width: 100%; min-height: 250px; margin-top: 4px; border-radius: 10px; background: #f8faf9; border: 1px solid #e1e8e5; }
-.chart-grid { stroke: #e2e9e6; stroke-width: 1; }
+.equipment-chart { width: 100%; min-height: 250px; margin-top: 4px; border-radius: 10px; background: var(--chart-bg); border: 1px solid var(--line); }
+.chart-grid { stroke: var(--chart-grid); stroke-width: 1; }
 .state-bars { display: grid; gap: 9px; }
-.state-bar-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 40px; gap: 10px; align-items: center; color: #5f7179; font-size: 11px; }
+.state-bar-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 40px; gap: 10px; align-items: center; color: var(--text-soft); font-size: 11px; }
 @media (max-width: 980px) { .equipment-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---- 磨损（worn）预警卡片 ---- */
-.worn-card { border: 1px solid #e1e8e5; border-radius: 10px; padding: 12px 14px; background: #f8faf9; display: grid; gap: 9px; }
-.worn-card.alarm { border-color: #f0b4bb; background: #fdf3f4; }
+.worn-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--fill-1); display: grid; gap: 9px; }
+.worn-card.alarm { border-color: var(--tint-red-line); background: color-mix(in srgb, var(--red) 9%, transparent); }
 .worn-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
-.worn-lamp { width: 11px; height: 11px; border-radius: 50%; background: #2b9a76; box-shadow: 0 0 0 3px rgba(43,154,118,.15); }
-.worn-lamp.on { background: #cf5260; box-shadow: 0 0 0 3px rgba(207,82,96,.2); animation: worn-blink 1.2s infinite; }
-.worn-state { font-size: 11px; color: #2b9a76; }
-.worn-state.on { color: #cf5260; font-weight: 600; }
-.worn-score-row { display: grid; grid-template-columns: 60px minmax(0,1fr) 48px; gap: 10px; align-items: center; font-size: 12px; }
-.worn-track { position: relative; height: 10px; border-radius: 6px; background: #e8efec; overflow: hidden; }
-.worn-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #2b9a76, #d2902e 60%, #cf5260); transition: width .3s ease; }
-.worn-threshold-mark { position: absolute; top: -2px; bottom: -2px; width: 2px; background: #34495e; opacity: .55; }
+.worn-lamp { width: 11px; height: 11px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(85, 224, 140, 0.16), 0 0 10px rgba(85, 224, 140, 0.5); }
+.worn-lamp.on { background: var(--red); box-shadow: 0 0 0 3px rgba(255, 122, 114, 0.2), 0 0 12px rgba(255, 122, 114, 0.55); animation: worn-blink 1.2s infinite; }
+.worn-state { font-size: 11px; color: var(--green); }
+.worn-state.on { color: var(--red); font-weight: 600; }
+.worn-score-row { display: grid; grid-template-columns: 60px minmax(0,1fr) 48px; gap: 10px; align-items: center; font-size: 12px; color: var(--text-soft); }
+.worn-track { position: relative; height: 10px; border-radius: 6px; background: var(--track-bg); overflow: hidden; }
+.worn-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #55e08c, #f3c04b 60%, #ff7a72); transition: width .3s ease; }
+.worn-threshold-mark { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text-soft); opacity: .55; }
 .worn-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 @keyframes worn-blink { 0%,100% { opacity: 1 } 50% { opacity: .45 } }
 
 /* ---- 无监督异常（PyOD ECOD）卡片 ---- */
-.anomaly-card { border: 1px solid #e1e8e5; border-radius: 10px; padding: 12px 14px; background: #f7f9fb; display: grid; gap: 9px; }
-.anomaly-card.alarm { border-color: #f2d3a8; background: #fdf8f1; }
+.anomaly-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--fill-1); display: grid; gap: 9px; }
+.anomaly-card.alarm { border-color: var(--tint-amber-line); background: color-mix(in srgb, var(--amber) 9%, transparent); }
 .anomaly-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
-.anomaly-lamp { width: 11px; height: 11px; border-radius: 50%; background: #2b9a76; box-shadow: 0 0 0 3px rgba(43,154,118,.15); }
-.anomaly-lamp.on { background: #d2902e; box-shadow: 0 0 0 3px rgba(210,144,46,.2); }
-.anomaly-state { font-size: 11px; color: #2b9a76; }
-.anomaly-state.on { color: #b8791f; font-weight: 600; }
+.anomaly-lamp { width: 11px; height: 11px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(85, 224, 140, 0.16), 0 0 10px rgba(85, 224, 140, 0.5); }
+.anomaly-lamp.on { background: var(--amber); box-shadow: 0 0 0 3px rgba(243, 192, 75, 0.2), 0 0 12px rgba(243, 192, 75, 0.5); }
+.anomaly-state { font-size: 11px; color: var(--green); }
+.anomaly-state.on { color: var(--amber); font-weight: 600; }
 .anomaly-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .anomaly-grid > div { display: grid; gap: 2px; font-size: 12px; }
-.anomaly-grid strong { font-size: 15px; color: #2f3d44; }
+.anomaly-grid strong { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
 .anomaly-foot { line-height: 1.5; }
 @media (max-width: 980px) { .anomaly-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>

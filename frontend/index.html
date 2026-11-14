@@ -3,8 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#07111f" />
+    <meta name="theme-color" content="#04120b" />
+    <link rel="icon" type="image/svg+xml" href="/logo-agv.svg" />
     <title>AGV 智能调度中心</title>
+    <script>
+      // 首屏前就定好主题，避免深色页面闪一下白
+      (function () {
+        var theme = 'dark'
+        // 1) ?theme=light|dark 显式指定（便于分享/截图，不写入本地存储）
+        var query = null
+        try {
+          query = new URLSearchParams(window.location.search).get('theme')
+        } catch (error) { /* 忽略 */ }
+        if (query === 'light' || query === 'dark') {
+          theme = query
+        } else {
+          // 2) 上次的手动选择
+          try {
+            var saved = localStorage.getItem('agv-theme')
+            if (saved === 'light' || saved === 'dark') theme = saved
+          } catch (error) { /* localStorage 不可用时用默认深色 */ }
+        }
+        document.documentElement.dataset.theme = theme
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#eef4e9' : '#04120b')
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>

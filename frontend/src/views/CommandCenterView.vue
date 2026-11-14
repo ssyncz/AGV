@@ -50,7 +50,8 @@ onUnmounted(() => clearInterval(timer))
 </script>
 
 <template>
-  <div>
+  <div class="command">
+    <!-- ① 四张主 KPI：页面视觉锚点 -->
     <div class="grid stats-grid">
       <StatCard label="活动工单" :value="kpis.active_work_orders || 0" :foot="`${kpis.active_operation_steps || 0} 个工序可执行或执行中`" icon="▤" accent="blue" />
       <StatCard label="阻塞工单" :value="kpis.blocked_work_orders || 0" foot="设备或质量异常导致" icon="!" accent="amber" />
@@ -58,29 +59,71 @@ onUnmounted(() => clearInterval(timer))
       <StatCard label="严重告警" :value="kpis.critical_alerts || 0" foot="需要立即处理" icon="▲" accent="red" />
     </div>
 
-    <div class="command-strip panel mb-16">
-      <RouterLink class="command-action" to="/work-orders">
-        <span>工单主线</span><strong>{{ kpis.work_order_total || 0 }}</strong><small>创建、下达与追溯</small>
+    <!-- ② 六项指标压成一条状态带：只做导航与速览，不与主卡争视觉 -->
+    <section class="status-strip">
+      <RouterLink class="status-item" to="/work-orders" title="创建、下达与追溯">
+        <span class="status-label">工单主线</span>
+        <strong>{{ kpis.work_order_total || 0 }}</strong>
       </RouterLink>
-      <RouterLink class="command-action" to="/tasks">
-        <span>运输任务</span><strong>{{ kpis.active_tasks || 0 }}</strong><small>{{ kpis.pending_tasks || 0 }} 个待调度</small>
+      <RouterLink class="status-item" to="/tasks" :title="`${kpis.pending_tasks || 0} 个待调度`">
+        <span class="status-label">运输任务</span>
+        <strong>{{ kpis.active_tasks || 0 }}</strong>
       </RouterLink>
-      <RouterLink class="command-action" to="/agvs">
-        <span>可用 AGV</span><strong>{{ kpis.agv_available || 0 }}/{{ kpis.agv_total || 0 }}</strong><small>空闲车辆 / 车队总数</small>
+      <RouterLink class="status-item" to="/agvs" title="空闲车辆 / 车队总数">
+        <span class="status-label">可用 AGV</span>
+        <strong>{{ kpis.agv_available || 0 }}<em>/{{ kpis.agv_total || 0 }}</em></strong>
       </RouterLink>
-      <RouterLink class="command-action" to="/equipment">
-        <span>设备异常</span><strong>{{ (kpis.equipment_faults || 0) + (kpis.equipment_warnings || 0) }}</strong><small>{{ kpis.equipment_faults || 0 }} 故障 · {{ kpis.equipment_warnings || 0 }} 预警</small>
+      <RouterLink class="status-item" to="/equipment" :title="`${kpis.equipment_faults || 0} 故障 · ${kpis.equipment_warnings || 0} 预警`">
+        <span class="status-label">设备异常</span>
+        <strong>{{ (kpis.equipment_faults || 0) + (kpis.equipment_warnings || 0) }}</strong>
       </RouterLink>
-      <RouterLink class="command-action" to="/work-orders?quality_status=fail">
-        <span>质量不合格</span><strong>{{ kpis.quality_failed || 0 }}</strong><small>需要返工或复检</small>
+      <RouterLink class="status-item" to="/work-orders?quality_status=fail" title="需要返工或复检">
+        <span class="status-label">质量不合格</span>
+        <strong>{{ kpis.quality_failed || 0 }}</strong>
       </RouterLink>
-      <RouterLink class="command-action" to="/tasks">
-        <span>交期风险</span><strong>{{ kpis.overdue_tasks || 0 }}</strong><small>已超过交期的任务</small>
+      <RouterLink class="status-item" to="/tasks" title="已超过交期的任务">
+        <span class="status-label">交期风险</span>
+        <strong>{{ kpis.overdue_tasks || 0 }}</strong>
       </RouterLink>
-    </div>
+    </section>
 
+    <!-- ③ 工单执行主线提前：首屏就能看到业务主线 -->
+    <section class="panel accent accent-teal">
+      <div class="panel-head">
+        <div><div class="panel-title">工单执行主线</div><div class="panel-desc">从计划、运输、质检到完成统一追踪</div></div>
+        <RouterLink class="btn btn-sm btn-primary" to="/work-orders">进入工单中心</RouterLink>
+      </div>
+      <div class="panel-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>工单</th><th>产品</th><th>状态</th><th>质检</th><th>任务进度</th><th>开放告警</th><th>交期</th></tr></thead>
+            <tbody>
+              <tr v-for="order in data.work_orders" :key="order.id">
+                <td><RouterLink class="cell-main mono" :to="{ path: '/work-orders', query: { work_order: order.id } }">{{ order.order_no }}</RouterLink><div class="cell-sub">{{ order.title }}</div></td>
+                <td>{{ order.product_detail?.name || '--' }}<div class="cell-sub">{{ order.quantity }} {{ order.product_detail?.unit || '件' }}</div></td>
+                <td><StatusBadge :status="order.status" :label="order.status_display" /></td>
+                <td><span class="tag" :class="`quality-${order.quality_status}`">{{ order.quality_status_display }}</span></td>
+                <td>{{ order.completed_task_count || 0 }}/{{ order.task_count || 0 }}</td>
+                <td><span :class="{ 'text-danger': order.open_alert_count }">{{ order.open_alert_count || 0 }}</span></td>
+                <td class="small">{{ formatTime(order.due_at) }}</td>
+              </tr>
+              <tr v-if="!data.work_orders.length"><td colspan="7">
+                <div class="empty">
+                  <span class="empty-icon">▤</span>
+                  <div class="empty-title">还没有工单</div>
+                  <div class="empty-desc">创建第一张工单后，它会出现在这里并进入执行主线</div>
+                  <RouterLink class="btn btn-sm btn-primary" to="/work-orders">去创建工单</RouterLink>
+                </div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 异常与事件：左右分栏，高度跟随内容，空白不再撑满 -->
     <div class="grid command-grid">
-      <section class="panel">
+      <section class="panel accent accent-rose">
         <div class="panel-head">
           <div><div class="panel-title">异常处理队列</div><div class="panel-desc">设备、质量和运营异常统一进入这里</div></div>
           <RouterLink class="link-btn" to="/alerts">查看全部</RouterLink>
@@ -107,11 +150,16 @@ onUnmounted(() => clearInterval(timer))
               </div>
             </article>
           </div>
-          <div v-else class="empty">当前没有开放告警</div>
+          <div v-else class="empty">
+            <span class="empty-icon ok">✓</span>
+            <div class="empty-title">一切正常</div>
+            <div class="empty-desc">最近 24 小时没有开放告警</div>
+            <RouterLink class="btn btn-sm" to="/alerts">查看历史告警</RouterLink>
+          </div>
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel accent accent-indigo">
         <div class="panel-head"><div><div class="panel-title">最近业务事件</div><div class="panel-desc">跨模块操作形成统一时间线</div></div></div>
         <div class="panel-body">
           <div v-if="data.events.length" class="event-timeline">
@@ -123,70 +171,116 @@ onUnmounted(() => clearInterval(timer))
               </div>
             </div>
           </div>
-          <div v-else class="empty">暂无业务事件</div>
+          <div v-else class="empty">
+            <span class="empty-icon">✦</span>
+            <div class="empty-title">还没有操作记录</div>
+            <div class="empty-desc">下达工单、调度任务或处理告警后，操作会在这里形成时间线</div>
+            <RouterLink class="btn btn-sm btn-primary" to="/work-orders">去下达工单</RouterLink>
+          </div>
         </div>
       </section>
     </div>
-
-    <section class="panel mt-16">
-      <div class="panel-head">
-        <div><div class="panel-title">工单执行主线</div><div class="panel-desc">从计划、运输、质检到完成统一追踪</div></div>
-        <RouterLink class="btn btn-sm btn-primary" to="/work-orders">进入工单中心</RouterLink>
-      </div>
-      <div class="panel-body">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>工单</th><th>产品</th><th>状态</th><th>质检</th><th>任务进度</th><th>开放告警</th><th>交期</th></tr></thead>
-            <tbody>
-              <tr v-for="order in data.work_orders" :key="order.id">
-                <td><RouterLink class="cell-main mono" :to="{ path: '/work-orders', query: { work_order: order.id } }">{{ order.order_no }}</RouterLink><div class="cell-sub">{{ order.title }}</div></td>
-                <td>{{ order.product_detail?.name || '--' }}<div class="cell-sub">{{ order.quantity }} {{ order.product_detail?.unit || '件' }}</div></td>
-                <td><StatusBadge :status="order.status" :label="order.status_display" /></td>
-                <td><span class="tag" :class="`quality-${order.quality_status}`">{{ order.quality_status_display }}</span></td>
-                <td>{{ order.completed_task_count || 0 }}/{{ order.task_count || 0 }}</td>
-                <td><span :class="{ 'text-danger': order.open_alert_count }">{{ order.open_alert_count || 0 }}</span></td>
-                <td class="small">{{ formatTime(order.due_at) }}</td>
-              </tr>
-              <tr v-if="!data.work_orders.length"><td colspan="7"><div class="empty">暂无工单</div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
 <style scoped>
-.command-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); overflow: hidden; }
-.command-action { min-height: 104px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 16px; border-right: 1px solid var(--line); text-decoration: none; transition: background 150ms ease; }
-.command-action:last-child { border-right: 0; }
-.command-action:hover { background: #f5f9f7; }
-.command-action span { color: var(--muted); font-size: 11px; }
-.command-action strong { color: #14262e; font-size: 25px; line-height: 1.1; }
-.command-action small { color: var(--muted); font-size: 10px; }
-.command-grid { grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); align-items: stretch; }
-.command-grid > .panel { height: 560px; min-height: 0; display: flex; flex-direction: column; }
-.command-grid > .panel > .panel-body { flex: 1; min-height: 0; overflow-y: auto; }
+/* ---------- 页面节奏：统一垂直间距，由父容器控制 ---------- */
+.command { display: grid; gap: 16px; }
+
+/* ---------- 状态带：一行速览，不与主卡争视觉 ---------- */
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+.status-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-right: 1px solid var(--line);
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+.status-item:last-child { border-right: 0; }
+.status-item:hover { background: var(--row-hover); }
+.status-label { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.status-item strong {
+  color: var(--text);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.status-item em { color: var(--muted); font-size: 12px; font-style: normal; font-weight: 500; }
+
+/* ---------- 两栏区域：高度跟随内容，空状态不再撑成大白块 ---------- */
+.command-grid { grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr); align-items: start; }
+.command-grid > .panel { display: flex; flex-direction: column; min-height: 0; }
+.command-grid > .panel > .panel-body { max-height: 360px; overflow-y: auto; }
+
+/* ---------- 告警卡片 ---------- */
 .alert-list { display: grid; gap: 10px; }
-.alert-card { display: flex; justify-content: space-between; gap: 16px; padding: 13px 14px; border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 10px; background: #fbfcfb; }
-.alert-card.severity-critical { border-left-color: var(--red); background: #fff9f9; }
+.alert-card { display: flex; justify-content: space-between; gap: 16px; padding: 13px 14px; border: 1px solid var(--line); border-left: 3px solid var(--amber); border-radius: 10px; background: var(--fill-1); }
+.alert-card.severity-critical { border-left-color: var(--red); background: color-mix(in srgb, var(--red) 9%, transparent); }
 .alert-card-main { min-width: 0; }
 .alert-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
 .alert-source { color: var(--cyan); font-size: 10px; font-weight: 700; letter-spacing: .08em; }
 .alert-card p { margin: 6px 0 5px; color: var(--text-soft); font-size: 12px; line-height: 1.5; }
 .alert-actions { display: flex; align-items: flex-start; gap: 6px; }
+
+/* ---------- 事件时间线 ---------- */
 .event-timeline { display: grid; gap: 0; padding-right: 6px; }
 .event-row { position: relative; display: grid; grid-template-columns: 18px 1fr; gap: 8px; padding: 0 0 16px; }
 .event-row::before { content: ""; position: absolute; top: 8px; bottom: 0; left: 4px; width: 1px; background: var(--line); }
 .event-row:last-child::before { display: none; }
-.event-dot { width: 9px; height: 9px; margin-top: 4px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(14,135,146,.1); z-index: 1; }
-.quality-fail { color: var(--red); background: #fdeef0; }
-.quality-pass { color: var(--green); background: #eaf7f1; }
+.event-dot { width: 9px; height: 9px; margin-top: 4px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(47,214,195,.14), 0 0 10px rgba(47,214,195,.45); z-index: 1; }
+
+/* ---------- 空状态：给状态说明 + 下一步动作 ---------- */
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 30px 12px 26px;
+  text-align: center;
+}
+.empty-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  background: var(--fill-2);
+  color: var(--muted);
+  font-size: 18px;
+}
+.empty-icon.ok { background: var(--tint-green); color: var(--green); }
+.empty-title { color: var(--text); font-size: 13px; font-weight: 700; }
+.empty-desc { max-width: 300px; color: var(--muted); font-size: 11.5px; line-height: 1.6; }
+.empty .btn { margin-top: 6px; }
+
+/* ---------- 表格与标签 ---------- */
+.quality-fail { color: var(--danger-fg); background: var(--tint-red); }
+.quality-pass { color: var(--ok-fg); background: var(--tint-green); }
 .text-danger { color: var(--red); font-weight: 700; }
-@media (max-width: 1180px) { .command-strip { grid-template-columns: repeat(3, 1fr); } .command-action:nth-child(3n) { border-right: 0; } }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1180px) {
+  .status-strip { grid-template-columns: repeat(3, 1fr); }
+  .status-item:nth-child(3n) { border-right: 0; }
+  .status-item:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+}
 @media (max-width: 900px) {
   .command-grid { grid-template-columns: 1fr; }
-  .command-grid > .panel { height: 520px; }
-  .command-strip { grid-template-columns: repeat(2, 1fr); }
+  .status-strip { grid-template-columns: repeat(2, 1fr); }
+  .status-item:nth-child(2n) { border-right: 0; }
+  .status-item { border-bottom: 1px solid var(--line); }
+  .status-item:nth-last-child(-n+2) { border-bottom: 0; }
 }
 </style>

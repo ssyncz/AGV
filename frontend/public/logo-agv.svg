@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="AGV">
+  <defs>
+    <linearGradient id="agvBadge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#18c2b4"/>
+      <stop offset="0.5" stop-color="#0e8792"/>
+      <stop offset="1" stop-color="#3b4bd8"/>
+    </linearGradient>
+    <linearGradient id="agvGloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 徽章底 -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#agvBadge)"/>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#agvGloss)"/>
+
+  <!-- A：由“行驶路线”构成的字母 -->
+  <path d="M17.5 47 L32 17.5 L46.5 47"
+        fill="none" stroke="#ffffff" stroke-width="5.4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 横梁 -->
+  <path d="M24.6 36.4 H39.4"
+        stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.92"/>
+
+  <!-- 节点：起点 / 中点 / 终点 -->
+  <circle cx="17.5" cy="47" r="4.1" fill="#ffffff"/>
+  <circle cx="46.5" cy="47" r="4.1" fill="#ffffff" opacity="0.55"/>
+  <circle cx="32" cy="17.5" r="4.6" fill="#eafffb"/>
+</svg>

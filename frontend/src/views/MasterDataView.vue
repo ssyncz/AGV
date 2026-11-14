@@ -118,7 +118,7 @@ onMounted(load)
 .master-wide { grid-column: 1 / -1; }
 .form-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .weekday-picker { display: flex; gap: 6px; flex-wrap: wrap; }
-.weekday-picker button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--muted); font-size: 10px; }
-.weekday-picker button.active { border-color: var(--cyan); background: #eaf7f5; color: var(--cyan); font-weight: 700; }
+.weekday-picker button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--fill-2); color: var(--muted); font-size: 10px; }
+.weekday-picker button.active { border-color: var(--accent-line); background: var(--accent-tint-weak); color: var(--cyan); font-weight: 650; }
 @media (max-width: 900px) { .master-grid, .form-grid.compact { grid-template-columns: 1fr; } .master-wide { grid-column: auto; } }
 </style>

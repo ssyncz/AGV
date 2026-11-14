@@ -5,6 +5,7 @@ from .views_algo import (DefectClassifyView, AlgoStatusView as VisionAlgoStatusV
                          PatchcoreInferView, DeepCrackSegmentView)
 from .views import (
     CrackDetectView,
+    DefectDetectView,
     VisionOverviewView,
     VisionRecordViewSet,
     VisionSampleImageView,
@@ -19,6 +20,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("crack/", CrackDetectView.as_view()),
     path("detect/", WorkpieceDetectView.as_view()),
+    path("detect/defect/", DefectDetectView.as_view()),
     path("samples/", VisionSampleListView.as_view()),
     path("samples/<str:group>/<str:name>/", VisionSampleImageView.as_view()),
     path("overview/", VisionOverviewView.as_view()),

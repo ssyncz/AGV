@@ -94,8 +94,8 @@ onMounted(load)
 
 <style scoped>
 .toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
-.severity-pill { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-size: 10px; background: #eef2f0; color: var(--muted); }
-.severity-critical { color: var(--red); background: #fdeef0; }
-.severity-warning { color: var(--amber); background: #fdf5e6; }
-.severity-info { color: var(--blue); background: #edf3ff; }
+.severity-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px; font-size: 10px; background: var(--fill-2); border: 1px solid var(--line); color: var(--muted); }
+.severity-critical { color: var(--danger-fg); background: var(--tint-red); border-color: var(--tint-red-line); }
+.severity-warning { color: var(--warn-fg); background: var(--tint-amber); border-color: var(--tint-amber-line); }
+.severity-info { color: var(--info-fg); background: var(--tint-blue); border-color: var(--tint-blue-line); }
 </style>
