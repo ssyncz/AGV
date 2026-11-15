@@ -1,4 +1,4 @@
-# --- Python 缓存与构建 ---
+﻿# --- Python 缓存与构建 ---
 __pycache__/
 *.py[cod]
 build/
@@ -36,7 +36,7 @@ frontend/.env
 *.sqlite3
 
 # --- 模型权重与训练产物（体积大，不入库） ---
-models/
+models/*
 runs/
 
 # --- 本地大文件 / 资料备份（不入库，避免超过 GitHub 100MB 限制）---
@@ -54,3 +54,7 @@ AGV (4).zip
 datasets/vision/deepcrack/
 datasets/vision/crazing_pseudo/
 datasets/auto/
+
+# 例外：缺陷检测权重随仓库分发（约 6 MB），clone 后开箱可演示
+!models/neu_yolo.pt
+!models/README.md
