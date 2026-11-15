@@ -177,7 +177,7 @@
 
   --toast-bg: rgba(8, 26, 18, 0.9);
   --loading-bg: rgba(3, 14, 9, 0.62);
-  --decor-ink: rgba(214, 236, 224, 0.075);
+  --decor-ink: rgba(214, 236, 224, 0.055);
   --scroll-thumb: rgba(163, 233, 195, 0.2);
   --scroll-thumb-hover: rgba(185, 226, 106, 0.42);
 
@@ -1467,7 +1467,7 @@ html[data-theme="light"] {
 
   --toast-bg: rgba(255, 255, 255, 0.96);
   --loading-bg: rgba(246, 251, 240, 0.72);
-  --decor-ink: rgba(28, 62, 44, 0.075);
+  --decor-ink: rgba(28, 62, 44, 0.06);
   --scroll-thumb: rgba(28, 48, 32, 0.22);
   --scroll-thumb-hover: rgba(11, 127, 109, 0.45);
 

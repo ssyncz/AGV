@@ -69,6 +69,7 @@ class AGVSerializer(serializers.ModelSerializer):
 
 
 class TransportTaskSerializer(serializers.ModelSerializer):
+    biz_type_display = serializers.CharField(source="get_biz_type_display", read_only=True)
     status_display = serializers.CharField(source="get_status_display", read_only=True)
     priority_display = serializers.CharField(source="get_priority_display", read_only=True)
     pickup_node_detail = MapNodeSerializer(source="pickup_node", read_only=True)
@@ -104,7 +105,7 @@ class TransportTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransportTask
         fields = [
-            "id", "task_no", "pickup_node", "pickup_node_detail", "dropoff_node",
+            "id", "task_no", "biz_type", "biz_type_display", "pickup_node", "pickup_node_detail", "dropoff_node",
             "dropoff_node_detail", "cargo_name", "cargo_weight", "priority",
             "priority_display", "status", "status_display", "assigned_agv",
             "assigned_agv_detail", "schedule_run", "production_plan", "production_plan_no",

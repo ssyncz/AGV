@@ -58,3 +58,101 @@ class EquipmentDiagnosisRecord(models.Model):
 
     def __str__(self):
         return f"{self.equipment_code} - {self.get_predicted_state_display()}"
+
+
+class Tool(models.Model):
+    """刀具档案：换刀决策的实体基础（磨损率、累计切削时长、剩余寿命）。"""
+
+    class Status(models.TextChoices):
+        IN_USE = "in_use", "在机"
+        PENDING_CHANGE = "pending_change", "待换"
+        CHANGED = "changed", "已换下"
+        RETIRED = "retired", "已报废"
+
+    code = models.CharField("刀具编号", max_length=32, unique=True)
+    name = models.CharField("刀具名称", max_length=64, blank=True)
+    equipment = models.ForeignKey(
+        "Operations.Equipment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tools",
+        verbose_name="装夹设备",
+    )
+    wear_ratio = models.FloatField("磨损率", default=0.0, help_text="0~1，来自刀具磨损监测")
+    threshold = models.FloatField("换刀磨损阈值", default=0.78)
+    life_minutes = models.FloatField("额定寿命（分钟）", default=240.0)
+    used_minutes = models.FloatField("累计切削（分钟）", default=0.0)
+    status = models.CharField(
+        "状态", max_length=16, choices=Status.choices, default=Status.IN_USE
+    )
+    changed_at = models.DateTimeField("上次换刀时间", null=True, blank=True)
+    notes = models.TextField("备注", blank=True)
+    created_at = models.DateTimeField("创建时间", auto_now_add=True)
+    updated_at = models.DateTimeField("更新时间", auto_now=True)
+
+    class Meta:
+        ordering = ["code"]
+        verbose_name = "刀具"
+        verbose_name_plural = "刀具"
+
+    @property
+    def remaining_minutes(self) -> float:
+        return max(self.life_minutes - self.used_minutes, 0.0)
+
+    @property
+    def wear_alert(self) -> bool:
+        return self.wear_ratio >= self.threshold
+
+    def __str__(self):
+        return f"{self.code}（{self.get_status_display()}）"
+
+
+class ToolChangeRecord(models.Model):
+    """一次换刀：旧刀换下、新刀装上，记录磨损与物流任务号。"""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "待换刀"
+        DONE = "done", "已完成"
+
+    equipment = models.ForeignKey(
+        "Operations.Equipment",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tool_changes",
+        verbose_name="换刀设备",
+    )
+    old_tool = models.ForeignKey(
+        Tool,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="changes_out",
+        verbose_name="换下旧刀",
+    )
+    new_tool = models.ForeignKey(
+        Tool,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="changes_in",
+        verbose_name="装上新刀",
+    )
+    old_wear = models.FloatField("旧刀磨损率", default=0.0)
+    old_used_minutes = models.FloatField("旧刀累计切削（分钟）", default=0.0)
+    status = models.CharField("状态", max_length=16, choices=Status.choices, default=Status.PENDING)
+    operator = models.CharField("操作人", max_length=64, blank=True)
+    change_task_no = models.CharField("换刀配送任务号", max_length=64, blank=True)
+    return_task_no = models.CharField("旧刀回收任务号", max_length=64, blank=True)
+    note = models.TextField("备注", blank=True)
+    created_at = models.DateTimeField("发起时间", auto_now_add=True)
+    completed_at = models.DateTimeField("完成时间", null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "换刀记录"
+        verbose_name_plural = "换刀记录"
+
+    def __str__(self):
+        return f"{self.old_tool_id} → {self.new_tool_id}（{self.get_status_display()}）"

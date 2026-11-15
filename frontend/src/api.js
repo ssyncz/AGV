@@ -123,6 +123,8 @@ export const api = {
     request('/operations/products/', { method: 'POST', body: JSON.stringify(payload) }),
   createEquipment: (payload) =>
     request('/operations/equipment/', { method: 'POST', body: JSON.stringify(payload) }),
+  updateEquipment: (id, payload) =>
+    request(`/operations/equipment/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
 
   // --- 视觉检测（ManufacturingVision，任务 4/5）---
   visionOverview: () => request('/vision/overview/'),
@@ -147,6 +149,29 @@ export const api = {
   equipmentRecords: (query = '') => request(`/equipment/records/${query}`).then(unwrap),
   deleteEquipmentRecord: (id) =>
     request(`/equipment/records/${id}/`, { method: 'DELETE' }),
+  // 刀具与换刀闭环
+  equipmentTools: () => request('/equipment/tools/').then(unwrap),
+  toolAdvice: (id, nextTaskMinutes = 90) =>
+    request(`/equipment/tools/${id}/advice/`, {
+      method: 'POST',
+      body: JSON.stringify({ next_task_minutes: nextTaskMinutes }),
+    }),
+  toolDispatch: (id, workOrderId = null) =>
+    request(`/equipment/tools/${id}/dispatch/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui', work_order_id: workOrderId }),
+    }),
+  toolChanges: () => request('/equipment/tool-changes/').then(unwrap),
+  toolReturn: (recordId) =>
+    request(`/equipment/tool-changes/${recordId}/return/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+    }),
+  toolChange: (id) =>
+    request(`/equipment/tools/${id}/change/`, {
+      method: 'POST',
+      body: JSON.stringify({ actor: 'manufacturing-ui' }),
+    }),
 
   // --- 订单需求预测（任务 7）---
   forecastOverview: () => request('/forecast/overview/'),
