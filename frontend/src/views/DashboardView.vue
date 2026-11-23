@@ -9,9 +9,29 @@ const props = defineProps({
   tasks: { type: Array, default: () => [] },
   dispatches: { type: Array, default: () => [] },
 })
+const emit = defineEmits(['select-tab'])
 
 const utilization = computed(() => props.overview.fleet_utilization || 0)
 const recentTasks = computed(() => props.tasks.slice(0, 6))
+const orderCounts = computed(() => props.overview.order_status_counts || {})
+const orderCards = computed(() => [
+  {
+    label: '订单总量', value: props.overview.order_total || 0,
+    foot: `今日新增 ${props.overview.today_order_count || 0} 单`, icon: '▤', accent: 'cyan', status: '',
+  },
+  {
+    label: '待调度订单', value: orderCounts.value.pending || 0,
+    foot: '等待分配运输任务', icon: '◷', accent: 'amber', status: 'pending',
+  },
+  {
+    label: '运输中订单', value: orderCounts.value.in_progress || 0,
+    foot: '正在执行客户订单', icon: '▶', accent: 'blue', status: 'in_progress',
+  },
+  {
+    label: '异常待办', value: orderCounts.value.failed || 0,
+    foot: '需要人工处理', icon: '!', accent: 'red', status: 'failed',
+  },
+])
 const statusGroups = computed(() => [
   { key: 'idle', label: '空闲', color: 'var(--green)' },
   { key: 'busy', label: '执行中', color: 'var(--blue)' },
@@ -33,6 +53,18 @@ function formatTime(value) {
 
 <template>
   <div>
+    <div class="grid stats-grid order-summary-grid">
+      <button
+        v-for="card in orderCards"
+        :key="card.label"
+        class="order-stat-button"
+        type="button"
+        @click="emit('select-tab', card.status)"
+      >
+        <StatCard :label="card.label" :value="card.value" :foot="card.foot" :icon="card.icon" :accent="card.accent" />
+      </button>
+    </div>
+
     <div class="grid stats-grid">
       <StatCard label="AGV 总数" :value="overview.agv_total || 0" icon="▣" accent="cyan" />
       <StatCard label="待调度任务" :value="overview.pending_tasks || 0" icon="◇" accent="amber" />
@@ -125,3 +157,20 @@ function formatTime(value) {
     </section>
   </div>
 </template>
+
+<style scoped>
+.order-summary-grid { margin-bottom: 12px; }
+.order-stat-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.order-stat-button:hover { transform: translateY(-2px); }
+.order-stat-button:hover :deep(.stat-card) { box-shadow: 0 15px 34px rgba(20, 45, 54, 0.1); }
+</style>

@@ -83,6 +83,7 @@ def available():
 def status():
     weights = find_weights()
     metrics = None
+    inference_metrics = None
     if weights:
         metrics_path = os.path.splitext(weights)[0] + ".metrics.json"
         if os.path.isfile(metrics_path):
@@ -91,30 +92,76 @@ def status():
                     metrics = json.load(handle)
             except (OSError, ValueError):
                 metrics = None
+        rejection_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "runs",
+            "vision",
+            "neu_rejection.metrics.json",
+        )
+        if os.path.isfile(rejection_path):
+            try:
+                with open(rejection_path, encoding="utf-8") as handle:
+                    inference_metrics = json.load(handle)
+            except (OSError, ValueError):
+                inference_metrics = None
     return {
         "available": available(),
         "weights": weights,
         "classes": CLASSES,
         "class_labels": CLASS_LABELS,
         "model": "SmallCNN(64x64, 3 conv blocks)",
-        "test_accuracy": (metrics or {}).get("best_val_accuracy"),
+        "test_accuracy": (
+            (inference_metrics or {}).get("tta_accuracy")
+            or (metrics or {}).get("best_val_accuracy")
+        ),
+        "single_view_accuracy": (inference_metrics or {}).get("single_view_accuracy"),
+        "training_best_val_accuracy": (metrics or {}).get("best_val_accuracy"),
+        "tta_enabled": True,
         "train_samples": (metrics or {}).get("train_samples"),
         "val_samples": (metrics or {}).get("val_samples"),
         "metrics": metrics,
     }
 
 
-def classify_defect(image, device="cpu"):
-    """对单张 BGR 图做缺陷类型识别，返回 top-1/top-3 与各类概率。"""
+def _probability_view(net, gray: np.ndarray, device: str):
+    import torch
+
+    resized = cv2.resize(gray, (SIZE, SIZE), interpolation=cv2.INTER_AREA)
+    x = (resized.astype(np.float32) / 255.0 - 0.5) / 0.5
+    tensor = torch.from_numpy(x[None, None]).float().to(device)
+    with torch.no_grad():
+        return torch.softmax(net(tensor), dim=1)[0].cpu().numpy()
+
+
+def classify_defect(image, device="cpu", tta=True):
+    """对单张 BGR 图做缺陷类型识别，默认对翻转和轻微旋转视图做概率平均。"""
     import torch
 
     net = get_model(device)
     gray = image if image.ndim == 2 else cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    resized = cv2.resize(gray, (SIZE, SIZE), interpolation=cv2.INTER_AREA)
-    x = (resized.astype(np.float32) / 255.0 - 0.5) / 0.5
-    t = torch.from_numpy(x[None, None]).float().to(device)
-    with torch.no_grad():
-        prob = torch.softmax(net(t), dim=1)[0].cpu().numpy()
+    views = [gray]
+    if tta:
+        height, width = gray.shape[:2]
+        center = (width / 2.0, height / 2.0)
+        views.extend([
+            cv2.flip(gray, 1),
+            cv2.warpAffine(
+                gray,
+                cv2.getRotationMatrix2D(center, 3.0, 1.0),
+                (width, height),
+                flags=cv2.INTER_LINEAR,
+                borderMode=cv2.BORDER_REFLECT_101,
+            ),
+            cv2.warpAffine(
+                gray,
+                cv2.getRotationMatrix2D(center, -3.0, 1.0),
+                (width, height),
+                flags=cv2.INTER_LINEAR,
+                borderMode=cv2.BORDER_REFLECT_101,
+            ),
+        ])
+    probabilities = [_probability_view(net, view, device) for view in views]
+    prob = np.mean(np.stack(probabilities, axis=0), axis=0)
 
     order = np.argsort(prob)[::-1]
     top3 = [{"class": CLASSES[i], "label": CLASS_LABELS[CLASSES[i]],
@@ -130,5 +177,7 @@ def classify_defect(image, device="cpu"):
         "top3": top3,
         "probabilities": {CLASSES[i]: round(float(prob[i]), 4) for i in range(len(CLASSES))},
         "is_line_like": best in ("crazing", "scratches"),
+        "tta": bool(tta),
+        "tta_views": len(views),
         "note": "线状类（crazing/scratches）建议再做裂纹分割定位；patches/pitted/inclusion 非线状",
     }

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, time, timedelta
 
 from django.db.models import Count, Q
 from django.utils import timezone
@@ -97,7 +97,8 @@ class TransportTaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return TransportTask.objects.select_related(
             "pickup_node", "dropoff_node", "assigned_agv",
-            "assigned_agv__current_node", "schedule_run", "work_order", "operation_step",
+            "assigned_agv__current_node", "schedule_run", "order",
+            "work_order", "operation_step", "production_plan",
         ).all()
 
     def _run_action(self, request, service):
@@ -279,6 +280,7 @@ class ProductionPlanViewSet(viewsets.ReadOnlyModelViewSet):
 
 class DashboardOverviewView(APIView):
     def get(self, request):
+        from Orders.models import Order
         now = timezone.now()
         agv_total = AGV.objects.count()
         status_counts = {
@@ -294,6 +296,13 @@ class DashboardOverviewView(APIView):
         average_battery = sum(
             AGV.objects.values_list("battery_percent", flat=True)
         ) / max(agv_total, 1)
+        order_status_counts = {
+            item["status"]: item["count"]
+            for item in Order.objects.values("status").annotate(count=Count("id"))
+        }
+        today = timezone.localdate()
+        today_start = timezone.make_aware(datetime.combine(today, time.min))
+        tomorrow_start = today_start + timedelta(days=1)
         open_statuses = [
             TransportTask.Status.PENDING,
             TransportTask.Status.ASSIGNED,
@@ -320,6 +329,12 @@ class DashboardOverviewView(APIView):
             ).count(),
             "fleet_utilization": round(occupied / max(agv_total, 1) * 100, 2),
             "average_battery": round(average_battery, 2),
+            "order_total": Order.objects.count(),
+            "order_status_counts": order_status_counts,
+            "today_order_count": Order.objects.filter(
+                created_at__gte=today_start,
+                created_at__lt=tomorrow_start,
+            ).count(),
             "latest_schedule_runs": ScheduleRunSerializer(
                 ScheduleRun.objects.all()[:5], many=True
             ).data,

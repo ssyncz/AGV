@@ -1,7 +1,7 @@
-# ManufacturingVision — 制造视觉检测模块（课程任务 4 / 5）
+# ManufacturingVision — 物件质量检测模块（视觉，课程任务 4 / 5）
 
 本应用负责课程选题 A 中的**任务 4 表面裂纹检测**与**任务 5 工件识别**，通过
-Django REST Framework 接入 `AGV` 项目，前端在 Vue3 界面中提供「视觉检测」菜单。
+Django REST Framework 接入 `AGV` 项目，前端在 Vue3 界面中提供“质量 → 物件质量检测”入口。
 任务 4 默认使用 **Frangi 多尺度黑脊**（OpenCV，免训练、可解释），也可在界面上切换到
 **DeepCrack 监督式裂纹分割**（PyTorch）。官方 DeepCrack 权重在 MT 磁瓦域迁移效果较差
 （实测 F1 0.56，低于 Frangi 的 0.82），因此默认不使用它；若换成域内微调权重，可在
@@ -13,6 +13,7 @@ Django REST Framework 接入 `AGV` 项目，前端在 Vue3 界面中提供「视
 ManufacturingVision/
 ├─ datasets.py                     # 数据集访问层（样例列举、路径解析、标注读取）
 ├─ services.py                     # OpenCV 算法：裂纹检测 + 工件识别（不依赖 Django）
+├─ services_defect_localization.py # NEU 六类缺陷 Grad-CAM + 局部反差红框与拒识
 ├─ crack_detection.py              # 命令行裂纹检测原型（保留 detect_crack 签名）
 ├─ models.py                       # VisionRecord 视觉检测记录表
 ├─ serializers.py / views.py / urls.py / admin.py
@@ -21,7 +22,7 @@ ManufacturingVision/
 │  ├─ generate_workpiece_dataset.py   # 生成合成几何工件数据集
 │  └─ evaluate_vision.py              # 批量评估并输出 CSV / JSON 指标
 ├─ reports/                        # 评估产物（crack_metrics / workpiece_metrics）
-├─ tests.py                        # 24 项算法 / 接口 / 命令测试
+├─ tests.py                        # 算法、接口、红框、拒识、记录与命令测试
 └─ README.md
 ```
 
@@ -89,10 +90,10 @@ ManufacturingVision/
    `algorithm` 字段。
 
 若 PyTorch 未安装或找不到权重，接口抛出 `RuntimeError`，视图层捕获后自动回退到
-3.1 的 Frangi 方案，并在响应中标记 `fallback=true`。前端「视觉检测」页提供算法
+3.1 的 Frangi 方案，并在响应中标记 `fallback=true`。前端“物件质量检测”页提供算法
 下拉框，可显式选择 `DeepCrack` 或 `Frangi`。
 
-### 3.4 NEU 六类缺陷分类（可选）
+### 3.4 NEU 六类缺陷分类、定位与拒识（可选）
 
 `services_defect.py` 实现了一个 64×64 灰度输入的 SmallCNN（3 组 Conv-BN-ReLU-MaxPool +
 全局平均池化 + 全连接），输出 NEU 热轧带钢的六类缺陷：
@@ -116,8 +117,28 @@ ManufacturingVision/
 网站内置样例是 `datasets/vision/neu/` 下每类 20 张、共 120 张；
 缺陷接口支持 `{"sample": "neu/crazing_001.jpg"}`，并返回 `ground_truth_class` 与 `match`。
 
-线状缺陷（`crazing`、`scratches`）建议再调用裂纹分割接口做定位；
-其余四类只做类型识别。
+六类分类后继续执行近似定位：
+
+1. 对最后一层 8×8 卷积特征计算目标类别 Grad-CAM；
+2. 块状类使用局部绝对反差、黑帽与顶帽响应生成候选缺陷区域；
+3. `crazing` / `scratches` 使用明暗双极性线响应和 Hough 线段检测，并合并共线断片，
+   避免只框住划痕中的几个高响应点；
+4. Grad-CAM 作为候选区域排序依据，图像响应负责收紧红框边界；
+5. 按缺陷形态自适应控制框的数量和尺度：`patches` 合并为一个覆盖整体缺陷的大框；
+   `crazing`、`pitted`、`rolled-in` 可保留多个显著区域；`scratches` / `inclusion`
+   对每个细长目标分别给贴边小框，总计最多 5 个。
+
+分类器没有 normal 类。系统根据 Top-1 置信度和 Top-1/Top-2 间隔执行安全拒识：
+低可信度结果返回固定文案“不属于6类缺陷或无缺陷，请人工复核”，不生成六类红框。
+该结果表示“需要人工复核”，**不能解释为已确认无缺陷**。
+
+拒识阈值由 `scripts/calibrate_neu_rejection.py` 校准。当前配置在 360 张 NEU 验证图
+上保留 95.28% 的已知缺陷，再从 MT_Free 和随机纹理参考样本中选择阈值：
+`min_confidence=0.6523`、`min_margin=0.3342`。跨域负样本拒识率仅用于风险评估，
+不代表真实正常钢材准确率。
+
+推理默认使用 4 视图测试增强（原图、水平翻转、±3° 旋转）并平均六类概率。
+同一验证集上，单视图分类准确率为 95.28%，测试增强后提升到 96.39%。
 
 ## 4. 接口契约
 
@@ -135,7 +156,7 @@ ManufacturingVision/
 | GET | `/api/vision/overview/` | 检测次数、裂纹检出率、平均耗时、最近记录 |
 | GET | `/api/vision/algo/status/` | 深度学习依赖、权重与数据集就绪状态 |
 | POST | `/api/vision/algo/deepcrack/` | 直接调用 DeepCrack 分割 |
-| GET/POST | `/api/vision/algo/defect/` | NEU 六类缺陷识别（需权重） |
+| GET/POST | `/api/vision/algo/defect/` | NEU 六类分类、红框定位、拒识并保存记录（需权重） |
 | POST | `/api/vision/algo/patchcore/` | PatchCore 无监督异常检测（需 anomalib） |
 | POST | `/api/vision/algo/dataset/` | 把现有数据转成 MVTec-AD 布局 |
 
@@ -282,12 +303,11 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 
 ## 8. 前端接入
 
-* `frontend/src/views/VisionView.vue`：新增「视觉检测」页面，含在线检测与检测记录
+* `frontend/src/views/VisionView.vue`：提供“物件质量检测”页面，含质检工作台与质检记录
   两个子页；支持内置样例/本地上传、参数调整、原图与结果图对比、工件明细表、
   记录筛选与删除；裂纹任务提供 DeepCrack / Frangi 算法切换，并按算法展示对应指标。
 * `frontend/src/api.js`：`request` 在 `body` 为 `FormData` 时不再强制 JSON
-  `Content-Type`；新增 `visionCrack / visionDetect / visionSamples / visionRecords /
-  deleteVisionRecord / visionOverview / visionSampleImageUrl`。
+  `Content-Type`；视觉 API 提供检测、分页记录、记录详情、删除、概览与样例图片。
 * `frontend/src/App.vue`：新增 `vision` 菜单项并渲染 `VisionView`（把原 `AgvView v-else`
   改为 `v-else-if="activeTab === 'agvs'"`）。
 * `frontend/vite.config.js`：新增 `/media` 代理，使结果图在开发环境可直接显示。
@@ -296,7 +316,23 @@ DeepCrack 参数集中在 `services_supervised.DEEPCRACK_DEFAULTS`：
 > metric-grid / table-wrap / notice / tag` 等类，仅在 `VisionView.vue` 内用 `scoped`
 > 样式补充图片对比区，未引入新的前端依赖。
 
+当前在线检测默认进入“缺陷类型识别 + 本地上传”，上传区支持点击与拖放；内置
+MT/NEU 样本收在“样本演示”折叠区。检测记录页支持类型筛选、分页和详情回看，
+详情同时显示原图、红框结果、类别概率、定位框、参数和拒识信息。
+
+人工检查六类红框：
+
+```powershell
+.\venv\Scripts\python.exe scripts\preview_defect_localization.py
+```
+
+输出为 `runs/vision/defect_preview.jpg`。
+
 ## 9. 已知限制与后续可做
+
+六类模型只有图像级类别标签，没有缺陷框真值。红框是 Grad-CAM 与局部反差的近似
+定位，适合辅助人工复核，不应报告 bbox mAP 或声称达到标注级检测精度。当前也没有
+正常钢材训练集，拒识结果不能替代合格的 normal 分类器或人工质量门。
 
 1. 裂纹定位的平均 IoU 已从 0.1438 提升至 0.2723，但仍受漏定位和标注宽度差异
    限制；当前最优参数未启用骨架化，后续需要更多同域标注验证更复杂的宽度估计。

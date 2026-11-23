@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='visionrecord',
             name='task_type',
-            field=models.CharField(choices=[('crack', '裂纹检测'), ('defect', '缺陷分类'), ('workpiece', '工件识别')], max_length=20, verbose_name='检测任务'),
+            field=models.CharField(choices=[('crack', '裂纹检测'), ('workpiece', '工件识别'), ('defect', '六类缺陷识别')], max_length=20, verbose_name='检测任务'),
         ),
     ]

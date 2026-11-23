@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
+from unittest import mock
 
 import cv2
 import numpy as np
@@ -21,6 +22,11 @@ from .services import (
     refine_crack_mask,
 )
 from .services_defect import available as defect_available
+from .services_defect_localization import (
+    _merge_boxes,
+    _should_join_collinear,
+    locate_defect,
+)
 from .services_supervised import supervised_available
 
 
@@ -141,6 +147,63 @@ class WorkpieceAlgorithmTests(TestCase):
                 self.assertEqual(analysis["count"], 1)
                 self.assertEqual(analysis["objects"][0]["label"], shape)
                 self.assertGreater(analysis["objects"][0]["score"], 0.5)
+
+
+class DefectLocalizationTests(TestCase):
+    def test_collinear_fragments_are_joined(self):
+        left = [19, 82, 29, 93]
+        right = [24, 11, 20, 67]
+        self.assertTrue(_should_join_collinear(left, right))
+        merged = _merge_boxes(
+            [
+                {"box": left, "score": 0.8, "area_ratio": 0.01},
+                {"box": right, "score": 0.7, "area_ratio": 0.01},
+            ],
+            join_collinear=True,
+        )
+        self.assertEqual(len(merged), 1)
+        self.assertGreaterEqual(merged[0]["box"][3], 160)
+
+    def test_long_scratches_are_enclosed_by_continuous_boxes(self):
+        image = np.full((256, 256, 3), 48, np.uint8)
+        cv2.line(image, (78, 18), (82, 238), (225, 225, 225), 3, cv2.LINE_AA)
+        cv2.line(image, (184, 24), (179, 231), (210, 210, 210), 2, cv2.LINE_AA)
+        located = locate_defect(
+            image,
+            predicted_class="scratches",
+            confidence=0.96,
+        )
+        boxes = located["boxes"]
+        self.assertTrue(boxes)
+        self.assertTrue(
+            any(
+                box[0] <= 78
+                and box[0] + box[2] >= 84
+                and box[1] <= 30
+                and box[1] + box[3] >= 220
+                for box in boxes
+            )
+        )
+
+    def test_patches_use_one_overall_region_but_pitted_can_keep_multiple(self):
+        image = np.full((256, 256, 3), 215, np.uint8)
+        cv2.rectangle(image, (28, 42), (86, 104), (55, 55, 55), -1)
+        cv2.rectangle(image, (158, 146), (220, 214), (62, 62, 62), -1)
+        patch_result = locate_defect(
+            image,
+            predicted_class="patches",
+            confidence=0.97,
+        )
+        self.assertEqual(len(patch_result["boxes"]), 1)
+
+        pitted_result = locate_defect(
+            image,
+            predicted_class="pitted",
+            confidence=0.97,
+        )
+        boxes = pitted_result["boxes"]
+        self.assertGreaterEqual(len(boxes), 2)
+        self.assertLessEqual(len(boxes), 5)
 
 
 class DatasetAccessTests(TestCase):
@@ -298,6 +361,138 @@ class VisionApiTests(TestCase):
         truth = datasets.load_neu_labels()[name]
         self.assertEqual(payload.get("ground_truth_class"), truth["class"])
         self.assertIn("match", payload)
+        self.assertEqual(payload["task_type"], "defect")
+        self.assertIn(payload["verdict"], {"defect", "uncertain"})
+        self.assertTrue(payload["tta"])
+        self.assertEqual(payload["tta_views"], 4)
+        self.assertTrue(payload["record_id"])
+        record = VisionRecord.objects.get(pk=payload["record_id"])
+        self.assertEqual(record.task_type, VisionRecord.TaskType.DEFECT)
+        self.assertTrue(record.input_image.name)
+        self.assertTrue(record.result_image.name)
+
+    def test_defect_six_class_samples_have_red_boxes_and_records(self):
+        if not defect_available():
+            self.skipTest("NEU 权重未就绪")
+        samples = datasets.list_samples(datasets.NEU)
+        labels = datasets.load_neu_labels()
+        if not samples:
+            self.skipTest("NEU 样例缺失")
+        representatives = {}
+        for name in samples:
+            representatives.setdefault(labels[name]["class"], name)
+        self.assertEqual(len(representatives), 6)
+
+        for index, (expected_class, name) in enumerate(representatives.items(), start=1):
+            with self.subTest(expected_class=expected_class):
+                response = self.client.post(
+                    "/api/vision/algo/defect/",
+                    {"sample": f"neu/{name}"},
+                    content_type="application/json",
+                )
+                self.assertEqual(response.status_code, 200)
+                payload = response.json()
+                self.assertEqual(payload["raw_predicted_class"], expected_class)
+                self.assertEqual(payload["verdict"], "defect")
+                self.assertGreaterEqual(len(payload["boxes"]), 1)
+                self.assertLessEqual(len(payload["boxes"]), 5)
+                for x, y, width, height in payload["boxes"]:
+                    self.assertGreaterEqual(x, 0)
+                    self.assertGreaterEqual(y, 0)
+                    self.assertGreater(width, 0)
+                    self.assertGreater(height, 0)
+                    self.assertLessEqual(x + width, payload["width"])
+                    self.assertLessEqual(y + height, payload["height"])
+
+                record = VisionRecord.objects.get(pk=payload["record_id"])
+                result_image = cv2.imread(record.result_image.path)
+                self.assertIsNotNone(result_image)
+                red = (
+                    (result_image[:, :, 2] > 170)
+                    & (result_image[:, :, 2] > result_image[:, :, 1] * 1.4)
+                    & (result_image[:, :, 2] > result_image[:, :, 0] * 1.4)
+                )
+                self.assertTrue(red.any())
+
+    def test_defect_low_confidence_is_uncertain_and_still_saved(self):
+        low_confidence = {
+            "task": "defect_classification",
+            "model": "mock",
+            "weights": None,
+            "predicted_class": "scratches",
+            "predicted_label": "划痕",
+            "confidence": 0.41,
+            "top3": [
+                {"class": "scratches", "label": "划痕", "probability": 0.41},
+                {"class": "crazing", "label": "龟裂（网状裂纹）", "probability": 0.39},
+            ],
+            "probabilities": {
+                "crazing": 0.39,
+                "inclusion": 0.05,
+                "patches": 0.05,
+                "pitted": 0.05,
+                "rolled-in": 0.05,
+                "scratches": 0.41,
+            },
+            "is_line_like": True,
+            "note": "",
+        }
+        upload = SimpleUploadedFile(
+            "unknown.png",
+            _encode_png(np.full((180, 220, 3), 128, np.uint8)),
+            "image/png",
+        )
+        with mock.patch(
+            "ManufacturingVision.views_algo.classify_defect",
+            return_value=low_confidence,
+        ):
+            response = self.client.post(
+                "/api/vision/algo/defect/",
+                {"image": upload},
+                format="multipart",
+            )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["verdict"], "uncertain")
+        self.assertEqual(payload["predicted_label"], "不属于6类缺陷或无缺陷，请人工复核")
+        self.assertEqual(payload["boxes"], [])
+        record = VisionRecord.objects.get(pk=payload["record_id"])
+        self.assertEqual(record.verdict, "uncertain")
+        self.assertTrue(record.result_image.name)
+
+    def test_defect_record_filter_detail_and_delete(self):
+        if not defect_available():
+            self.skipTest("NEU 权重未就绪")
+        sample = datasets.list_samples(datasets.NEU)[0]
+        response = self.client.post(
+            "/api/vision/algo/defect/",
+            {"sample": f"neu/{sample}"},
+            content_type="application/json",
+        )
+        payload = response.json()
+        record_id = payload["record_id"]
+
+        listing = self.client.get("/api/vision/records/?task_type=defect&page=1").json()
+        self.assertEqual(listing["count"], 1)
+        self.assertEqual(listing["results"][0]["task_type"], "defect")
+        self.assertTrue(listing["results"][0]["verdict_display"])
+
+        detail = self.client.get(f"/api/vision/records/{record_id}/")
+        self.assertEqual(detail.status_code, 200)
+        self.assertEqual(detail.json()["id"], record_id)
+        self.assertTrue(detail.json()["result_image_url"])
+
+        record = VisionRecord.objects.get(pk=record_id)
+        input_path = Path(record.input_image.path)
+        result_path = Path(record.result_image.path)
+        self.assertTrue(input_path.is_file())
+        self.assertTrue(result_path.is_file())
+        self.assertEqual(
+            self.client.delete(f"/api/vision/records/{record_id}/").status_code,
+            204,
+        )
+        self.assertFalse(input_path.exists())
+        self.assertFalse(result_path.exists())
 
     def test_sample_image_endpoint(self):
         samples = datasets.list_samples(datasets.CRACK)

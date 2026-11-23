@@ -6,8 +6,8 @@ class VisionRecord(models.Model):
 
     class TaskType(models.TextChoices):
         CRACK = "crack", "裂纹检测"
-        DEFECT = "defect", "缺陷分类"
         WORKPIECE = "workpiece", "工件识别"
+        DEFECT = "defect", "六类缺陷识别"
 
     class Source(models.TextChoices):
         UPLOAD = "upload", "本地上传"

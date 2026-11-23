@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
+from Orders.models import Customer, Order, OrderEvent
 from Operations.models import WorkOrder
 from SchedulingDecision.models import (
     AGV,
@@ -72,6 +73,14 @@ TASK_TEMPLATES = [
     ("S7", "S3", "装配零件", 52, 4),
 ]
 
+CUSTOMER_TEMPLATES = [
+    ("张伟", "13800000001"),
+    ("李娜", "13900000002"),
+    ("王磊", "13700000003"),
+    ("赵敏", "13600000004"),
+    ("陈晨", "13500000005"),
+]
+
 
 def build_task_specs(count):
     """按固定模板生成可重复的演示任务。"""
@@ -87,9 +96,11 @@ def build_task_specs(count):
 
 
 def upsert_demo_tasks(task_specs, station_node):
-    """写入演示任务，并清除上一轮调度结果。"""
-    for task_no, pickup, dropoff, cargo, weight, priority in task_specs:
-        TransportTask.objects.update_or_create(
+    """写入一一对应的演示订单和运输任务。"""
+    for index, (task_no, pickup, dropoff, cargo, weight, priority) in enumerate(
+        task_specs, start=1
+    ):
+        task, _ = TransportTask.objects.update_or_create(
             task_no=task_no,
             defaults={
                 "pickup_node": station_node(pickup),
@@ -112,6 +123,38 @@ def upsert_demo_tasks(task_specs, station_node):
                 "completed_at": None,
                 "notes": "",
             },
+        )
+        customer_name, customer_phone = CUSTOMER_TEMPLATES[
+            (index - 1) % len(CUSTOMER_TEMPLATES)
+        ]
+        customer, _ = Customer.objects.get_or_create(
+            phone=customer_phone,
+            defaults={"name": customer_name},
+        )
+        order_no = f"ORD-DEMO-{index:03d}"
+        order, _ = Order.objects.update_or_create(
+            order_no=order_no,
+            defaults={
+                "customer": customer,
+                "cargo_name": cargo,
+                "cargo_weight": weight,
+                "pickup_node": station_node(pickup),
+                "dropoff_node": station_node(dropoff),
+                "priority": priority,
+                "notes": "",
+                "status": TransportTask.Status.PENDING,
+            },
+        )
+        if task.order_id != order.id:
+            task.order = order
+            task.save(update_fields=["order"])
+        OrderEvent.objects.filter(order=order).delete()
+        OrderEvent.objects.create(
+            order=order,
+            event_type=OrderEvent.EventType.CREATED,
+            to_status=TransportTask.Status.PENDING,
+            title="订单已创建",
+            description="演示订单已提交，等待安排运输。",
         )
 
 
@@ -142,6 +185,9 @@ class Command(BaseCommand):
             DispatchRecord.objects.all().delete()
             TransportTask.objects.all().delete()
             ScheduleRun.objects.all().delete()
+            OrderEvent.objects.all().delete()
+            Order.objects.all().delete()
+            Customer.objects.all().delete()
             ProductionPlan.objects.all().delete()
             WorkOrder.objects.all().delete()
             AGV.objects.all().delete()
@@ -152,6 +198,8 @@ class Command(BaseCommand):
             DispatchRecord.objects.all().delete()
             TransportTask.objects.all().delete()
             ScheduleRun.objects.all().delete()
+            OrderEvent.objects.all().delete()
+            Order.objects.all().delete()
             ProductionPlan.objects.all().delete()
             WorkOrder.objects.all().delete()
             AGV.objects.update(status=AGV.Status.IDLE)
@@ -174,7 +222,8 @@ class Command(BaseCommand):
             upsert_demo_tasks(task_specs, station_nodes.__getitem__)
             self.stdout.write(self.style.SUCCESS(
                 f"调度任务已重建：待调度任务 "
-                f"{TransportTask.objects.filter(status='pending').count()} 个；"
+                f"{TransportTask.objects.filter(status='pending').count()} 个，"
+                f"演示订单 {Order.objects.count()} 个；"
                 "地图与 AGV 位置、电量保持不变，AGV 状态已重置为空闲。"
             ))
             return
@@ -280,5 +329,5 @@ class Command(BaseCommand):
             f"演示数据初始化完成：节点 {MapNode.objects.count()}，道路 {MapEdge.objects.count()}，"
             f"障碍 {MapObstacle.objects.count()}，AGV {AGV.objects.count()}，"
             f"待调度任务 {TransportTask.objects.filter(status='pending').count()}"
-            f"（本次生成 {len(task_specs)}）"
+            f"（本次生成 {len(task_specs)}），订单 {Order.objects.count()}"
         ))

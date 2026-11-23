@@ -36,12 +36,13 @@ class AGVAdmin(admin.ModelAdmin):
 @admin.register(TransportTask)
 class TransportTaskAdmin(admin.ModelAdmin):
     list_display = (
-        "task_no", "cargo_name", "pickup_node", "dropoff_node", "priority",
-        "status", "work_order", "release_at", "due_at", "assigned_agv",
+        "task_no", "order", "cargo_name", "pickup_node", "dropoff_node",
+        "priority", "status", "work_order", "release_at", "due_at", "assigned_agv",
     )
     list_filter = ("status", "priority")
     search_fields = (
-        "task_no", "cargo_name", "production_plan__plan_no", "work_order__order_no",
+        "task_no", "cargo_name", "order__order_no",
+        "production_plan__plan_no", "work_order__order_no",
     )
 
 

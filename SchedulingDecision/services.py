@@ -43,6 +43,15 @@ class SchedulingError(Exception):
     """调度请求无法完成时抛出。"""
 
 
+def _sync_order_from_task(task: TransportTask, description: str = "") -> None:
+    """订单是可选关联，历史任务没有订单时保持原调度行为。"""
+    if not task.order_id:
+        return
+    from Orders.services import sync_order_status_from_task
+
+    sync_order_status_from_task(task, description=description)
+
+
 @dataclass
 class PathResult:
     nodes: list[int]
@@ -1114,6 +1123,13 @@ def _persist_schedule(
             distance=plan.distance,
             estimated_duration=plan.duration_seconds,
         )
+        _sync_order_from_task(
+            task,
+            description=(
+                f"已分配执行车辆，计划 "
+                f"{timezone.localtime(plan.start_time):%m-%d %H:%M} 开始运输。"
+            ),
+        )
         active_agv_ids.add(plan.agv_id)
 
     AGV.objects.filter(id__in=active_agv_ids).update(status=AGV.Status.BUSY)
@@ -1333,6 +1349,7 @@ def start_task(task_id: int) -> TransportTask:
         task.started_at = now
         task.save(update_fields=["status", "started_at", "updated_at"])
         AGV.objects.filter(pk=task.assigned_agv_id).update(status=AGV.Status.BUSY)
+        _sync_order_from_task(task, description="AGV 已按调度顺序开始运输。")
         from Operations.services import sync_work_order_after_task_start
 
         sync_work_order_after_task_start(task)
@@ -1366,6 +1383,7 @@ def complete_task(task_id: int) -> TransportTask:
         task.status = TransportTask.Status.COMPLETED
         task.completed_at = timezone.now()
         task.save(update_fields=["status", "completed_at", "updated_at"])
+        _sync_order_from_task(task, description="运输任务已完成，货物已送达。")
         if task.production_plan_id:
             has_active = TransportTask.objects.filter(
                 production_plan_id=task.production_plan_id,
@@ -1407,6 +1425,7 @@ def cancel_task(task_id: int) -> TransportTask:
             ).exists()
             if not has_more:
                 AGV.objects.filter(pk=old_agv_id).update(status=AGV.Status.IDLE)
+        _sync_order_from_task(task, description="订单及其运输任务已取消。")
         from Operations.services import record_task_event
 
         record_task_event(

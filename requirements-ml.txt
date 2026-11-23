@@ -1,0 +1,10 @@
+# 可选的深度学习依赖（CPU 版）。不放进 requirements.txt，
+# 避免只想跑传统算法时被迫下载数百 MB。
+#
+# 安装：
+#   .\venv\Scripts\python.exe -m pip install -r requirements-ml.txt ^
+#       --extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.2.2
+torchvision==0.17.2
+gdown>=5.0
+ultralytics==8.4.213

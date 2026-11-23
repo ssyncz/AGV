@@ -4,7 +4,7 @@
 
 | 文件 | 用途 | 来源 | 大小 |
 |---|---|---|---|
-| `neu_yolo.pt` | 缺陷检测（YOLOv8n，NEU 六类：crazing / inclusion / patches / pitted_surface / rolled-in_scale / scratches） | 本仓库训练脚本产出，mAP50 0.760 | 约 6 MB |
+| `neu_yolo.pt` | 缺陷检测（YOLOv8n，NEU 六类：crazing / inclusion / patches / pitted_surface / rolled-in_scale / scratches） | 清洗数据 + 正常/难负样本微调；270 张验证集 mAP50 0.767 / mAP50-95 0.431 | 约 6 MB |
 
 ## 使用
 
@@ -19,11 +19,17 @@
 ## 自己重新训练
 
 ```powershell
-python scripts/prepare_neu_detection_dataset.py --src "<NEU 数据集根目录>" --dst runs/neu_yolo
-python scripts/train_neu_detection.py --data runs/neu_yolo/data.yaml --epochs 60
+python scripts/prepare_neu_detection_dataset_v2.py --src "<NEU 数据集根目录>" --dst runs/neu_yolo_v2 --split-mode source-random
+python scripts/train_neu_detection.py --data runs/neu_yolo_v2/data.yaml --model yolov8n.pt --epochs 120 --imgsz 320 --device 0 --lr0 0.001
 ```
 
 训练完成后把 `runs/neu_yolo_runs/train/weights/best.pt` 覆盖到 `models/neu_yolo.pt` 即可。
+当前数据的清洗报告和本次训练产物分别位于 `runs/neu_yolo_v2_source_split/cleaning_report.json`
+和 `runs/neu_yolo_runs/v2_yolov8n_source_split/`。
+
+五折交叉验证和外部正常样本评估的说明见
+`docs/视觉数据与评估优化.md`。跨域正常样本误报率从约 36.2% 降至 0.61%
+（默认置信度阈值 0.25），该指标只用于评估，不参与 NEU mAP 计算。
 
 ## 未入库的大文件
 

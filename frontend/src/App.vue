@@ -12,6 +12,7 @@ const mapData = ref({ nodes: [], edges: [], agvs: [], active_routes: [] })
 const agvs = ref([])
 const tasks = ref([])
 const dispatches = ref([])
+const orderFocusStatus = ref('')
 const toast = ref(null)
 let pollTimer = null
 let toastTimer = null
@@ -50,6 +51,13 @@ const navigation = [
     ],
   },
   {
+    label: '客户订单',
+    items: [
+      { path: '/orders', label: '订单管理', icon: '▤' },
+      { path: '/portal', label: '客户查询', icon: '⌕' },
+    ],
+  },
+  {
     label: '生产执行',
     items: [
       { path: '/dispatch', label: '调度中心', icon: '⌁' },
@@ -63,7 +71,7 @@ const navigation = [
     items: [
       { path: '/agvs', label: 'AGV 管理', icon: '▣' },
       { path: '/equipment', label: '设备监测', icon: '◈' },
-      { path: '/vision', label: '视觉质检', icon: '◍' },
+      { path: '/vision', label: '物件质量检测', icon: '◍' },
     ],
   },
   {

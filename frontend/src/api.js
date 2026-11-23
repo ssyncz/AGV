@@ -82,6 +82,25 @@ export const api = {
   planPath: (payload) => request('/path-planning/', { method: 'POST', body: JSON.stringify(payload) }),
   taskAction: (id, action) => request(`/tasks/${id}/${action}/`, { method: 'POST', body: '{}' }),
 
+  // --- 客户订单（一单一运输任务）---
+  listOrders: (params = {}) => {
+    const query = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== '' && value !== null && value !== undefined) query.set(key, value)
+    })
+    const suffix = query.toString() ? `?${query.toString()}` : ''
+    return request(`/orders/${suffix}`)
+  },
+  createOrder: (payload) =>
+    request('/orders/', { method: 'POST', body: JSON.stringify(payload) }),
+  getOrder: (id) => request(`/orders/${id}/`),
+  updateOrder: (id, payload) =>
+    request(`/orders/${id}/`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  cancelOrder: (id) =>
+    request(`/orders/${id}/cancel/`, { method: 'POST', body: '{}' }),
+  lookupOrder: (payload) =>
+    request('/orders/lookup/', { method: 'POST', body: JSON.stringify(payload) }),
+
   // --- 统一运营核心：工单、告警、主数据与驾驶舱 ---
   commandCenter: () => request('/operations/command-center/'),
   masterData: () => request('/operations/master-data/'),
@@ -134,7 +153,8 @@ export const api = {
   visionDefect: (payload) => postVision('/vision/algo/defect/', payload),
   visionDetectDefect: (payload) => postVision('/vision/detect/defect/', payload),
   visionDetect: (payload) => postVision('/vision/detect/', payload),
-  visionRecords: (query = '') => request(`/vision/records/${query}`).then(unwrap),
+  visionRecords: (query = '') => request(`/vision/records/${query}`),
+  visionRecord: (id) => request(`/vision/records/${id}/`),
   deleteVisionRecord: (id) => request(`/vision/records/${id}/`, { method: 'DELETE' }),
   visionSampleImageUrl: (group, name) =>
     `${API_BASE}/vision/samples/${encodeURIComponent(group)}/${encodeURIComponent(name)}/`,

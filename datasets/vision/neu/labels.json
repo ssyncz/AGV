@@ -1,0 +1,732 @@
+{
+  "classes": {
+    "crazing": "龟裂（网状裂纹）",
+    "inclusion": "夹杂",
+    "patches": "斑块",
+    "pitted": "麻点",
+    "rolled-in": "氧化皮压入",
+    "scratches": "划痕"
+  },
+  "samples": [
+    {
+      "file": "crazing_001.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_1.jpg"
+    },
+    {
+      "file": "crazing_002.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_113.jpg"
+    },
+    {
+      "file": "crazing_003.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_127.jpg"
+    },
+    {
+      "file": "crazing_004.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_141.jpg"
+    },
+    {
+      "file": "crazing_005.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_156.jpg"
+    },
+    {
+      "file": "crazing_006.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_170.jpg"
+    },
+    {
+      "file": "crazing_007.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_184.jpg"
+    },
+    {
+      "file": "crazing_008.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_199.jpg"
+    },
+    {
+      "file": "crazing_009.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_212.jpg"
+    },
+    {
+      "file": "crazing_010.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_227.jpg"
+    },
+    {
+      "file": "crazing_011.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_240.jpg"
+    },
+    {
+      "file": "crazing_012.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_255.jpg"
+    },
+    {
+      "file": "crazing_013.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_27.jpg"
+    },
+    {
+      "file": "crazing_014.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_284.jpg"
+    },
+    {
+      "file": "crazing_015.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_298.jpg"
+    },
+    {
+      "file": "crazing_016.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_41.jpg"
+    },
+    {
+      "file": "crazing_017.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_56.jpg"
+    },
+    {
+      "file": "crazing_018.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_70.jpg"
+    },
+    {
+      "file": "crazing_019.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_84.jpg"
+    },
+    {
+      "file": "crazing_020.jpg",
+      "class": "crazing",
+      "label": "龟裂（网状裂纹）",
+      "source": "crazing_99.jpg"
+    },
+    {
+      "file": "inclusion_001.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_1.jpg"
+    },
+    {
+      "file": "inclusion_002.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_113.jpg"
+    },
+    {
+      "file": "inclusion_003.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_127.jpg"
+    },
+    {
+      "file": "inclusion_004.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_141.jpg"
+    },
+    {
+      "file": "inclusion_005.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_156.jpg"
+    },
+    {
+      "file": "inclusion_006.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_170.jpg"
+    },
+    {
+      "file": "inclusion_007.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_184.jpg"
+    },
+    {
+      "file": "inclusion_008.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_199.jpg"
+    },
+    {
+      "file": "inclusion_009.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_212.jpg"
+    },
+    {
+      "file": "inclusion_010.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_227.jpg"
+    },
+    {
+      "file": "inclusion_011.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_240.jpg"
+    },
+    {
+      "file": "inclusion_012.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_255.jpg"
+    },
+    {
+      "file": "inclusion_013.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_27.jpg"
+    },
+    {
+      "file": "inclusion_014.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_284.jpg"
+    },
+    {
+      "file": "inclusion_015.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_298.jpg"
+    },
+    {
+      "file": "inclusion_016.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_41.jpg"
+    },
+    {
+      "file": "inclusion_017.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_56.jpg"
+    },
+    {
+      "file": "inclusion_018.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_70.jpg"
+    },
+    {
+      "file": "inclusion_019.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_84.jpg"
+    },
+    {
+      "file": "inclusion_020.jpg",
+      "class": "inclusion",
+      "label": "夹杂",
+      "source": "inclusion_99.jpg"
+    },
+    {
+      "file": "patches_001.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_1.jpg"
+    },
+    {
+      "file": "patches_002.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_114.jpg"
+    },
+    {
+      "file": "patches_003.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_128.jpg"
+    },
+    {
+      "file": "patches_004.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_142.jpg"
+    },
+    {
+      "file": "patches_005.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_157.jpg"
+    },
+    {
+      "file": "patches_006.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_170.jpg"
+    },
+    {
+      "file": "patches_007.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_185.jpg"
+    },
+    {
+      "file": "patches_008.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_2.jpg"
+    },
+    {
+      "file": "patches_009.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_212.jpg"
+    },
+    {
+      "file": "patches_010.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_227.jpg"
+    },
+    {
+      "file": "patches_011.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_241.jpg"
+    },
+    {
+      "file": "patches_012.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_256.jpg"
+    },
+    {
+      "file": "patches_013.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_27.jpg"
+    },
+    {
+      "file": "patches_014.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_284.jpg"
+    },
+    {
+      "file": "patches_015.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_299.jpg"
+    },
+    {
+      "file": "patches_016.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_41.jpg"
+    },
+    {
+      "file": "patches_017.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_56.jpg"
+    },
+    {
+      "file": "patches_018.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_70.jpg"
+    },
+    {
+      "file": "patches_019.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_84.jpg"
+    },
+    {
+      "file": "patches_020.jpg",
+      "class": "patches",
+      "label": "斑块",
+      "source": "patches_99.jpg"
+    },
+    {
+      "file": "pitted_001.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_1.jpg"
+    },
+    {
+      "file": "pitted_002.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_113.jpg"
+    },
+    {
+      "file": "pitted_003.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_127.jpg"
+    },
+    {
+      "file": "pitted_004.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_141.jpg"
+    },
+    {
+      "file": "pitted_005.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_156.jpg"
+    },
+    {
+      "file": "pitted_006.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_170.jpg"
+    },
+    {
+      "file": "pitted_007.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_184.jpg"
+    },
+    {
+      "file": "pitted_008.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_199.jpg"
+    },
+    {
+      "file": "pitted_009.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_212.jpg"
+    },
+    {
+      "file": "pitted_010.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_227.jpg"
+    },
+    {
+      "file": "pitted_011.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_240.jpg"
+    },
+    {
+      "file": "pitted_012.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_255.jpg"
+    },
+    {
+      "file": "pitted_013.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_27.jpg"
+    },
+    {
+      "file": "pitted_014.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_284.jpg"
+    },
+    {
+      "file": "pitted_015.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_298.jpg"
+    },
+    {
+      "file": "pitted_016.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_41.jpg"
+    },
+    {
+      "file": "pitted_017.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_56.jpg"
+    },
+    {
+      "file": "pitted_018.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_70.jpg"
+    },
+    {
+      "file": "pitted_019.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_84.jpg"
+    },
+    {
+      "file": "pitted_020.jpg",
+      "class": "pitted",
+      "label": "麻点",
+      "source": "pitted_surface_99.jpg"
+    },
+    {
+      "file": "rolled-in_001.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_1.jpg"
+    },
+    {
+      "file": "rolled-in_002.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_113.jpg"
+    },
+    {
+      "file": "rolled-in_003.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_127.jpg"
+    },
+    {
+      "file": "rolled-in_004.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_141.jpg"
+    },
+    {
+      "file": "rolled-in_005.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_156.jpg"
+    },
+    {
+      "file": "rolled-in_006.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_170.jpg"
+    },
+    {
+      "file": "rolled-in_007.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_184.jpg"
+    },
+    {
+      "file": "rolled-in_008.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_199.jpg"
+    },
+    {
+      "file": "rolled-in_009.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_212.jpg"
+    },
+    {
+      "file": "rolled-in_010.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_227.jpg"
+    },
+    {
+      "file": "rolled-in_011.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_240.jpg"
+    },
+    {
+      "file": "rolled-in_012.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_255.jpg"
+    },
+    {
+      "file": "rolled-in_013.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_27.jpg"
+    },
+    {
+      "file": "rolled-in_014.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_284.jpg"
+    },
+    {
+      "file": "rolled-in_015.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_298.jpg"
+    },
+    {
+      "file": "rolled-in_016.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_41.jpg"
+    },
+    {
+      "file": "rolled-in_017.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_56.jpg"
+    },
+    {
+      "file": "rolled-in_018.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_70.jpg"
+    },
+    {
+      "file": "rolled-in_019.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_84.jpg"
+    },
+    {
+      "file": "rolled-in_020.jpg",
+      "class": "rolled-in",
+      "label": "氧化皮压入",
+      "source": "rolled-in_scale_99.jpg"
+    },
+    {
+      "file": "scratches_001.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_1.jpg"
+    },
+    {
+      "file": "scratches_002.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_113.jpg"
+    },
+    {
+      "file": "scratches_003.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_127.jpg"
+    },
+    {
+      "file": "scratches_004.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_141.jpg"
+    },
+    {
+      "file": "scratches_005.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_156.jpg"
+    },
+    {
+      "file": "scratches_006.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_170.jpg"
+    },
+    {
+      "file": "scratches_007.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_184.jpg"
+    },
+    {
+      "file": "scratches_008.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_199.jpg"
+    },
+    {
+      "file": "scratches_009.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_212.jpg"
+    },
+    {
+      "file": "scratches_010.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_227.jpg"
+    },
+    {
+      "file": "scratches_011.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_240.jpg"
+    },
+    {
+      "file": "scratches_012.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_255.jpg"
+    },
+    {
+      "file": "scratches_013.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_27.jpg"
+    },
+    {
+      "file": "scratches_014.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_284.jpg"
+    },
+    {
+      "file": "scratches_015.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_298.jpg"
+    },
+    {
+      "file": "scratches_016.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_41.jpg"
+    },
+    {
+      "file": "scratches_017.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_56.jpg"
+    },
+    {
+      "file": "scratches_018.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_70.jpg"
+    },
+    {
+      "file": "scratches_019.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_84.jpg"
+    },
+    {
+      "file": "scratches_020.jpg",
+      "class": "scratches",
+      "label": "划痕",
+      "source": "scratches_99.jpg"
+    }
+  ]
+}

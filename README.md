@@ -1,6 +1,6 @@
 # AGV 智能调度系统
 
-基于 Django REST Framework、MySQL 和 Vue 3 的 AGV 调度平台。核心能力包括仓库地图建模、Dijkstra 最短路径规划、单台智能选车和多台 AGV 联合调度，并在此基础上扩展了**视觉检测（任务 4/5）**、**设备状态监测（任务 6）**和**订单需求预测（任务 7）**三个模块。
+基于 Django REST Framework、MySQL 和 Vue 3 的 AGV 调度平台。核心能力包括客户订单闭环、仓库地图建模、Dijkstra 最短路径规划、单台智能选车和多台 AGV 联合调度，并在此基础上扩展了**物件质量检测（视觉，任务 4/5）**、**设备状态监测（任务 6）**和**订单需求预测（任务 7）**三个模块。
 
 ## 企业级业务闭环集成
 
@@ -55,6 +55,15 @@
 - 调度记录追溯。
 - Django Admin 后台管理。
 
+### 客户订单闭环
+
+- 一单一运输任务：创建订单时在同一事务内生成待调度 `TransportTask`。
+- 订单直接复用运输任务状态，调度、开始、完成和取消后自动回写订单。
+- 每次实际状态变化追加订单时间轴事件，完整记录下单到送达过程。
+- 待调度订单可修改货物和取放货点，提交后的客户身份不可修改；取消代替删除以保留审计链。
+- 客户公开查询使用订单号与手机后四位，统一错误响应并限制为每分钟 20 次。
+- 客户姓名和手机号脱敏，公开响应不包含内部任务号、AGV 编号或路线 JSON。
+
 ### 路径规划地图
 
 - 提供类似仓储平面图的障碍地图，包含黑色障碍区域、灰色可通行路网和 S1-S10 工作站。
@@ -64,14 +73,15 @@
 - 悬停节点显示“编号 · 名称”提示，贴边节点的提示会自动收进画布内。
 - 返回路径节点序列、分段距离、预计耗时、预计耗电和约束检查结果。
 
-### 视觉检测（任务 4 / 5）
+### 物件质量检测（视觉，任务 4 / 5）
 
 由 `ManufacturingVision` 应用实现，全部为 OpenCV 传统图像处理，不使用深度学习。
 
 - 表面裂纹检测：多尺度 Frangi 黑脊响应 + 连通域一致性筛选，输出判定结果与裂纹掩膜。
 - 工件识别：Otsu 分割 + 多边形逼近，输出圆形 / 三角形 / 正方形 / 矩形 / 六边形分类与包围框。
 - 支持上传图片或直接使用内置数据集样例，输入图与结果图落盘到 `media/`。
-- 前端提供原图 / 结果图对比、工件明细表和检测记录回看。
+- NEU 六类缺陷采用 4 视图测试增强分类，并按缺陷形态生成自适应数量与尺度的红框。
+- 前端以本地上传为主流程，提供原图 / 红框结果对比、分页记录和记录详情回看。
 
 ### 设备状态监测（任务 6）
 
@@ -107,9 +117,10 @@
 | 数据库 | MySQL 8.0 |
 | 前端 | Vue 3、Vite、原生 SVG 地图可视化 |
 | 调度算法 | Dijkstra（含路径缓存）、综合成本选车、状态压缩动态规划（<=10 任务精确解）、最近邻 + 2-opt（大规模）、最优插入构造 + 变邻域下降（relocate/swap/or-opt/2-opt）、节点时间窗避碰 |
-| 视觉检测 | OpenCV 4.11（Frangi 传统方法，默认）+ PyTorch 2.2（DeepCrack 监督分割，可选） |
+| 物件质量检测 | OpenCV 4.11（Frangi 传统方法，默认）+ PyTorch 2.2（DeepCrack 监督分割，可选） |
 | 设备监测 | scikit-learn（StandardScaler + RandomForestClassifier） |
 | 需求预测 | statsmodels（Holt-Winters、SARIMA/ARIMA）、pandas、numpy |
+| 订单闭环 | Django 事务、DRF ModelViewSet、客户订单/事件时间轴、ScopedRateThrottle |
 | 接口 | RESTful JSON API |
 
 ## 3. 项目结构
@@ -129,7 +140,12 @@ AGV/
 │  ├─ tests.py                            # 调度流程与 API 测试
 │  ├─ migrations/
 │  └─ management/commands/seed_demo.py    # 演示数据初始化
-├─ ManufacturingVision/                   # 视觉检测应用（任务 4 / 5）
+├─ Orders/                                # 客户订单闭环
+│  ├─ models.py                           # Customer / Order / OrderEvent
+│  ├─ services.py                         # 下单建任务、状态回写、修改与取消
+│  ├─ serializers.py / views.py / urls.py
+│  └─ tests.py                            # API、隐私、限流与状态闭环测试
+├─ ManufacturingVision/                   # 物件质量检测应用（视觉，任务 4 / 5）
 │  ├─ datasets.py                         # 数据集访问层（样例列举、路径解析、标注读取）
 │  ├─ services.py                         # 裂纹检测与工件识别算法
 │  ├─ crack_detection.py                  # 命令行裂纹检测原型
@@ -149,10 +165,10 @@ AGV/
 │  ├─ mt/free/                            # MT_Free 无缺陷负样本（可复现抽样 100 张）
 │  └─ workpiece/                          # 合成几何工件 120 张 + labels.json
 ├─ frontend/                              # Vue 3 + Vite 前端
-│  ├─ src/App.vue                         # 布局、8 个菜单项、8 秒轮询
-│  ├─ src/api.js                          # API 封装（含 FormData 上传分支）
-│  ├─ src/components/                     # StatCard / StatusBadge / ScheduleGantt
-│  ├─ src/views/                          # Dashboard/Dispatch/Map/Task/Agv/Vision/Equipment/Forecast
+│  ├─ src/App.vue                         # 布局、分组菜单、8 秒轮询
+│  ├─ src/api.js                          # API 封装（含订单和 FormData 上传分支）
+│  ├─ src/components/                     # StatCard / StatusBadge / ScheduleGantt / OrderTimeline
+│  ├─ src/views/                          # Dashboard/Orders/Portal/Dispatch/Map/Task 等
 │  ├─ src/styles.css
 │  ├─ vite.config.js                      # /api 与 /media 代理
 │  └─ package.json
@@ -234,7 +250,7 @@ $PY = "C:\Users\ssync\miniconda3\envs\pmp\python.exe"
 
 如果 `python` 已加入 PATH 并指向正确的环境，也可以直接使用 `python manage.py ...`。
 
-`migrate` 会为全部 5 个应用建表（含 `SchedulingDecision`、`ManufacturingVision`、`EquipmentMonitoring`、`DemandForecast`）。
+`migrate` 会为全部 6 个业务应用建表（含 `Orders`、`SchedulingDecision`、`ManufacturingVision`、`EquipmentMonitoring`、`DemandForecast`）。
 
 `seed_demo --reset` 会清空业务数据后重新初始化：
 
@@ -243,6 +259,7 @@ $PY = "C:\Users\ssync\miniconda3\envs\pmp\python.exe"
 - 10 个障碍区域
 - 4 台 AGV
 - 默认 6 个待调度演示任务；使用 `--task-count 20` 可生成 20 个
+- 与演示任务一一对应的 6 个客户订单及下单时间轴事件
 - Django 管理员账号：`admin` / `Admin123!`
 
 后端地址：
@@ -303,7 +320,18 @@ npm run build
 | POST | `/api/schedules/single/` | 单台 AGV 多任务顺序优化 |
 | POST | `/api/schedules/batch/` | 多台 AGV 批量调度 |
 
-### 9.2 视觉检测
+### 9.2 客户订单
+
+| 方法 | 地址 | 说明 |
+| --- | --- | --- |
+| GET/POST | `/api/orders/` | 订单列表与创建；列表支持 `?search=`、`?status=`、`?page=` |
+| GET/PATCH | `/api/orders/{id}/` | 订单详情与待调度修改；详情内含 `events` 时间轴 |
+| POST | `/api/orders/{id}/cancel/` | 取消待调度或已分配订单 |
+| POST | `/api/orders/lookup/` | 公开查询，提交 `order_no` 与 `phone_tail` |
+
+字段、状态映射和公开响应约束见 [`docs/orders-api-contract.md`](docs/orders-api-contract.md)。
+
+### 9.3 物件质量检测
 
 | 方法 | 地址 | 说明 |
 | --- | --- | --- |
@@ -315,7 +343,7 @@ npm run build
 | DELETE | `/api/vision/records/{id}/` | 删除记录，同时清理其输入图与结果图 |
 | GET | `/api/vision/overview/` | 检测次数、判定分布与最近记录 |
 
-### 9.3 设备状态监测
+### 9.4 设备状态监测
 
 | 方法 | 地址 | 说明 |
 | --- | --- | --- |
@@ -325,7 +353,7 @@ npm run build
 | POST | `/api/equipment/diagnose/` | 状态分类与规则告警（上传 CSV 或提交 `records`） |
 | GET/DELETE | `/api/equipment/records/` | 诊断记录（支持 `?equipment_code=`、`?predicted_state=`、`?source=`） |
 
-### 9.4 订单需求预测
+### 9.5 订单需求预测
 
 | 方法 | 地址 | 说明 |
 | --- | --- | --- |
@@ -334,7 +362,7 @@ npm run build
 | POST | `/api/forecast/predict/` | 多模型时间序列预测（上传 CSV 或提交 `history`） |
 | GET/DELETE | `/api/forecast/runs/` | 预测记录（支持 `?selected_model=`） |
 
-### 9.5 调度请求示例
+### 9.6 调度请求示例
 
 单台 AGV 多任务顺序优化：
 
@@ -540,6 +568,7 @@ objective = makespan
 
 # 或按模块运行
 & $PY manage.py test SchedulingDecision -v 2
+& $PY manage.py test Orders -v 2
 & $PY manage.py test ManufacturingVision -v 2
 & $PY manage.py test EquipmentMonitoring -v 2
 & $PY manage.py test DemandForecast -v 2
@@ -552,6 +581,8 @@ objective = makespan
 - 多台 AGV 批量分配
 - 多车路线与避碰等待
 - 任务开始、完成、车辆位置和电量更新
+- 下单建任务、客户复用、订单状态回写与业务时间轴
+- 公开查询的尾号校验、脱敏、统一 404 和限流
 - Dashboard、地图与调度 API
 - 裂纹检测算法与工件识别算法
 - 视觉数据集访问、批量评估与数据集生成命令
@@ -563,6 +594,13 @@ objective = makespan
 ```powershell
 cd frontend
 npm run build
+```
+
+订单闭环 HTTP 走查（需要先启动 Django，并至少有一台空闲 AGV）：
+
+```powershell
+& $PY manage.py seed_demo --reset
+& $PY scripts\e2e_orders.py
 ```
 
 ## 15. 部署注意事项

@@ -124,6 +124,7 @@ def _save_record(
             "class_counts": analysis.get("class_counts", {}),
             "algorithm": analysis.get("algorithm", "opencv"),
             "fallback": bool(analysis.get("fallback", False)),
+            **analysis.get("record_metrics", {}),
         },
     )
     stem = f"{task_type}_{uuid.uuid4().hex[:10]}"

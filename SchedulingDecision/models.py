@@ -243,6 +243,14 @@ class TransportTask(models.Model):
         CANCELLED = "cancelled", "已取消"
 
     task_no = models.CharField("任务编号", max_length=32, unique=True)
+    order = models.OneToOneField(
+        "Orders.Order",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="transport_task",
+        verbose_name="订单",
+    )
     biz_type = models.CharField(
         "业务类型", max_length=16, choices=BizType.choices, default=BizType.TRANSPORT
     )

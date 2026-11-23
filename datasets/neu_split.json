@@ -1,0 +1,9010 @@
+{
+  "source_root": "D:\\Users\\许展睿\\Pictures\\images",
+  "seed": 42,
+  "val_ratio": 0.2,
+  "classes": [
+    "crazing",
+    "inclusion",
+    "patches",
+    "pitted",
+    "rolled-in",
+    "scratches"
+  ],
+  "items": [
+    {
+      "file": "crazing_38.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_48.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_140.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_6.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_34.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_295.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_41.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_218.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_158.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_286.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_137.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_217.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_72.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_73.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_33.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_107.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_22.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_189.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_77.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_24.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_69.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_235.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_240.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_3.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_232.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_289.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_127.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_89.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_99.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_159.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_259.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_7.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_288.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_176.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_145.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_223.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_181.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_46.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_179.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_244.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_186.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_293.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_290.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_275.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_169.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_230.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_129.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_118.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_162.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_153.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_175.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_210.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_32.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_271.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_238.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_81.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_283.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_193.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_297.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_63.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_209.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_108.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_208.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_164.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_82.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_126.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_105.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_154.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_17.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_26.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_30.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_102.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_96.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_173.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_58.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_53.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_49.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_185.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_252.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_144.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_59.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_168.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_123.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_215.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_14.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_214.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_51.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_1.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_43.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_250.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_87.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_167.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_36.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_178.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_280.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_265.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_125.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_100.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_226.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_157.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_65.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_86.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_249.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_76.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_188.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_28.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_236.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_197.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_60.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_243.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_134.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_124.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_98.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_12.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_212.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_216.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_268.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_29.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_182.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_281.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_263.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_198.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_233.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_269.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_222.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_228.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_62.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_130.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_16.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_131.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_204.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_247.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_83.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_213.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_25.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_279.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_282.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_67.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_23.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_148.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_9.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_8.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_191.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_171.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_106.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_52.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_111.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_278.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_276.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_174.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_257.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_15.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_74.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_66.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_246.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_161.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_45.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_205.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_4.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_155.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_267.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_221.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_138.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_42.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_239.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_115.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_248.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_75.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_260.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_160.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_253.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_147.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_180.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_184.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_136.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_183.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_291.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_245.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_203.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_94.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_187.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_121.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_299.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_152.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_296.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_117.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_166.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_277.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_151.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_251.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_109.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_114.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_261.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_68.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_231.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_266.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_234.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_135.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_273.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_156.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_40.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_119.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_220.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_258.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_264.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_143.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_274.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_88.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_93.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_254.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_199.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_170.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_79.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_256.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_90.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_172.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_101.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_227.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_35.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_20.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_292.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_92.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_190.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_110.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_61.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_206.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_2.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_141.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_112.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_113.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_294.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_139.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_80.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_146.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_163.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_201.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_211.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_225.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_11.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_150.jpg",
+      "class": "crazing",
+      "split": "train"
+    },
+    {
+      "file": "crazing_195.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_44.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_132.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_18.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_128.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_54.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_272.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_207.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_116.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_31.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_120.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_95.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_192.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_298.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_284.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_97.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_91.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_133.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_241.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_255.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_5.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_10.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_300.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_55.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_229.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_219.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_50.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_285.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_177.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_103.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_84.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_21.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_270.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_13.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_37.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_262.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_56.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_196.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_202.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_142.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_57.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_47.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_78.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_165.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_70.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_19.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_64.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_242.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_287.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_149.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_104.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_71.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_122.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_39.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_200.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_224.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_237.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_194.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_85.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "crazing_27.jpg",
+      "class": "crazing",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_189.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_227.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_144.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_39.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_248.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_131.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_294.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_297.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_256.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_173.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_68.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_142.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_38.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_236.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_113.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_279.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_34.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_274.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_62.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_289.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_69.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_283.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_262.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_112.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_214.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_284.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_97.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_137.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_201.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_106.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_190.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_140.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_89.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_64.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_81.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_26.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_182.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_29.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_234.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_159.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_277.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_94.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_247.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_103.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_255.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_120.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_165.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_221.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_76.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_158.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_40.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_203.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_259.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_19.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_35.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_139.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_149.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_32.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_282.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_87.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_21.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_166.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_119.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_275.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_210.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_44.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_111.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_105.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_22.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_37.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_263.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_70.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_5.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_163.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_175.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_191.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_143.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_239.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_150.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_151.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_253.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_51.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_204.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_59.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_15.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_92.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_260.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_96.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_298.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_45.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_160.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_249.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_6.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_276.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_240.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_104.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_194.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_14.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_272.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_153.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_295.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_241.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_72.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_267.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_180.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_300.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_156.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_52.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_181.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_254.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_183.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_17.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_108.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_128.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_199.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_61.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_271.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_233.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_47.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_107.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_42.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_133.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_258.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_116.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_124.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_36.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_228.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_198.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_41.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_296.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_200.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_27.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_74.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_286.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_246.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_98.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_176.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_1.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_109.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_162.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_197.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_287.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_12.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_110.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_157.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_211.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_55.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_3.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_245.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_257.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_146.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_178.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_264.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_147.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_238.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_46.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_161.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_134.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_33.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_270.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_123.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_84.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_54.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_8.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_122.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_251.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_168.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_226.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_288.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_252.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_100.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_67.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_25.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_78.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_24.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_169.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_261.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_224.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_291.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_20.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_135.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_164.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_184.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_155.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_50.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_114.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_31.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_18.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_43.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_129.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_65.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_215.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_148.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_222.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_115.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_145.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_83.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_102.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_132.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_71.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_4.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_237.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_16.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_281.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_220.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_209.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_90.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_193.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_219.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_244.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_7.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_292.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_82.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_117.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_212.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_154.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_285.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_207.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_13.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_130.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_185.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_136.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_63.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_9.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_171.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_73.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_60.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_49.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_121.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_93.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_243.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_127.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_79.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_125.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_2.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_235.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_187.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_170.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_53.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_85.jpg",
+      "class": "inclusion",
+      "split": "train"
+    },
+    {
+      "file": "inclusion_216.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_30.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_152.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_217.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_278.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_208.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_223.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_218.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_172.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_101.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_56.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_23.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_95.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_167.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_186.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_273.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_206.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_213.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_66.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_188.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_80.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_57.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_86.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_269.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_293.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_268.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_202.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_195.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_232.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_77.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_91.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_242.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_266.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_10.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_230.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_11.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_28.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_290.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_174.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_250.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_118.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_99.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_179.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_196.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_177.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_58.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_192.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_231.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_88.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_141.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_48.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_126.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_280.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_205.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_138.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_229.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_265.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_299.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_75.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "inclusion_225.jpg",
+      "class": "inclusion",
+      "split": "val"
+    },
+    {
+      "file": "patches_182.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_160.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_245.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_214.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_192.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_257.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_125.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_133.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_200.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_100.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_299.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_217.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_154.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_260.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_174.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_51.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_147.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_229.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_228.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_121.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_210.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_84.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_271.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_99.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_50.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_194.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_186.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_13.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_140.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_218.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_8.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_120.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_198.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_258.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_220.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_139.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_143.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_177.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_268.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_165.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_202.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_235.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_22.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_263.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_131.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_11.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_196.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_63.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_241.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_251.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_168.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_95.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_94.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_87.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_153.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_253.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_31.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_161.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_215.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_59.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_70.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_282.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_274.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_279.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_184.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_12.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_249.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_30.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_205.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_183.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_2.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_255.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_212.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_270.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_101.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_179.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_216.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_261.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_96.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_283.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_64.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_18.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_26.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_127.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_73.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_123.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_156.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_117.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_145.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_191.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_187.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_56.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_240.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_286.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_233.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_124.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_171.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_75.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_250.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_244.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_24.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_296.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_185.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_159.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_295.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_15.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_67.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_126.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_209.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_293.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_155.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_80.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_46.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_103.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_146.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_157.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_58.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_6.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_262.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_115.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_25.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_151.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_180.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_111.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_224.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_102.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_79.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_118.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_158.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_45.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_164.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_278.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_300.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_71.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_204.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_149.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_175.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_55.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_16.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_110.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_141.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_72.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_130.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_85.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_248.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_119.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_290.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_66.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_23.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_236.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_190.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_104.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_222.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_243.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_69.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_207.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_61.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_138.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_267.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_193.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_40.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_256.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_77.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_178.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_9.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_106.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_89.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_20.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_162.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_38.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_211.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_150.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_36.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_239.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_284.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_78.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_27.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_272.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_223.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_197.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_292.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_91.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_93.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_19.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_273.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_169.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_181.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_47.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_10.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_83.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_188.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_232.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_276.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_81.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_298.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_109.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_28.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_294.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_195.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_128.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_68.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_44.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_252.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_288.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_291.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_129.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_199.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_170.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_277.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_206.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_17.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_163.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_137.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_247.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_254.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_225.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_208.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_231.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_135.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_32.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_226.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_21.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_53.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_7.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_227.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_213.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_219.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_37.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_49.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_173.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_35.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_82.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_297.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_62.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_33.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_246.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_88.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_74.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_43.jpg",
+      "class": "patches",
+      "split": "train"
+    },
+    {
+      "file": "patches_266.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_189.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_201.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_287.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_42.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_86.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_52.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_176.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_172.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_144.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_280.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_136.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_122.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_203.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_57.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_113.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_237.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_230.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_275.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_167.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_90.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_107.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_48.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_148.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_76.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_1.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_132.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_3.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_34.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_92.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_108.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_134.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_238.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_116.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_98.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_234.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_29.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_265.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_5.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_281.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_41.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_4.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_269.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_60.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_259.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_112.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_114.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_289.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_65.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_242.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_14.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_39.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_285.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_152.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_142.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_264.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_97.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_221.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_54.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "patches_166.jpg",
+      "class": "patches",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_19.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_100.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_174.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_250.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_177.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_164.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_34.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_263.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_22.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_276.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_60.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_292.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_230.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_227.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_78.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_33.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_255.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_198.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_277.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_293.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_47.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_66.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_270.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_65.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_228.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_215.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_71.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_155.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_252.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_166.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_167.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_42.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_39.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_90.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_85.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_52.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_9.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_201.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_188.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_130.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_106.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_114.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_185.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_204.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_92.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_120.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_143.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_56.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_162.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_28.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_222.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_88.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_74.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_21.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_147.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_13.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_180.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_158.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_96.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_181.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_298.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_156.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_116.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_76.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_242.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_37.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_208.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_67.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_241.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_49.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_295.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_8.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_101.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_170.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_135.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_154.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_105.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_299.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_210.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_31.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_25.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_99.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_43.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_273.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_146.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_235.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_267.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_91.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_182.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_285.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_142.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_110.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_50.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_62.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_87.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_1.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_217.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_294.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_46.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_256.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_282.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_69.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_119.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_203.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_107.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_225.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_191.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_30.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_290.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_194.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_175.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_73.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_122.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_253.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_5.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_176.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_193.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_18.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_27.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_54.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_211.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_245.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_2.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_64.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_140.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_163.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_200.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_249.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_218.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_207.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_139.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_287.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_278.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_40.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_279.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_275.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_103.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_51.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_61.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_254.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_151.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_12.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_104.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_157.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_238.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_173.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_269.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_199.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_108.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_237.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_117.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_3.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_212.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_223.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_214.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_161.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_192.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_260.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_93.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_258.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_206.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_127.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_20.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_165.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_23.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_4.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_271.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_80.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_17.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_53.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_137.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_112.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_115.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_59.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_29.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_160.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_6.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_84.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_248.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_150.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_224.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_125.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_75.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_77.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_44.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_98.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_251.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_234.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_243.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_281.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_280.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_16.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_41.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_152.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_257.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_131.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_38.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_229.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_231.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_205.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_113.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_233.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_45.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_82.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_288.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_10.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_72.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_133.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_179.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_209.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_171.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_136.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_220.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_197.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_195.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_144.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_126.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_24.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_297.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_236.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_32.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_36.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_274.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_7.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_202.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_291.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_86.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_153.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_213.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_138.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_239.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_89.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_168.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_169.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_123.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_95.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_132.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_55.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_284.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_129.jpg",
+      "class": "pitted",
+      "split": "train"
+    },
+    {
+      "file": "pitted_surface_97.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_109.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_262.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_172.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_81.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_189.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_68.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_244.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_14.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_159.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_186.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_196.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_11.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_190.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_261.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_240.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_26.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_296.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_111.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_94.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_264.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_300.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_48.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_216.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_187.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_283.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_232.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_145.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_221.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_57.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_268.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_178.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_286.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_289.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_246.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_184.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_70.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_219.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_121.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_134.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_58.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_63.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_259.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_102.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_141.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_79.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_83.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_247.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_265.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_183.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_266.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_226.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_15.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_124.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_148.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_35.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_149.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_118.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_272.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "pitted_surface_128.jpg",
+      "class": "pitted",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_294.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_144.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_297.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_103.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_124.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_57.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_28.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_110.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_50.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_140.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_3.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_221.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_4.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_98.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_54.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_147.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_287.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_202.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_30.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_180.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_69.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_136.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_191.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_126.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_14.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_10.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_71.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_272.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_74.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_111.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_119.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_128.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_8.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_2.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_188.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_25.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_1.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_61.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_115.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_77.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_240.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_81.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_289.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_229.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_215.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_263.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_62.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_226.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_122.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_164.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_201.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_52.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_213.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_293.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_19.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_257.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_100.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_168.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_172.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_173.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_260.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_175.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_244.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_151.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_194.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_197.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_72.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_27.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_142.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_162.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_67.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_112.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_181.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_66.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_23.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_182.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_239.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_70.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_200.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_149.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_234.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_9.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_163.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_247.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_211.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_64.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_82.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_134.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_196.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_299.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_38.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_269.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_189.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_13.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_270.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_153.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_48.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_262.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_212.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_251.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_107.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_68.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_5.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_291.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_193.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_169.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_92.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_245.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_113.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_45.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_15.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_24.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_34.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_228.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_63.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_104.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_207.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_152.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_279.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_123.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_185.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_246.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_59.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_233.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_288.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_267.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_278.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_184.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_203.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_127.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_222.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_16.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_101.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_277.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_36.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_298.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_227.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_76.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_254.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_266.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_56.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_150.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_55.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_131.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_116.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_206.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_125.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_284.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_177.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_33.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_35.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_285.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_95.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_29.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_158.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_137.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_290.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_161.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_79.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_220.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_78.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_223.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_42.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_47.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_145.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_139.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_195.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_271.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_174.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_167.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_12.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_129.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_268.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_183.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_232.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_106.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_6.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_280.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_170.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_108.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_248.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_49.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_37.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_120.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_243.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_130.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_292.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_256.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_250.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_75.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_265.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_273.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_255.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_157.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_241.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_187.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_20.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_261.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_204.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_230.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_94.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_121.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_88.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_225.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_281.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_109.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_7.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_235.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_264.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_96.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_208.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_148.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_51.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_276.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_190.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_238.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_39.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_214.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_295.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_237.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_258.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_32.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_132.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_171.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_80.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_231.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_43.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_102.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_90.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_40.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_216.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_41.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_205.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_165.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_58.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_21.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_275.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_135.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_18.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_178.jpg",
+      "class": "rolled-in",
+      "split": "train"
+    },
+    {
+      "file": "rolled-in_scale_186.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_159.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_97.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_217.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_83.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_84.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_218.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_86.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_209.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_53.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_286.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_11.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_192.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_118.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_300.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_44.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_155.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_105.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_93.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_31.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_141.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_282.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_274.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_85.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_143.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_87.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_154.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_146.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_166.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_252.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_210.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_259.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_219.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_253.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_73.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_60.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_114.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_198.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_296.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_46.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_133.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_117.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_156.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_65.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_160.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_179.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_91.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_242.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_138.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_89.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_22.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_26.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_99.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_176.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_249.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_199.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_283.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_17.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_236.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "rolled-in_scale_224.jpg",
+      "class": "rolled-in",
+      "split": "val"
+    },
+    {
+      "file": "scratches_20.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_145.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_104.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_193.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_234.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_295.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_215.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_42.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_19.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_120.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_293.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_238.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_162.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_280.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_288.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_64.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_276.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_222.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_54.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_96.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_286.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_249.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_300.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_38.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_33.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_45.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_157.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_14.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_51.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_167.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_268.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_133.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_189.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_80.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_91.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_106.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_223.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_207.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_35.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_292.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_136.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_225.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_172.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_173.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_244.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_44.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_150.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_240.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_205.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_283.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_47.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_152.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_156.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_246.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_188.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_209.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_107.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_86.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_206.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_259.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_49.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_53.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_233.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_121.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_128.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_39.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_34.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_153.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_132.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_218.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_18.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_94.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_281.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_24.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_216.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_247.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_37.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_176.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_275.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_177.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_41.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_296.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_95.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_279.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_56.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_232.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_87.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_123.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_25.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_119.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_6.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_248.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_97.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_40.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_103.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_81.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_287.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_266.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_291.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_192.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_230.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_198.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_82.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_171.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_116.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_204.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_102.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_2.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_108.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_274.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_115.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_180.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_253.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_228.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_214.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_71.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_67.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_187.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_129.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_139.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_285.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_213.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_5.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_90.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_4.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_166.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_158.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_130.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_148.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_169.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_146.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_10.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_66.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_237.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_190.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_15.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_109.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_17.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_252.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_22.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_84.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_235.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_282.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_79.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_164.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_124.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_199.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_179.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_125.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_217.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_31.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_48.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_298.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_195.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_69.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_239.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_210.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_78.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_251.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_200.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_161.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_117.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_254.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_11.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_63.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_273.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_43.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_134.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_68.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_32.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_118.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_236.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_23.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_278.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_174.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_265.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_77.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_184.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_135.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_178.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_203.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_196.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_186.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_74.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_220.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_271.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_12.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_105.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_245.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_27.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_131.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_114.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_191.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_89.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_229.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_165.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_65.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_101.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_73.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_255.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_241.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_224.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_182.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_111.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_221.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_110.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_297.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_202.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_227.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_151.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_269.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_260.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_149.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_201.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_50.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_170.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_197.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_62.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_147.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_261.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_242.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_231.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_122.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_294.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_262.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_289.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_155.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_250.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_9.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_88.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_126.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_85.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_159.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_270.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_143.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_299.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_141.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_138.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_140.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_13.jpg",
+      "class": "scratches",
+      "split": "train"
+    },
+    {
+      "file": "scratches_272.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_92.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_1.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_7.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_256.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_55.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_144.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_263.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_212.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_154.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_183.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_29.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_98.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_264.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_113.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_219.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_70.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_30.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_208.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_59.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_21.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_142.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_127.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_93.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_61.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_3.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_267.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_99.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_52.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_137.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_185.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_72.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_75.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_243.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_277.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_58.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_181.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_60.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_257.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_83.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_290.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_211.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_258.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_76.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_57.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_175.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_226.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_26.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_46.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_284.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_16.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_112.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_100.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_168.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_160.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_28.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_163.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_194.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_36.jpg",
+      "class": "scratches",
+      "split": "val"
+    },
+    {
+      "file": "scratches_8.jpg",
+      "class": "scratches",
+      "split": "val"
+    }
+  ]
+}

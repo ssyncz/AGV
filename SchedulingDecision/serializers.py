@@ -75,6 +75,8 @@ class TransportTaskSerializer(serializers.ModelSerializer):
     pickup_node_detail = MapNodeSerializer(source="pickup_node", read_only=True)
     dropoff_node_detail = MapNodeSerializer(source="dropoff_node", read_only=True)
     assigned_agv_detail = AGVSerializer(source="assigned_agv", read_only=True)
+    order_id = serializers.IntegerField(read_only=True, allow_null=True)
+    order_no = serializers.CharField(source="order.order_no", read_only=True, allow_null=True)
     production_plan_no = serializers.CharField(source="production_plan.plan_no", read_only=True)
     work_order_no = serializers.CharField(source="work_order.order_no", read_only=True)
     operation_step_name = serializers.CharField(
@@ -118,13 +120,13 @@ class TransportTaskSerializer(serializers.ModelSerializer):
             "forecast_order_count", "demand_date", "release_at", "due_at",
             "sequence_number", "dispatch_order", "planned_wait_seconds", "optimization_details", "route", "total_distance", "estimated_duration",
             "scheduled_start", "scheduled_end", "started_at", "completed_at",
-            "notes", "created_at", "updated_at",
+            "notes", "order_id", "order_no", "created_at", "updated_at",
         ]
         read_only_fields = [
             "status", "assigned_agv", "schedule_run", "production_plan",
             "forecast_order_count", "demand_date", "sequence_number", "dispatch_order", "planned_wait_seconds", "optimization_details", "route", "total_distance", "estimated_duration",
             "scheduled_start", "scheduled_end", "started_at", "completed_at",
-            "created_at", "updated_at",
+            "order_id", "order_no", "created_at", "updated_at",
         ]
         extra_kwargs = {"task_no": {"required": False, "allow_blank": True}}
 
@@ -172,7 +174,6 @@ class ScheduleRunSerializer(serializers.ModelSerializer):
             "on_time_rate", "iteration_count", "baseline_makespan_seconds",
             "improvement_percent", "assignments", "metrics", "created_at",
         ]
-
 
 class ProductionPlanSerializer(serializers.ModelSerializer):
     status_display = serializers.CharField(source="get_status_display", read_only=True)
