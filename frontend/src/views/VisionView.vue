@@ -83,10 +83,6 @@ const datasetCounts = computed(() => {
   const summary = datasetSummary.value || {}
   return `${summary.crack || 0} / ${summary.free || 0} / ${summary.workpiece || 0} / ${summary.neu || 0}`
 })
-const datasetNote = computed(() => {
-  const summary = datasetSummary.value || {}
-  return `数据集：MT_Crack ${summary.crack || 0} 张（含标注掩码）· MT_Free 无缺陷 ${summary.free || 0} 张 · 合成几何工件 ${summary.workpiece || 0} 张 · NEU 六类样例 ${summary.neu || 0} 张`
-})
 const previewUrl = computed(() => {
   if (sourceKind.value === 'upload') return objectUrl.value
   if (!sampleName.value) return ''
@@ -260,7 +256,6 @@ onUnmounted(() => {
     <div class="panel-head">
       <div>
         <div class="panel-title">视觉检测</div>
-        <div class="panel-desc">Frangi / DeepCrack 裂纹分割 + YOLOv8n 缺陷检测（定位 + 分类）：MT 磁瓦裂纹与 NEU 六类表面缺陷，一次检测同时给出位置和类别</div>
       </div>
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'detect' }" @click="subTab = 'detect'">在线检测</button>
@@ -275,11 +270,10 @@ onUnmounted(() => {
         <div class="mini-stat panel"><span>平均耗时</span><strong>{{ overview.average_elapsed_ms || 0 }} ms</strong></div>
         <div class="mini-stat panel"><span>内置数据集</span><strong class="vision-mini-value">{{ datasetCounts }}</strong></div>
       </div>
-      <div class="muted small mt-12">{{ datasetNote }}</div>
 
       <div v-if="subTab === 'detect'" class="grid vision-grid mt-16">
         <section class="panel">
-          <div class="panel-head"><div><div class="panel-title">检测配置</div><div class="panel-desc">支持内置数据集样例或本地上传图片</div></div></div>
+          <div class="panel-head"><div><div class="panel-title">检测配置</div></div></div>
           <div class="panel-body">
             <div class="form-grid">
               <div class="field">
@@ -332,7 +326,6 @@ onUnmounted(() => {
               <button type="button" class="disclosure-head" @click="showParams = !showParams">
               <span>
                 参数设置
-                <span class="cell-sub">· 默认值即可跑，需要微调阈值时再展开</span>
               </span>
               <span class="caret">{{ showParams ? '收起' : '展开' }}</span>
             </button>
@@ -399,15 +392,6 @@ onUnmounted(() => {
                 </div>
               </template>
               <template v-if="mode === 'defect'">
-                <div class="field full">
-                  <div class="notice">
-                    <span>
-                      <b>{{ detectorModel }}</b> 缺陷检测器：一次给出<b>位置 + 类别 + 置信度</b>，
-                      覆盖热轧带钢 6 类缺陷（龟裂 / 夹杂 / 斑块 / 麻点 / 氧化皮压入 / 划痕）。
-                      置信度阈值越低越灵敏，可先按默认值跑。
-                    </span>
-                  </div>
-                </div>
                 <div class="field">
                   <label>置信度阈值 conf</label>
                   <input v-model.number="detectorParams.conf" class="input" type="number" step="0.05" min="0.05" max="0.95" />
@@ -460,7 +444,7 @@ onUnmounted(() => {
 
         <section class="panel">
           <div class="panel-head">
-            <div><div class="panel-title">检测结果</div><div class="panel-desc">左侧原图，右侧为算法标注后的结果图</div></div>
+            <div><div class="panel-title">检测结果</div></div>
             <span v-if="result" class="tag">{{ result.task_type === 'crack' ? '裂纹检测' : result.task_type === 'defect' ? '缺陷检测' : '工件识别' }}</span>
           </div>
           <div class="panel-body">
@@ -516,7 +500,7 @@ onUnmounted(() => {
                 <span v-for="(value, key) in result.class_counts || {}" :key="key" class="tag">
                   {{ (result.class_labels || {})[key] || key }} × {{ value }}
                 </span>
-                <span v-if="!result.count" class="cell-sub">未检出缺陷，可降低 conf 阈值重试</span>
+                <span v-if="!result.count" class="cell-sub">未检出缺陷</span>
               </div>
               <div class="table-wrap mt-16">
                 <table>
@@ -565,7 +549,6 @@ onUnmounted(() => {
                 </table>
               </div>
             </template>
-            <div v-else class="empty mt-16">请在左侧选择图片后点击「开始检测」</div>
           </div>
         </section>
       </div>

@@ -53,7 +53,7 @@ onMounted(load)
 <template>
   <section class="panel">
     <div class="panel-head">
-      <div><div class="panel-title">运营告警中心</div><div class="panel-desc">设备故障、质量不合格与交期风险统一处理；当前 {{ openCount }} 条未解决</div></div>
+      <div><div class="panel-title">运营告警中心</div></div>
       <div class="toolbar-right">
         <select v-model="filters.status" class="select" @change="load"><option value="">全部状态</option><option value="open">待处理</option><option value="acknowledged">已确认</option><option value="resolved">已解决</option></select>
         <select v-model="filters.severity" class="select" @change="load"><option value="">全部级别</option><option value="critical">严重</option><option value="warning">警告</option><option value="info">提示</option></select>

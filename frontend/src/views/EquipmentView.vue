@@ -361,7 +361,6 @@ onUnmounted(() => {
     <div class="panel-head">
       <div>
         <div class="panel-title">设备状态监测</div>
-        <div class="panel-desc">任务 6：对温度、振动、电流、转速和刀具磨损进行状态分类与规则告警</div>
       </div>
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'diagnose' }" @click="subTab = 'diagnose'">在线诊断</button>
@@ -383,9 +382,6 @@ onUnmounted(() => {
         <div class="panel-head">
           <div>
             <div class="panel-title">训练数据集对比（worn 类效果）</div>
-            <div class="panel-desc">
-              同一套 LightGBM 流程，只更换训练数据：ai4i 仅 46 条 worn，NASA 铣削 760 条，Figshare 铣削 315 条
-            </div>
           </div>
           <div class="toolbar-right">
             <span v-if="compareBest" class="tag">worn-F1 最优：{{ compareBest }}</span>
@@ -419,21 +415,17 @@ onUnmounted(() => {
                   <td>{{ row.fault_f1 ?? '--' }}</td>
                 </tr>
                 <tr v-if="!datasetCompare.length">
-                  <td colspan="8"><div class="empty">暂无对比数据（可点右上角「重新对比」）</div></td>
+                  <td colspan="8"><div class="empty">暂无对比数据</div></td>
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div class="notice mt-12">
-            说明：NASA 铣削数据没有温度/转速两列（用常数占位），因此作为**独立磨损数据集**验证方法有效性，
-            不直接并入 ai4i 模型；worn-F1 由 5 折交叉验证的同分布评估得到。
           </div>
         </div>
       </section>
 
       <div v-if="subTab === 'diagnose'" class="grid equipment-grid mt-16">
         <section class="panel">
-          <div class="panel-head"><div><div class="panel-title">数据配置</div><div class="panel-desc">使用内置样例或上传带传感器列的 CSV</div></div></div>
+          <div class="panel-head"><div><div class="panel-title">数据配置</div></div></div>
           <div class="panel-body">
             <div class="form-grid">
               <div class="field">
@@ -489,7 +481,7 @@ onUnmounted(() => {
 
         <section class="panel">
           <div class="panel-head">
-            <div><div class="panel-title">诊断结果</div><div class="panel-desc">当前状态、传感器趋势与规则告警</div></div>
+            <div><div class="panel-title">诊断结果</div></div>
             <span v-if="result" class="tag">{{ result.predicted_state_label }}</span>
           </div>
           <div class="panel-body">
@@ -499,7 +491,7 @@ onUnmounted(() => {
               <div class="optimization-metric"><span>末样本置信度</span><strong>{{ (result.confidence * 100).toFixed(1) }}%</strong></div>
               <div class="optimization-metric"><span>规则告警</span><strong>{{ result.rule_alerts.length }}</strong></div>
             </div>
-            <div v-else class="empty">请选择样例或上传 CSV 后开始诊断</div>
+            <div v-else class="empty">暂无诊断结果</div>
 
             <div v-if="wornWarning" class="worn-card mt-12" :class="{ alarm: wornWarning.worn_alert }">
               <div class="worn-head">
@@ -521,7 +513,6 @@ onUnmounted(() => {
               <div class="worn-foot">
                 <span class="muted small">阈值 {{ wornWarning.worn_threshold }}</span>
                 <span v-if="wornWarning.error" class="small" style="color: var(--red)">{{ wornWarning.error }}</span>
-                <span v-else class="muted small">概率超过阈值即亮红灯（阈值越低越灵敏）</span>
               </div>
             </div>
 
@@ -532,17 +523,12 @@ onUnmounted(() => {
                 <span class="anomaly-state" :class="{ on: anomalyHigh }">
                   {{ anomalyHigh ? '偏离正常分布' : '接近正常分布' }}
                 </span>
-                <span class="muted small">无需标签 · 用于发现训练集里没有的异常</span>
               </div>
               <div class="anomaly-grid">
                 <div><span class="muted small">最新异常分</span><strong>{{ anomalyInfo.latest_score ?? '--' }}</strong></div>
-                <div><span class="muted small">异常阈值(正常样本99%分位)</span><strong>{{ anomalyInfo.threshold_q95 ?? '--' }}</strong></div>
+                <div><span class="muted small">异常阈值</span><strong>{{ anomalyInfo.threshold_q95 ?? '--' }}</strong></div>
                 <div><span class="muted small">越线点数</span><strong>{{ anomalyInfo.flagged ?? 0 }} / {{ result?.sample_count ?? 0 }}</strong></div>
                 <div><span class="muted small">越线占比</span><strong>{{ ((anomalyInfo.flagged_ratio || 0) * 100).toFixed(1) }}%</strong></div>
-              </div>
-              <div class="anomaly-foot muted small">
-                基准：用同源 <b>{{ anomalyInfo.normal_samples ?? '--' }}</b> 条正常样本训练（{{ anomalyInfo.score_source || 'synthetic' }}）。
-                分数越高越偏离正常；越线占比 0% 表示与正常分布一致，占比越高说明整段越漂移。
               </div>
             </div>
 
@@ -551,7 +537,6 @@ onUnmounted(() => {
                 <select v-model="selectedFeature" class="select">
                   <option v-for="item in FEATURES" :key="item.key" :value="item.key">{{ item.label }}</option>
                 </select>
-                <span class="muted small">展示最近 {{ series.length }} 个采样点</span>
               </div>
               <svg class="equipment-chart" :viewBox="`0 0 ${lineChart.width} ${lineChart.height}`" role="img" aria-label="传感器趋势图">
                 <line
@@ -585,9 +570,6 @@ onUnmounted(() => {
 
       <div v-else-if="subTab === 'tools'" class="mt-16">
         <div class="section-toolbar toolbar-bar">
-          <span class="muted small">
-            刀具磨损来自设备监测的 <span class="mono">tool_wear</span>：超阈值或剩余寿命不够下一单时，生成配送任务交给 AGV
-          </span>
           <div class="toolbar-right">
             <label class="inline-field">
               下一单需求
@@ -657,14 +639,13 @@ onUnmounted(() => {
               <ActionMenu :items="toolMenu(tool)" @select="runToolAction(tool, $event)" />
             </div>
           </article>
-          <div v-if="!tools.length" class="empty">暂无刀具档案，运行 <span class="mono">python manage.py seed_tools</span> 初始化</div>
+          <div v-if="!tools.length" class="empty">暂无刀具档案</div>
         </div>
 
         <section v-if="toolAdvice" class="panel mt-16">
           <div class="panel-head">
             <div>
               <div class="panel-title">换刀建议 · {{ toolAdvice.tool_code }}</div>
-              <div class="panel-desc">依据磨损阈值与剩余寿命，判断能否覆盖下一单</div>
             </div>
             <span class="tag" :class="{ danger: toolAdvice.decision !== 'continue' }">{{ toolAdvice.decision_label }}</span>
           </div>
@@ -677,9 +658,6 @@ onUnmounted(() => {
             <ul v-if="toolAdvice.reasons?.length" class="tool-reasons mt-12">
               <li v-for="reason in toolAdvice.reasons" :key="reason">{{ reason }}</li>
             </ul>
-            <div class="notice mt-12">
-              流程：换刀建议 → 生成配送任务（刀具库 S10 → 机床站点）→ 调度中心派车 → 送达后点「换刀完成」复位寿命
-            </div>
             <div v-if="toolAdvice.decision !== 'continue'" class="action-bar mt-12">
               <button class="btn btn-sm btn-primary" :disabled="Boolean(toolBusy)"
                       @click="runToolAction(tools.find((item) => item.code === toolAdvice.tool_code) || tools[0], 'dispatch')">
@@ -693,7 +671,6 @@ onUnmounted(() => {
           <div class="panel-head">
             <div>
               <div class="panel-title">换刀记录</div>
-              <div class="panel-desc">旧刀换下 → 新刀装上；完成后可生成旧刀回收任务（机床 → 刀具库）</div>
             </div>
             <button class="btn btn-sm" :disabled="Boolean(toolBusy)" @click="loadToolRecords">刷新</button>
           </div>
@@ -827,7 +804,6 @@ onUnmounted(() => {
 .anomaly-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .anomaly-grid > div { display: grid; gap: 2px; font-size: 12px; }
 .anomaly-grid strong { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
-.anomaly-foot { line-height: 1.5; }
 @media (max-width: 980px) { .anomaly-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .inline-field .select { width: 150px; }
 </style>

@@ -374,7 +374,6 @@ onUnmounted(() => {
     <div class="panel-head">
       <div>
         <div class="panel-title">订单需求预测</div>
-        <div class="panel-desc">任务 7：比较移动平均、Holt-Winters 与 ARIMA，并预测未来订单量</div>
       </div>
       <div class="toolbar-right">
         <button class="btn btn-sm" :class="{ 'btn-primary': subTab === 'predict' }" @click="subTab = 'predict'">在线预测</button>
@@ -392,7 +391,7 @@ onUnmounted(() => {
 
       <div v-if="subTab === 'predict'" class="grid forecast-grid mt-16">
         <section class="panel">
-          <div class="panel-head"><div><div class="panel-title">预测配置</div><div class="panel-desc">使用内置订单序列，或上传 date/order_count（也支持 date/sales 多序列自动汇总）</div></div></div>
+          <div class="panel-head"><div><div class="panel-title">预测配置</div></div></div>
           <div class="panel-body">
             <div class="form-grid">
               <div class="field">
@@ -427,7 +426,6 @@ onUnmounted(() => {
               <button class="btn btn-primary" :disabled="running" @click="runForecast">
                 {{ running ? '正在预测...' : '开始预测' }}
               </button>
-              <span class="muted small">自动模式会在 4 个候选模型（含移动平均 / ARIMA 对照）中按回测 RMSE 选最优</span>
             </div>
             <div v-if="error" class="notice warning mt-12">{{ error }}</div>
           </div>
@@ -435,7 +433,7 @@ onUnmounted(() => {
 
         <section class="panel">
           <div class="panel-head">
-            <div><div class="panel-title">预测结果</div><div class="panel-desc">历史订单与未来预测曲线</div></div>
+            <div><div class="panel-title">预测结果</div></div>
             <span v-if="result" class="tag">{{ result.selected_model_label }}</span>
           </div>
           <div class="panel-body">
@@ -450,7 +448,7 @@ onUnmounted(() => {
               <div class="optimization-metric"><span>MAPE</span><strong>{{ selectedMetrics.mape }}%</strong></div>
               <div class="optimization-metric"><span>预测期数</span><strong>{{ result.horizon }}</strong></div>
             </div>
-            <div v-else class="empty">请选择内置数据或上传 CSV 后开始预测</div>
+            <div v-else class="empty">暂无预测结果</div>
 
             <template v-if="result">
               <svg class="forecast-chart" :viewBox="`0 0 ${chart.width} ${chart.height}`" role="img" aria-label="订单预测曲线">
@@ -501,7 +499,6 @@ onUnmounted(() => {
           <div class="panel-head">
             <div>
               <div class="panel-title">预测转生产计划</div>
-              <div class="panel-desc">把预测订单量转换为带释放时间、交期和取放货路线的运输任务</div>
             </div>
             <span class="tag">需求 → 任务</span>
           </div>
@@ -579,7 +576,6 @@ onUnmounted(() => {
                 <div class="route-editor-head">
                   <div>
                     <label>多路线任务分配</label>
-                    <div class="cell-sub">系统按份额归一化后分配任务，份额相同的路线会得到接近数量的任务。</div>
                   </div>
                   <div class="route-editor-actions">
                     <span class="tag">份额合计 {{ routeShareTotal.toFixed(2) }}</span>
@@ -629,9 +625,6 @@ onUnmounted(() => {
                 </div>
               </div>
             </div>
-            <div class="notice info mt-12">
-              预测序列会按原周期间隔映射到计划开始日期；订单量先乘需求缓冲，再按累计取整生成任务，避免逐日舍入造成总量偏差。
-            </div>
             <button class="btn btn-primary btn-block mt-16" :disabled="planning" @click="generatePlan">
               {{ planning ? '正在生成生产任务...' : '生成生产计划与运输任务' }}
             </button>
@@ -642,7 +635,6 @@ onUnmounted(() => {
           <div class="panel-head">
             <div>
               <div class="panel-title">生产排程</div>
-              <div class="panel-desc">按释放时间、交期、优先级和 AGV 约束进行多车联合优化</div>
             </div>
             <span v-if="planResult" class="tag">{{ planResult.status_display }}</span>
           </div>
@@ -662,13 +654,13 @@ onUnmounted(() => {
               </RouterLink>
               <label class="deadline-option mt-16">
                 <input v-model="planConfig.strict_deadlines" type="checkbox" />
-                <span><strong>硬交期模式</strong><small>任何任务预计拖期时拒绝生成排程；关闭时允许排程并报告准点率。</small></span>
+                <span><strong>硬交期模式</strong></span>
               </label>
               <button class="btn btn-primary btn-block mt-16" :disabled="scheduling || planResult.status !== 'planned'" @click="schedulePlan">
                 {{ scheduling ? '正在联合排程...' : planResult.status === 'planned' ? '执行生产排程' : '该计划已完成排程' }}
               </button>
             </template>
-            <div v-else class="empty">完成预测并生成生产计划后，可在这里直接执行 AGV 排程</div>
+            <div v-else class="empty">暂无生产排程</div>
 
             <template v-if="scheduleResult">
               <div class="notice success mt-16">

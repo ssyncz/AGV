@@ -223,7 +223,7 @@ function clearPath() {
   <div class="map-layout map-layout-wide">
     <section class="panel">
       <div class="panel-head">
-        <div><div class="panel-title">仓库障碍地图与路径规划</div><div class="panel-desc">青色路网、深色障碍块、S1-S10 工作站以及 AGV 彩色路线</div></div>
+        <div><div class="panel-title">仓库障碍地图与路径规划</div></div>
         <div class="toolbar-right">
           <span v-if="selectedRouteGroup" class="tag">{{ selectedRouteGroup.work_order_no }}</span>
           <span v-if="selectedRouteDetail" class="tag">调度顺序 #{{ selectedRouteDetail.dispatch_order || selectedRouteGroup.routes.indexOf(selectedRouteDetail) + 1 }}</span>
@@ -296,7 +296,7 @@ function clearPath() {
     </section>
 
     <aside class="panel">
-      <div class="panel-head"><div><div class="panel-title">起点到终点路径规划</div><div class="panel-desc">自动绕开障碍并满足道路、电池约束</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">起点到终点路径规划</div></div></div>
       <div class="panel-body">
         <div class="path-planner">
           <div class="field"><label>起点</label><select v-model="startNodeId" class="select"><option v-for="node in nodes" :key="node.id" :value="node.id">{{ node.code }} · {{ node.name }}</option></select></div>

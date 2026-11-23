@@ -53,10 +53,10 @@ onUnmounted(() => clearInterval(timer))
   <div class="command">
     <!-- ① 四张主 KPI：页面视觉锚点 -->
     <div class="grid stats-grid">
-      <StatCard label="活动工单" :value="kpis.active_work_orders || 0" :foot="`${kpis.active_operation_steps || 0} 个工序可执行或执行中`" icon="▤" accent="blue" />
-      <StatCard label="阻塞工单" :value="kpis.blocked_work_orders || 0" foot="设备或质量异常导致" icon="!" accent="amber" />
-      <StatCard label="开放告警" :value="kpis.open_alerts || 0" foot="待确认与待解决" icon="◉" accent="cyan" />
-      <StatCard label="严重告警" :value="kpis.critical_alerts || 0" foot="需要立即处理" icon="▲" accent="red" />
+      <StatCard label="活动工单" :value="kpis.active_work_orders || 0" icon="▤" accent="blue" />
+      <StatCard label="阻塞工单" :value="kpis.blocked_work_orders || 0" icon="!" accent="amber" />
+      <StatCard label="开放告警" :value="kpis.open_alerts || 0" icon="◉" accent="cyan" />
+      <StatCard label="严重告警" :value="kpis.critical_alerts || 0" icon="▲" accent="red" />
     </div>
 
     <!-- ② 六项指标压成一条状态带：只做导航与速览，不与主卡争视觉 -->
@@ -90,7 +90,7 @@ onUnmounted(() => clearInterval(timer))
     <!-- ③ 工单执行主线提前：首屏就能看到业务主线 -->
     <section class="panel accent accent-teal">
       <div class="panel-head">
-        <div><div class="panel-title">工单执行主线</div><div class="panel-desc">从计划、运输、质检到完成统一追踪</div></div>
+        <div><div class="panel-title">工单执行主线</div></div>
         <RouterLink class="btn btn-sm btn-primary" to="/work-orders">进入工单中心</RouterLink>
       </div>
       <div class="panel-body">
@@ -111,7 +111,6 @@ onUnmounted(() => clearInterval(timer))
                 <div class="empty">
                   <span class="empty-icon">▤</span>
                   <div class="empty-title">还没有工单</div>
-                  <div class="empty-desc">创建第一张工单后，它会出现在这里并进入执行主线</div>
                   <RouterLink class="btn btn-sm btn-primary" to="/work-orders">去创建工单</RouterLink>
                 </div>
               </td></tr>
@@ -125,7 +124,7 @@ onUnmounted(() => clearInterval(timer))
     <div class="grid command-grid">
       <section class="panel accent accent-rose">
         <div class="panel-head">
-          <div><div class="panel-title">异常处理队列</div><div class="panel-desc">设备、质量和运营异常统一进入这里</div></div>
+          <div><div class="panel-title">异常处理队列</div></div>
           <RouterLink class="link-btn" to="/alerts">查看全部</RouterLink>
         </div>
         <div class="panel-body">
@@ -153,14 +152,13 @@ onUnmounted(() => clearInterval(timer))
           <div v-else class="empty">
             <span class="empty-icon ok">✓</span>
             <div class="empty-title">一切正常</div>
-            <div class="empty-desc">最近 24 小时没有开放告警</div>
             <RouterLink class="btn btn-sm" to="/alerts">查看历史告警</RouterLink>
           </div>
         </div>
       </section>
 
       <section class="panel accent accent-indigo">
-        <div class="panel-head"><div><div class="panel-title">最近业务事件</div><div class="panel-desc">跨模块操作形成统一时间线</div></div></div>
+        <div class="panel-head"><div><div class="panel-title">最近业务事件</div></div></div>
         <div class="panel-body">
           <div v-if="data.events.length" class="event-timeline">
             <div v-for="event in data.events" :key="event.id" class="event-row">
@@ -174,7 +172,6 @@ onUnmounted(() => clearInterval(timer))
           <div v-else class="empty">
             <span class="empty-icon">✦</span>
             <div class="empty-title">还没有操作记录</div>
-            <div class="empty-desc">下达工单、调度任务或处理告警后，操作会在这里形成时间线</div>
             <RouterLink class="btn btn-sm btn-primary" to="/work-orders">去下达工单</RouterLink>
           </div>
         </div>
@@ -262,7 +259,6 @@ onUnmounted(() => clearInterval(timer))
 }
 .empty-icon.ok { background: var(--tint-green); color: var(--green); }
 .empty-title { color: var(--text); font-size: 13px; font-weight: 700; }
-.empty-desc { max-width: 300px; color: var(--muted); font-size: 11.5px; line-height: 1.6; }
 .empty .btn { margin-top: 6px; }
 
 /* ---------- 表格与标签 ---------- */

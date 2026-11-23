@@ -58,7 +58,7 @@ onMounted(load)
 <template>
   <section class="panel">
     <div class="panel-head">
-      <div><div class="panel-title">生产计划中心</div><div class="panel-desc">预测结果生成的计划、运输任务与执行工单统一查看</div></div>
+      <div><div class="panel-title">生产计划中心</div></div>
       <div class="toolbar-right"><RouterLink class="btn btn-sm btn-primary" to="/forecast">从预测生成计划</RouterLink><button class="btn btn-sm" :disabled="loading" @click="load">刷新</button></div>
     </div>
     <div class="panel-body">

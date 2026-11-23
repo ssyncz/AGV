@@ -3,7 +3,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const props = defineProps({
-  items: { type: Array, default: () => [] }, // [{ key, label, danger?, disabled?, hint? }]
+  items: { type: Array, default: () => [] }, // [{ key, label, danger?, disabled? }]
   label: { type: String, default: '更多' },
   align: { type: String, default: 'right' },
 })
@@ -62,7 +62,6 @@ onBeforeUnmount(() => {
         @click="choose(item)"
       >
         <span>{{ item.label }}</span>
-        <small v-if="item.hint">{{ item.hint }}</small>
       </button>
     </div>
   </div>

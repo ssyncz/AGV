@@ -28,7 +28,7 @@ async function changeStatus(agv, event) {
 <template>
   <section class="panel">
     <div class="panel-head">
-      <div><div class="panel-title">AGV 车队管理</div><div class="panel-desc">查看车辆位置、电量和载重能力，并手动调整运行状态</div></div>
+      <div><div class="panel-title">AGV 车队管理</div></div>
       <input v-model="query" class="input filter-input" placeholder="搜索编号、名称或位置..." />
     </div>
     <div class="panel-body">

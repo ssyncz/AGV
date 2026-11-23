@@ -156,7 +156,7 @@ const moreActions = computed(() => {
   const status = order.status
   const items = []
   if (!['completed', 'cancelled', 'blocked'].includes(status)) {
-    items.push({ key: 'block', label: '阻塞工单', hint: '异常时中止' })
+    items.push({ key: 'block', label: '阻塞工单' })
   }
   if (order.quality_status === 'fail' && status !== 'completed') {
     items.push({ key: 'quality-check', label: '重新提交质检' })
@@ -241,17 +241,17 @@ onMounted(async () => {
     <section class="workorder-entry-menu">
       <button type="button" class="workorder-mode-card" :class="{ active: pageMode === 'create' }" @click="switchWorkOrderMode('create')">
         <span class="workorder-mode-icon">＋</span>
-        <span><strong>新建生产工单</strong><small>建立新的生产任务和工序执行主线</small></span>
+        <span><strong>新建生产工单</strong></span>
       </button>
       <button type="button" class="workorder-mode-card" :class="{ active: pageMode === 'center' }" @click="switchWorkOrderMode('center')">
         <span class="workorder-mode-icon">▤</span>
-        <span><strong>生产工单中心</strong><small>查询工单、推进工序并查看执行记录</small></span>
+        <span><strong>生产工单中心</strong></span>
       </button>
     </section>
 
     <div v-if="pageMode === 'create'" class="workorder-create-layout">
     <aside class="panel create-panel">
-      <div class="panel-head"><div><div class="panel-title">新建生产工单</div><div class="panel-desc">工单是运输、质检与设备异常的业务主线</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">新建生产工单</div></div></div>
       <div class="panel-body">
         <div class="form-grid single">
           <div class="field"><label>工单名称</label><input v-model="createForm.title" class="input" placeholder="例如：A 型电机装配工单" /></div>
@@ -264,7 +264,6 @@ onMounted(async () => {
           <div class="field"><label>备注</label><textarea v-model="createForm.notes" class="input" rows="3"></textarea></div>
         </div>
         <button class="btn btn-primary btn-block mt-16" :disabled="busy === 'create'" @click="createOrder">{{ busy === 'create' ? '正在创建...' : '创建工单' }}</button>
-        <div class="notice info mt-16">通用操作链路：草稿 → 下达 → 执行 → 待质检 → 完成；异常会统一生成告警。</div>
       </div>
     </aside>
     </div>
@@ -272,7 +271,7 @@ onMounted(async () => {
     <main v-else>
       <section class="panel">
         <div class="panel-head">
-          <div><div class="panel-title">生产工单中心</div><div class="panel-desc">按业务状态和质量状态追踪工单</div></div>
+          <div><div class="panel-title">生产工单中心</div></div>
           <div class="toolbar-right">
             <input v-model="filters.q" class="input filter-input" placeholder="搜索工单或产品..." @keyup.enter="loadOrders" />
             <select v-model="filters.status" class="select" @change="loadOrders"><option value="">全部状态</option><option value="draft">草稿</option><option value="released">已下达</option><option value="in_progress">执行中</option><option value="quality_check">待质检</option><option value="blocked">已阻塞</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select>
@@ -304,7 +303,7 @@ onMounted(async () => {
 
       <section v-if="selectedOrder" class="panel mt-16">
         <div class="panel-head">
-          <div><div class="panel-title">{{ selectedOrder.order_no }} · {{ selectedOrder.title }}</div><div class="panel-desc">{{ selectedOrder.site_detail?.name }} · {{ selectedOrder.product_detail?.name }} · {{ selectedOrder.quantity }} {{ selectedOrder.product_detail?.unit || '件' }}</div></div>
+          <div><div class="panel-title">{{ selectedOrder.order_no }} · {{ selectedOrder.title }}</div></div>
           <div class="action-bar">
             <StatusBadge :status="selectedOrder.status" :label="selectedOrder.status_display" />
             <button
@@ -330,7 +329,7 @@ onMounted(async () => {
 
           <section v-if="timeline?.operation_steps?.length" class="operation-board mt-16">
             <div class="operation-board-head">
-              <div><div class="subpanel-title">生产工序执行</div><div class="cell-sub">运输配送、生产加工、质量检验和完工入库按工序顺序推进</div></div>
+              <div><div class="subpanel-title">生产工序执行</div></div>
               <span class="tag">{{ timeline.operation_steps.filter(step => step.status === 'completed').length }} / {{ timeline.operation_steps.length }} 已完成</span>
             </div>
             <div class="operation-flow">
@@ -413,7 +412,7 @@ onMounted(async () => {
             </section>
           </div>
           <div v-if="timeline?.unscheduled_tasks?.length" class="schedule-run-summary mt-16">
-            <div class="schedule-run-summary-head"><div><div class="subpanel-title">尚未排程任务</div><div class="cell-sub">这些任务尚未分配 AGV 和调度顺序</div></div><span class="tag">{{ timeline.unscheduled_tasks.length }} 个</span></div>
+            <div class="schedule-run-summary-head"><div><div class="subpanel-title">尚未排程任务</div></div><span class="tag">{{ timeline.unscheduled_tasks.length }} 个</span></div>
             <div class="table-wrap"><table><thead><tr><th>任务</th><th>工序</th><th>路线</th><th>状态</th></tr></thead><tbody><tr v-for="task in timeline.unscheduled_tasks" :key="task.id"><td class="mono">{{ task.task_no }}</td><td>{{ task.operation_step_name || '--' }}</td><td>{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</td><td><StatusBadge :status="task.status" :label="task.status_display" /></td></tr></tbody></table></div>
           </div>
           <div v-if="!timeline?.schedule_runs?.length && !timeline?.unscheduled_tasks?.length" class="empty mt-16">暂无运输任务</div>
@@ -455,7 +454,6 @@ onMounted(async () => {
 .workorder-mode-icon { width: 36px; height: 36px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 10px; background: rgba(47,214,195,.16); border: 1px solid rgba(47,214,195,.28); color: var(--cyan); font-size: 19px; font-weight: 800; }
 .workorder-mode-card > span:last-child { display: grid; gap: 4px; }
 .workorder-mode-card strong { color: var(--text); font-size: 13.5px; }
-.workorder-mode-card small { color: var(--muted); font-size: 10px; line-height: 1.45; }
 .workorder-create-layout { display: grid; grid-template-columns: minmax(0, 620px); align-items: start; }
 .workorder-create-layout .create-panel { position: static; }
 .create-panel { position: sticky; top: 112px; }
