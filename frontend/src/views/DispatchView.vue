@@ -134,11 +134,6 @@ async function createTask() {
       <div class="panel-head">
         <div>
           <div class="panel-title">{{ mode === 'single' ? '单台 AGV 任务顺序优化' : '多台 AGV 联合调度' }}</div>
-          <div class="panel-desc">
-            {{ mode === 'single'
-              ? '勾选待调度任务，系统自动挑一台 AGV 并用动态规划优化执行顺序'
-              : '统一优化任务分配、车辆内顺序与避碰时间窗' }}
-          </div>
         </div>
         <div class="segmented">
           <button type="button" :class="{ active: mode === 'single' }" @click="mode = 'single'">单台顺序</button>
@@ -164,7 +159,7 @@ async function createTask() {
             <span class="tag">{{ task.pickup_node_detail?.code }} → {{ task.dropoff_node_detail?.code }}</span>
             <span :class="`priority-${task.priority}`">P{{ task.priority }}</span>
           </label>
-          <div v-if="!pendingTasks.length" class="empty">暂无待调度任务，先在下方「新建运输任务」</div>
+          <div v-if="!pendingTasks.length" class="empty">暂无待调度任务</div>
         </div>
 
         <div v-if="mode === 'single'" class="field mt-16">
@@ -198,7 +193,7 @@ async function createTask() {
 
     <section class="panel">
       <button type="button" class="disclosure-head" @click="showCreate = !showCreate">
-        <span><strong>新建运输任务</strong><span class="cell-sub" style="display:block">创建后可参与上面的单台或多台调度</span></span>
+        <span><strong>新建运输任务</strong></span>
         <span class="caret">{{ showCreate ? '收起' : '展开' }}</span>
       </button>
       <div v-if="showCreate" class="disclosure-body">

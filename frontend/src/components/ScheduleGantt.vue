@@ -39,7 +39,7 @@ function seconds(value) {
 <template>
   <section v-if="result" class="panel mt-16 optimization-result">
     <div class="panel-head">
-      <div><div class="panel-title">优化结果与调度甘特图</div><div class="panel-desc">{{ result.run.objective_name }}</div></div>
+      <div><div class="panel-title">优化结果与调度甘特图</div></div>
       <div class="toolbar-right">
         <span class="tag">{{ result.run.algorithm_display }}</span>
         <RouterLink class="btn btn-sm" to="/plans">生产计划</RouterLink>

@@ -87,7 +87,7 @@ onMounted(() => { load(); loadMapNodes() })
 <template>
   <div class="master-grid">
     <section class="panel">
-      <div class="panel-head"><div><div class="panel-title">业务站点</div><div class="panel-desc">工厂、车间或仓库的统一编码</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">业务站点</div></div></div>
       <div class="panel-body">
         <div class="form-grid compact"><div class="field"><label>编码</label><input v-model="siteForm.code" class="input" /></div><div class="field"><label>名称</label><input v-model="siteForm.name" class="input" /></div><div class="field full"><label>位置</label><input v-model="siteForm.location" class="input" /></div></div>
         <button class="btn btn-primary btn-block mt-12" :disabled="busy === 'site'" @click="create('site')">新增站点</button>
@@ -96,7 +96,7 @@ onMounted(() => { load(); loadMapNodes() })
     </section>
 
     <section class="panel">
-      <div class="panel-head"><div><div class="panel-title">产品主数据</div><div class="panel-desc">工单和质检追溯使用的产品档案</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">产品主数据</div></div></div>
       <div class="panel-body">
         <div class="form-grid compact"><div class="field"><label>编码</label><input v-model="productForm.code" class="input" /></div><div class="field"><label>名称</label><input v-model="productForm.name" class="input" /></div><div class="field"><label>规格</label><input v-model="productForm.specification" class="input" /></div><div class="field"><label>单位</label><input v-model="productForm.unit" class="input" /></div></div>
         <button class="btn btn-primary btn-block mt-12" :disabled="busy === 'product'" @click="create('product')">新增产品</button>
@@ -105,7 +105,7 @@ onMounted(() => { load(); loadMapNodes() })
     </section>
 
     <section class="panel master-wide">
-      <div class="panel-head"><div><div class="panel-title">设备主数据</div><div class="panel-desc">设备诊断和异常告警统一关联设备档案</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">设备主数据</div></div></div>
       <div class="panel-body">
         <div class="form-grid"><div class="field"><label>设备编号</label><input v-model="equipmentForm.code" class="input" /></div><div class="field"><label>设备名称</label><input v-model="equipmentForm.name" class="input" /></div><div class="field"><label>设备类型</label><input v-model="equipmentForm.equipment_type" class="input" /></div><div class="field"><label>所属站点</label><select v-model="equipmentForm.site" class="select"><option v-for="site in data.sites" :key="site.id" :value="site.id">{{ site.name }}</option></select></div></div>
         <button class="btn btn-primary mt-12" :disabled="busy === 'equipment'" @click="create('equipment')">新增设备</button>
@@ -114,7 +114,7 @@ onMounted(() => { load(); loadMapNodes() })
     </section>
 
     <section class="panel master-wide">
-      <div class="panel-head"><div><div class="panel-title">班次日历</div><div class="panel-desc">工序计划时间使用站点班次窗口，支持选择工作日和起止时间</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">班次日历</div></div></div>
       <div class="panel-body">
         <div class="form-grid">
           <div class="field"><label>所属站点</label><select v-model="calendarForm.site" class="select"><option v-for="site in data.sites" :key="site.id" :value="site.id">{{ site.name }}</option></select></div>

@@ -213,7 +213,7 @@ async function runAction(task, action) {
 <template>
   <section v-if="isGroupView" class="panel">
     <div class="panel-head">
-      <div><div class="panel-title">按工单进入运输任务</div><div class="panel-desc">先选择生产工单，再查看该工单下的全部运输任务与调度顺序</div></div>
+      <div><div class="panel-title">按工单进入运输任务</div></div>
       <span class="tag">{{ workOrderGroups.length }} 个工单入口</span>
     </div>
     <div class="panel-body">
@@ -238,7 +238,7 @@ async function runAction(task, action) {
           </div>
         </RouterLink>
       </div>
-      <div v-else class="empty">暂无运输任务。请先生成生产计划或从工单创建运输任务。</div>
+      <div v-else class="empty">暂无运输任务</div>
     </div>
   </section>
 
@@ -246,7 +246,6 @@ async function runAction(task, action) {
     <div class="panel-head">
       <div>
         <div class="panel-title">{{ workOrderFilter ? `工单 ${currentTaskGroup?.work_order_no || workOrderFilter}` : '生产计划运输任务' }}</div>
-        <div class="panel-desc">{{ workOrderFilter ? '任务按全局调度顺序排列，并显示对应 AGV 的车内执行顺序' : `计划 ID ${planFilter} 下的任务与执行顺序` }}</div>
       </div>
       <div class="toolbar-right">
         <RouterLink class="btn btn-sm" to="/tasks">返回工单入口</RouterLink>

@@ -4,33 +4,21 @@ import { RouterLink } from 'vue-router'
 
 // 12 个模块 = 12 个“商品”，按四大类归组
 const modules = [
-  { path: '/dashboard', label: '生产总览', icon: '⌂', group: '运营', tint: 'blue',
-    desc: '工单、车队、质量与设备异常的运营总览', hot: ['总览', '看板', '首页'] },
-  { path: '/work-orders', label: '生产工单', icon: '▤', group: '运营', tint: 'indigo',
-    desc: '计划、运输、质检与异常的统一业务主线', hot: ['工单', '排产', '主线'] },
-  { path: '/alerts', label: '告警中心', icon: '◉', group: '运营', tint: 'rose',
-    desc: '统一确认与处置设备、质量和交期异常', hot: ['告警', '异常', '处置'] },
+  { path: '/dashboard', label: '生产总览', icon: '⌂', group: '运营', tint: 'blue', hot: ['总览', '看板', '首页'] },
+  { path: '/work-orders', label: '生产工单', icon: '▤', group: '运营', tint: 'indigo', hot: ['工单', '排产', '主线'] },
+  { path: '/alerts', label: '告警中心', icon: '◉', group: '运营', tint: 'rose', hot: ['告警', '异常', '处置'] },
 
-  { path: '/dispatch', label: '调度中心', icon: '⌁', group: '生产执行', tint: 'teal',
-    desc: '单台智能调度与多台 AGV 协同调度', hot: ['调度', 'AGV', '协同'] },
-  { path: '/tasks', label: '运输任务', icon: '◇', group: '生产执行', tint: 'cyan',
-    desc: '运输任务生命周期、路线与执行状态管理', hot: ['任务', '运输', '路线'] },
-  { path: '/map', label: '地图监控', icon: '◎', group: '生产执行', tint: 'emerald',
-    desc: '仓库拓扑、AGV 位置与实时规划路线', hot: ['地图', '定位', '路线'] },
-  { path: '/plans', label: '生产计划', icon: '▥', group: '生产执行', tint: 'amber',
-    desc: '预测驱动的计划、排程与执行工单追踪', hot: ['计划', '排程', '预测'] },
+  { path: '/dispatch', label: '调度中心', icon: '⌁', group: '生产执行', tint: 'teal', hot: ['调度', 'AGV', '协同'] },
+  { path: '/tasks', label: '运输任务', icon: '◇', group: '生产执行', tint: 'cyan', hot: ['任务', '运输', '路线'] },
+  { path: '/map', label: '地图监控', icon: '◎', group: '生产执行', tint: 'emerald', hot: ['地图', '定位', '路线'] },
+  { path: '/plans', label: '生产计划', icon: '▥', group: '生产执行', tint: 'amber', hot: ['计划', '排程', '预测'] },
 
-  { path: '/agvs', label: 'AGV 管理', icon: '▣', group: '资源与质量', tint: 'sky',
-    desc: '车辆状态、电量、载重与位置管理', hot: ['车辆', '电量', '载重'] },
-  { path: '/equipment', label: '设备监测', icon: '◈', group: '资源与质量', tint: 'violet',
-    desc: '传感器状态分类、磨损识别与规则告警', hot: ['设备', '振动', '磨损'] },
-  { path: '/vision', label: '视觉质检', icon: '◍', group: '资源与质量', tint: 'fuchsia',
-    desc: '裂纹、缺陷与工件识别并关联工单', hot: ['质检', '缺陷', '图像'] },
+  { path: '/agvs', label: 'AGV 管理', icon: '▣', group: '资源与质量', tint: 'sky', hot: ['车辆', '电量', '载重'] },
+  { path: '/equipment', label: '设备监测', icon: '◈', group: '资源与质量', tint: 'violet', hot: ['设备', '振动', '磨损'] },
+  { path: '/vision', label: '视觉质检', icon: '◍', group: '资源与质量', tint: 'fuchsia', hot: ['质检', '缺陷', '图像'] },
 
-  { path: '/forecast', label: '订单预测', icon: '◒', group: '计划与系统', tint: 'orange',
-    desc: '需求预测、模型回测与生产计划生成', hot: ['预测', '需求', '模型'] },
-  { path: '/master-data', label: '主数据管理', icon: '▦', group: '计划与系统', tint: 'slate',
-    desc: '站点、产品和设备的统一编码档案', hot: ['编码', '档案', '站点'] },
+  { path: '/forecast', label: '订单预测', icon: '◒', group: '计划与系统', tint: 'orange', hot: ['预测', '需求', '模型'] },
+  { path: '/master-data', label: '主数据管理', icon: '▦', group: '计划与系统', tint: 'slate', hot: ['编码', '档案', '站点'] },
 ]
 
 const groups = ['全部', '运营', '生产执行', '资源与质量', '计划与系统']
@@ -43,7 +31,6 @@ const filtered = computed(() => {
     const inGroup = activeGroup.value === '全部' || m.group === activeGroup.value
     const inKey = !k
       || m.label.toLowerCase().includes(k)
-      || m.desc.toLowerCase().includes(k)
       || m.hot.some((h) => h.toLowerCase().includes(k))
     return inGroup && inKey
   })
@@ -53,9 +40,9 @@ const hotWords = ['工单', '调度', '告警', '缺陷', '预测', 'AGV']
 const countByGroup = (g) => (g === '全部' ? modules.length : modules.filter((m) => m.group === g).length)
 
 const promos = [
-  { to: '/work-orders', title: '工单主线', sub: '下达 · 调度 · 质检 · 完成', tint: 'promo-teal', icon: '▤' },
-  { to: '/vision', title: '视觉质检', sub: '缺陷识别并回写工单', tint: 'promo-violet', icon: '◍' },
-  { to: '/forecast', title: '订单预测', sub: '需求预测驱动排产', tint: 'promo-amber', icon: '◒' },
+  { to: '/work-orders', title: '工单主线', tint: 'promo-teal', icon: '▤' },
+  { to: '/vision', title: '视觉质检', tint: 'promo-violet', icon: '◍' },
+  { to: '/forecast', title: '订单预测', tint: 'promo-amber', icon: '◒' },
 ]
 </script>
 
@@ -82,7 +69,6 @@ const promos = [
           <h1 class="hero-title">今天要处理什么？</h1>
           <span class="hero-ghost" aria-hidden="true">WHAT'S ON TODAY</span>
         </div>
-        <p class="hero-sub">12 个模块，用一条“工单主线”串起来：下达 → 调度 → 运输 → 质检 → 完成</p>
 
         <div class="search-box">
           <span class="search-icon">⌕</span>
@@ -101,7 +87,6 @@ const promos = [
         <div class="tile">
           <span class="tile-label">可用模块</span>
           <strong>12</strong>
-          <small>运营 / 执行 / 质量 / 计划</small>
         </div>
         <div class="tile">
           <span class="tile-label">当前分组</span>
@@ -120,7 +105,6 @@ const promos = [
                 @click="activeGroup = g">
           <span>{{ g }}</span><em>{{ countByGroup(g) }}</em>
         </button>
-        <div class="rail-note">找不到？用上面的搜索框，支持按关键词过滤。</div>
       </aside>
 
       <main class="grid-area">
@@ -132,7 +116,6 @@ const promos = [
               <span class="card-group">{{ m.group }}</span>
             </div>
             <div class="card-title">{{ m.label }}</div>
-            <p class="card-desc">{{ m.desc }}</p>
             <div class="card-foot">
               <span class="card-hint">进入 →</span>
               <span class="card-tag">{{ m.hot[0] }}</span>
@@ -142,7 +125,6 @@ const promos = [
         <div v-else class="empty">
           <span class="empty-icon">⌕</span>
           <div class="empty-title">没有匹配的模块</div>
-          <div class="empty-desc">换个关键词，或点左侧「全部」恢复</div>
           <button class="btn btn-sm" @click="keyword = ''; activeGroup = '全部'">重置筛选</button>
         </div>
       </main>
@@ -151,7 +133,6 @@ const promos = [
         <RouterLink v-for="p in promos" :key="p.to" :to="p.to" class="promo" :class="p.tint">
           <div class="promo-copy">
             <div class="promo-title">{{ p.title }}</div>
-            <div class="promo-sub">{{ p.sub }}</div>
           </div>
           <span class="promo-icon">{{ p.icon }}</span>
         </RouterLink>
@@ -217,7 +198,7 @@ const promos = [
 .brand-eyebrow { color: #b9e26a; font-size: 9.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .brand-name { color: #f2fbf6; font-size: 14.5px; font-weight: 750; }
 
-.hero-title-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.hero-title-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
 .hero-title {
   position: relative; margin: 4px 0 6px; padding-bottom: 5px;
   font-family: var(--font-display); font-size: 32px; line-height: 1.1; font-weight: 900;
@@ -236,7 +217,6 @@ const promos = [
   letter-spacing: .14em; text-transform: uppercase; color: rgba(226, 247, 236, 0.2);
   white-space: nowrap; user-select: none; pointer-events: none;
 }
-.hero-sub { margin: 0 0 16px; color: rgba(214,236,224,.72); font-size: 12.5px; }
 
 .search-box {
   display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 6px 0 16px;
@@ -297,7 +277,6 @@ const promos = [
 .rail-item:hover { background: var(--nav-hover-bg); color: var(--text); }
 .rail-item.active { background: var(--nav-active-bg); border-color: var(--nav-active-line); color: var(--nav-active-fg); font-weight: 650; box-shadow: var(--nav-active-shadow); }
 .rail-item.active em { color: var(--nav-active-icon); }
-.rail-note { margin-top: 8px; padding: 8px 2px 2px; border-top: 1px dashed var(--line); color: var(--faint); font-size: 10px; line-height: 1.65; }
 
 /* ================= 卡片 ================= */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 14px; }
@@ -324,8 +303,7 @@ const promos = [
 }
 .card-group { color: var(--muted); font-size: 10px; padding: 3px 8px; border-radius: 999px; background: var(--fill-2); border: 1px solid var(--line); }
 .card-title { margin-top: 6px; color: var(--text); font-size: 14.5px; font-weight: 650; }
-.card-desc { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.6; min-height: 36px; }
-.card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 8px; border-top: 1px dashed var(--line); }
 .card-hint { color: color-mix(in srgb, var(--tint) 70%, var(--text)); font-size: 11.5px; font-weight: 700; }
 .card-tag { color: var(--faint); font-size: 10.5px; }
 
@@ -347,7 +325,6 @@ const promos = [
 .promo:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 16px 32px rgba(0,0,0,.4); filter: brightness(1.06); }
 .promo-copy { position: relative; z-index: 1; }
 .promo-title { color: #f4fffa; font-size: 14px; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,.28); }
-.promo-sub { color: rgba(244,255,250,.76); font-size: 10.5px; margin-top: 3px; }
 .promo-icon {
   position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px;
   border-radius: 11px; font-size: 17px; background: rgba(255,255,255,.14); color: #f4fffa;
@@ -367,7 +344,6 @@ const promos = [
 .empty { display: grid; justify-items: center; gap: 6px; padding: 56px 12px; text-align: center; }
 .empty-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--fill-2); border: 1px solid var(--line); color: var(--muted); font-size: 19px; }
 .empty-title { color: var(--text); font-size: 12.5px; font-weight: 650; }
-.empty-desc { color: var(--muted); font-size: 11.5px; }
 
 /* ================= 响应式 ================= */
 @media (max-width: 1280px) {

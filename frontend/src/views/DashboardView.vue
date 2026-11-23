@@ -34,10 +34,10 @@ function formatTime(value) {
 <template>
   <div>
     <div class="grid stats-grid">
-      <StatCard label="AGV 总数" :value="overview.agv_total || 0" foot="已接入调度平台的车辆" icon="▣" accent="cyan" />
-      <StatCard label="待调度任务" :value="overview.pending_tasks || 0" foot="等待自动分配任务" icon="◇" accent="amber" />
-      <StatCard label="执行中任务" :value="overview.active_tasks || 0" foot="已分配或正在运输" icon="▶" accent="blue" />
-      <StatCard label="已完成任务" :value="overview.completed_tasks || 0" foot="累计完成运输任务" icon="✓" accent="green" />
+      <StatCard label="AGV 总数" :value="overview.agv_total || 0" icon="▣" accent="cyan" />
+      <StatCard label="待调度任务" :value="overview.pending_tasks || 0" icon="◇" accent="amber" />
+      <StatCard label="执行中任务" :value="overview.active_tasks || 0" icon="▶" accent="blue" />
+      <StatCard label="已完成任务" :value="overview.completed_tasks || 0" icon="✓" accent="green" />
     </div>
 
     <div v-if="overview.overdue_tasks" class="notice warning mb-16">
@@ -50,7 +50,7 @@ function formatTime(value) {
     <div class="grid dashboard-grid">
       <section class="panel">
         <div class="panel-head">
-          <div><div class="panel-title">车队负载与运行状态</div><div class="panel-desc">实时统计 AGV 状态与平均电量</div></div>
+          <div><div class="panel-title">车队负载与运行状态</div></div>
           <StatusBadge status="idle" label="系统在线" />
         </div>
         <div class="panel-body">
@@ -84,7 +84,7 @@ function formatTime(value) {
       </section>
 
       <section class="panel">
-        <div class="panel-head"><div><div class="panel-title">最近调度记录</div><div class="panel-desc">单台与多台调度分配结果</div></div></div>
+        <div class="panel-head"><div><div class="panel-title">最近调度记录</div></div></div>
         <div class="panel-body">
           <div v-if="dispatches.length" class="route-list">
             <div v-for="item in dispatches.slice(0, 7)" :key="item.id" class="route-card">
@@ -101,7 +101,7 @@ function formatTime(value) {
     </div>
 
     <section class="panel mt-16">
-      <div class="panel-head"><div><div class="panel-title">最近运输任务</div><div class="panel-desc">按创建时间倒序展示</div></div></div>
+      <div class="panel-head"><div><div class="panel-title">最近运输任务</div></div></div>
       <div class="panel-body">
         <div class="table-wrap">
           <table>

@@ -76,7 +76,6 @@ const navigation = [
 ]
 
 const currentTitle = computed(() => route.meta.title || '运营平台')
-const currentSubtitle = computed(() => route.meta.subtitle || '')
 // 页头右侧那枚半透明外语词 / 眉题的后半段
 const ROUTE_EN = {
   workbench: 'Workbench',
@@ -216,7 +215,6 @@ onUnmounted(() => {
         </nav>
         <div class="sidebar-foot">
           <strong><span class="connection-dot" :class="{ error: !online }"></span> {{ online ? '运营服务在线' : '后端连接异常' }}</strong>
-          <span>统一业务事件 · 请求追踪<br>Django REST API · Vue Router</span>
         </div>
       </aside>
 
@@ -233,7 +231,6 @@ onUnmounted(() => {
               <h1 class="page-title">{{ currentTitle }}</h1>
               <span class="page-ghost" aria-hidden="true">{{ currentEn }}</span>
             </div>
-            <div class="page-subtitle">{{ currentSubtitle }}</div>
           </div>
           <div class="top-actions">
             <span class="muted small">{{ refreshing ? '正在同步...' : '数据已同步' }}</span>

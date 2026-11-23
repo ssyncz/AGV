@@ -73,7 +73,6 @@
   cursor: pointer;
   transition: background 120ms ease, color 120ms ease;
 }
-.action-menu-item small { color: var(--faint); font-size: 10px; }
 .action-menu-item:hover:not(.disabled) { background: var(--fill-2); color: var(--text); }
 .action-menu-item.danger { color: var(--danger-fg); }
 .action-menu-item.danger:hover:not(.disabled) { background: var(--tint-red); color: var(--danger-fg); }
