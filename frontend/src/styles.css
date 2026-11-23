@@ -318,7 +318,7 @@ a { color: inherit; }
 .sync-chip.offline { color: var(--danger-fg); border-color: var(--tint-red-line); background: var(--tint-red); }
 .sync-chip.offline::before { background: var(--red); box-shadow: 0 0 0 3px rgba(255, 122, 114, 0.16); }
 
-.app-shell { flex: 1 1 auto; min-height: 0; display: flex; }
+.app-shell { flex: 1 1 0; min-height: 0; display: flex; overflow: hidden; }
 
 /* =========================================================================
    2. 侧边栏（macOS Source List）
@@ -458,7 +458,9 @@ a { color: inherit; }
    ========================================================================= */
 .main-area {
   flex: 1 1 auto;
+  height: 100%;
   min-width: 0;
+  min-height: 0;
   padding: 0 28px 34px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1223,16 +1225,7 @@ tr:hover td, tbody tr:hover { background: var(--row-hover); }
    17. 响应式
    ========================================================================= */
 @media (max-width: 1280px) {
-  .sidebar { flex-basis: 84px; width: 84px; padding: 14px 10px 16px; }
-  .sidebar .brand { justify-content: center; padding: 2px 0 14px; }
-  .sidebar .brand > div:last-child, .nav-label, .nav-item > span:last-child, .sidebar-foot span { display: none; }
-  .nav-item { justify-content: center; gap: 0; padding: 10px 0; }
-  .nav-item.active, .nav-item.router-link-active { background: var(--nav-active-bg-rail); }
-  .nav-item.active::before, .nav-item.router-link-active::before { left: -10px; }
-  .nav-icon { width: auto; font-size: 16px; }
-  .sidebar-foot { display: grid; place-items: center; padding: 8px 4px; border-color: transparent; background: transparent; }
-  .sidebar-foot strong { justify-content: center; gap: 0; margin: 0; font-size: 0; }
-  .sidebar-foot strong .connection-dot { margin: 0; }
+  .sidebar { flex-basis: 224px; width: 224px; padding-inline: 11px; }
   .main-area { padding-inline: 22px; }
 }
 

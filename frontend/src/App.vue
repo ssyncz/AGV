@@ -13,9 +13,16 @@ const agvs = ref([])
 const tasks = ref([])
 const dispatches = ref([])
 const toast = ref(null)
+const sidebarCollapsed = ref(false)
 let pollTimer = null
 let toastTimer = null
 const liveRoutes = new Set(['dispatch', 'tasks', 'map', 'agvs'])
+
+try {
+  sidebarCollapsed.value = window.localStorage.getItem('agv-sidebar-collapsed') === '1'
+} catch {
+  // Local storage may be unavailable in privacy-restricted browser contexts.
+}
 
 // 主题：深色「森林夜色」/ 浅色「晨雾」，写在 <html data-theme> 上，样式层全量走 CSS 变量
 const theme = ref(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark')
@@ -40,39 +47,40 @@ function toggleTheme() {
 }
 
 const navigation = [
+  { path: '/workbench', label: '工作台', icon: '◈' },
+  { path: '/dashboard', label: '生产总览', icon: '⌂' },
   {
-    label: '运营',
-    items: [
-      { path: '/workbench', label: '工作台', icon: '◈' },
-        { path: '/dashboard', label: '生产总览', icon: '⌂' },
-      { path: '/work-orders', label: '生产工单', icon: '▤' },
-      { path: '/alerts', label: '告警中心', icon: '◉' },
+    path: '/forecast',
+    label: '预测与计划',
+    icon: '◒',
+    tabs: [
+      { path: '/forecast', label: '订单预测' },
+      { path: '/plans', label: '生产计划' },
+    ],
+  },
+  { path: '/work-orders', label: '生产工单', icon: '▤' },
+  {
+    path: '/dispatch',
+    label: '调度执行',
+    icon: '⌁',
+    tabs: [
+      { path: '/dispatch', label: 'AGV 调度' },
+      { path: '/tasks', label: '运输任务' },
+      { path: '/map', label: '地图监控' },
+      { path: '/agvs', label: 'AGV 管理' },
     ],
   },
   {
-    label: '生产执行',
-    items: [
-      { path: '/dispatch', label: '调度中心', icon: '⌁' },
-      { path: '/tasks', label: '运输任务', icon: '◇' },
-      { path: '/map', label: '地图监控', icon: '◎' },
-      { path: '/plans', label: '生产计划', icon: '▥' },
+    path: '/equipment',
+    label: '质量与设备',
+    icon: '◍',
+    tabs: [
+      { path: '/equipment', label: '设备监测' },
+      { path: '/vision', label: '视觉质检' },
     ],
   },
-  {
-    label: '资源与质量',
-    items: [
-      { path: '/agvs', label: 'AGV 管理', icon: '▣' },
-      { path: '/equipment', label: '设备监测', icon: '◈' },
-      { path: '/vision', label: '视觉质检', icon: '◍' },
-    ],
-  },
-  {
-    label: '计划与系统',
-    items: [
-      { path: '/forecast', label: '订单预测', icon: '◒' },
-      { path: '/master-data', label: '主数据管理', icon: '▦' },
-    ],
-  },
+  { path: '/alerts', label: '异常中心', icon: '◉' },
+  { path: '/master-data', label: '基础数据', icon: '▦' },
 ]
 
 const currentTitle = computed(() => route.meta.title || '运营平台')
@@ -93,10 +101,16 @@ const ROUTE_EN = {
   'master-data': 'Master Data',
 }
 const currentEn = computed(() => ROUTE_EN[route.name] || 'Operations')
-const currentGroup = computed(() => {
-  const hit = navigation.find((group) => group.items.some((item) => item.path === route.path))
-  return hit ? hit.label : '运营'
-})
+const currentNavItem = computed(() =>
+  navigation.find((item) => item.path === route.path || item.tabs?.some((tab) => tab.path === route.path)))
+const currentSectionTab = computed(() =>
+  currentNavItem.value?.tabs?.find((tab) => tab.path === route.path))
+const currentGroup = computed(() => currentNavItem.value?.label || '业务中心')
+
+function toggleSidebar() {
+  sidebarCollapsed.value = !sidebarCollapsed.value
+}
+
 const sharedProps = computed(() => {
   if (route.name === 'dispatch') return { tasks: tasks.value, agvs: agvs.value, nodes: mapData.value.nodes || [] }
   if (route.name === 'map') return { mapData: mapData.value }
@@ -150,6 +164,14 @@ onMounted(() => {
 
 watch(() => route.name, configurePolling)
 
+watch(sidebarCollapsed, (collapsed) => {
+  try {
+    window.localStorage.setItem('agv-sidebar-collapsed', collapsed ? '1' : '0')
+  } catch {
+    // Keep the current session state even if persistence is unavailable.
+  }
+})
+
 onUnmounted(() => {
   clearInterval(pollTimer)
   clearTimeout(toastTimer)
@@ -184,7 +206,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div class="app-shell">
+    <div class="app-shell" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
       <!-- 背景装饰：多语种淡字 + 几何图案（纯装饰，不可选中、不挡交互） -->
       <div class="decor-layer" aria-hidden="true">
         <span class="decor-word w1">工单</span>
@@ -203,40 +225,75 @@ onUnmounted(() => {
       <aside class="sidebar">
         <div class="brand">
           <img class="brand-logo" src="/logo-agv.svg" alt="AGV" />
-          <div><div class="brand-title">制造运营中心</div><div class="brand-subtitle">Intelligent Operations</div></div>
+          <div class="brand-copy">
+            <div class="brand-title">制造运营中心</div>
+            <div class="brand-subtitle">Intelligent Operations</div>
+          </div>
+          <button
+            class="sidebar-toggle"
+            type="button"
+            :title="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
+            :aria-label="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
+            :aria-expanded="!sidebarCollapsed"
+            @click="toggleSidebar"
+          >
+            <span aria-hidden="true">{{ sidebarCollapsed ? '›' : '‹' }}</span>
+          </button>
         </div>
         <nav class="sidebar-nav">
-          <div v-for="group in navigation" :key="group.label" class="nav-group">
-            <div class="nav-label">{{ group.label }}</div>
-            <RouterLink v-for="item in group.items" :key="item.path" :to="item.path" class="nav-item">
-              <span class="nav-icon">{{ item.icon }}</span><span>{{ item.label }}</span>
-            </RouterLink>
-          </div>
+          <RouterLink
+            v-for="item in navigation"
+            :key="item.path"
+            :to="item.path"
+            class="nav-item"
+            :class="{ active: currentNavItem?.path === item.path }"
+            :title="item.label"
+            :aria-label="item.label"
+          >
+            <span class="nav-icon">{{ item.icon }}</span><span class="nav-text">{{ item.label }}</span>
+          </RouterLink>
         </nav>
         <div class="sidebar-foot">
-          <strong><span class="connection-dot" :class="{ error: !online }"></span> {{ online ? '运营服务在线' : '后端连接异常' }}</strong>
+          <strong>
+            <span class="connection-dot" :class="{ error: !online }"></span>
+            <span class="sidebar-status-text">{{ online ? '运营服务在线' : '后端连接异常' }}</span>
+          </strong>
         </div>
       </aside>
 
       <main class="main-area">
-        <header class="topbar">
-          <div class="page-head">
-            <div class="page-eyebrow">
-              <span class="eyebrow-dot"></span>
-              <span>{{ currentGroup }}</span>
-              <span class="eyebrow-sep">/</span>
-              <span class="eyebrow-en">{{ currentEn }}</span>
+        <div class="main-head">
+          <header class="topbar">
+            <div class="page-head">
+              <div class="page-eyebrow">
+                <span class="eyebrow-dot"></span>
+                <span>{{ currentGroup }}</span>
+                <span class="eyebrow-sep">/</span>
+                <span class="eyebrow-en">{{ currentEn }}</span>
+              </div>
+              <div class="page-title-row">
+                <h1 class="page-title">{{ currentTitle }}</h1>
+                <span class="page-ghost" aria-hidden="true">{{ currentEn }}</span>
+              </div>
             </div>
-            <div class="page-title-row">
-              <h1 class="page-title">{{ currentTitle }}</h1>
-              <span class="page-ghost" aria-hidden="true">{{ currentEn }}</span>
+            <div class="top-actions">
+              <span class="muted small">{{ refreshing ? '正在同步...' : '数据已同步' }}</span>
+              <button class="btn" :disabled="refreshing" @click="loadAll()">刷新共享数据</button>
             </div>
-          </div>
-          <div class="top-actions">
-            <span class="muted small">{{ refreshing ? '正在同步...' : '数据已同步' }}</span>
-            <button class="btn" :disabled="refreshing" @click="loadAll()">刷新共享数据</button>
-          </div>
-        </header>
+          </header>
+
+          <nav v-if="currentNavItem?.tabs?.length" class="section-tabs" aria-label="当前业务模块">
+            <RouterLink
+              v-for="tab in currentNavItem.tabs"
+              :key="tab.path"
+              :to="tab.path"
+              class="section-tab"
+              :class="{ active: currentSectionTab?.path === tab.path }"
+            >
+              {{ tab.label }}
+            </RouterLink>
+          </nav>
+        </div>
 
         <RouterView v-slot="{ Component }">
           <component :is="Component" v-bind="sharedProps" @refresh="loadAll(true)" @notify="handleNotify" />
@@ -248,3 +305,201 @@ onUnmounted(() => {
     <div v-if="toast" class="toast" :class="toast.type">{{ toast.message }}</div>
   </div>
 </template>
+
+<style scoped>
+.main-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin: 0 0 16px;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+}
+
+.main-head .topbar {
+  position: static;
+  z-index: auto;
+  margin-bottom: 0;
+}
+
+.section-tabs {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--glass);
+  scrollbar-width: none;
+}
+
+.section-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.section-tab {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.section-tab:hover {
+  color: var(--text);
+  background: var(--nav-hover-bg);
+}
+
+.section-tab.active {
+  color: var(--nav-active-fg);
+  border-color: var(--line);
+  background: var(--nav-active-bg);
+  box-shadow: var(--nav-active-shadow);
+}
+
+.sidebar-nav {
+  gap: 5px;
+  padding-top: 3px;
+}
+
+.sidebar-nav .nav-item {
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
+.sidebar-nav .nav-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--fill-1);
+  font-size: 14px;
+}
+
+.sidebar-nav .nav-item.active .nav-icon,
+.sidebar-nav .nav-item.router-link-active .nav-icon {
+  border-color: var(--nav-active-line);
+  background: var(--nav-active-bg);
+}
+
+.sidebar-toggle {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--muted);
+  background: var(--btn-bg);
+  box-shadow: var(--btn-shadow);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.sidebar-toggle:hover {
+  color: var(--nav-active-fg);
+  border-color: var(--nav-active-line);
+  background: var(--nav-hover-bg);
+}
+
+.sidebar-toggle:active {
+  transform: scale(0.95);
+}
+
+.sidebar {
+  transition: flex-basis 180ms ease, width 180ms ease, padding 180ms ease;
+}
+
+@media (min-width: 821px) {
+  .app-shell.sidebar-collapsed .sidebar {
+    flex-basis: 78px;
+    width: 78px;
+    padding-inline: 10px;
+  }
+
+  .app-shell.sidebar-collapsed .brand {
+    flex-direction: column;
+    gap: 10px;
+    padding-inline: 0;
+  }
+
+  .app-shell.sidebar-collapsed .brand-copy,
+  .app-shell.sidebar-collapsed .nav-text,
+  .app-shell.sidebar-collapsed .sidebar-status-text {
+    display: none;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-toggle {
+    margin-left: 0;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-nav .nav-item {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-nav .nav-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-shell.sidebar-collapsed .nav-item.active::before,
+  .app-shell.sidebar-collapsed .nav-item.router-link-active::before {
+    left: -10px;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-foot {
+    display: grid;
+    place-items: center;
+    padding: 8px 4px;
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-foot strong {
+    justify-content: center;
+    margin: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .main-head {
+    margin-bottom: 12px;
+  }
+
+  .section-tabs {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .section-tab {
+    flex: 1 0 auto;
+  }
+}
+</style>
